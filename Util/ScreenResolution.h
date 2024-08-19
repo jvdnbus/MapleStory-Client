@@ -22,29 +22,26 @@
 #include <windef.h>
 #include <WinUser.h>
 
-namespace ms
-{
-	class ScreenResolution
-	{
-	public:
-		ScreenResolution()
-		{
-			RECT desktop;
+namespace ms {
+    class ScreenResolution {
+    public:
+        ScreenResolution() {
+            RECT desktop;
 
-			// Get a handle to the desktop window
-			const HWND hDesktop = GetDesktopWindow();
+            // Get a handle to the desktop window
+            const HWND hDesktop = GetDesktopWindow();
 
-			// Get the size of screen to the variable desktop
-			GetWindowRect(hDesktop, &desktop);
+            // Get the size of screen to the variable desktop
+            GetWindowRect(hDesktop, &desktop);
 
-			// The top left corner will have coordinates (0, 0) and the bottom right corner will have coordinates (horizontal, vertical)
-			Configuration::get().set_max_width(desktop.right);
-			Configuration::get().set_max_height(desktop.bottom);
+            // The top left corner will have coordinates (0, 0) and the bottom right corner will have coordinates (horizontal, vertical)
+            Configuration::get().set_max_width(desktop.right);
+            Configuration::get().set_max_height(desktop.bottom);
 
-			// Get the state of the Caps Lock key
-			int nVirtKey = GetKeyState(20);
+            // Get the state of the Caps Lock key
+            int nVirtKey = GetKeyState(20);
 
-			Configuration::get().set_caps_lock_enabled(nVirtKey);
-		}
-	};
+            Configuration::get().set_caps_lock_enabled(nVirtKey);
+        }
+    };
 }

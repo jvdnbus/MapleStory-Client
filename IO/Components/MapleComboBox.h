@@ -23,70 +23,70 @@
 
 #include <memory>
 
-namespace ms
-{
-	// A standard MapleStory combo box with four states and three textures for each state
-	class MapleComboBox : public Button
-	{
-	public:
-		enum Type : uint8_t
-		{
-			DEFAULT = 1,
-			BROWN = 3,
-			BLUENEG,
-			DEFAULT2,
-			BLACKM,
-			BLACKL,
-			BLACKS,
-			BROWNNEG,
-			BLACKL2,
-			GREENNEG
-		};
+namespace ms {
+    // A standard MapleStory combo box with four states and three textures for each state
+    class MapleComboBox : public Button {
+    public:
+        enum Type : uint8_t {
+            DEFAULT = 1,
+            BROWN = 3,
+            BLUENEG,
+            DEFAULT2,
+            BLACKM,
+            BLACKL,
+            BLACKS,
+            BROWNNEG,
+            BLACKL2,
+            GREENNEG
+        };
 
-		MapleComboBox(Type type, std::vector<std::string> options, uint16_t default_option, Point<int16_t> parentpos, Point<int16_t> position, int64_t width);
+        MapleComboBox(Type type, std::vector<std::string> options, uint16_t default_option, Point<int16_t> parentpos,
+                      Point<int16_t> position, int64_t width);
 
-		void draw(Point<int16_t> parentpos) const override;
-		void update() {}
-		Rectangle<int16_t> bounds(Point<int16_t> parentpos) const override;
-		int16_t width() const override;
-		Point<int16_t> origin() const override;
-		Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
-		bool in_combobox(Point<int16_t> cursorpos) override;
-		uint16_t get_selected() const override;
+        void draw(Point<int16_t> parentpos) const override;
 
-	protected:
-		Button::State button_pressed(uint16_t buttonid);
+        void update() override {
+        }
 
-	private:
-		enum Buttons : uint16_t
-		{
-			OPTION1,
-			OPTION2,
-			OPTION3,
-			OPTION4,
-			OPTION5,
-			OPTION6,
-			OPTION7,
-			OPTION8,
-			OPTION9,
-			OPTION10
-		};
+        Rectangle<int16_t> bounds(Point<int16_t> parentpos) const override;
+        int16_t width() const override;
+        Point<int16_t> origin() const override;
+        Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
+        bool in_combobox(Point<int16_t> cursorpos) override;
+        uint16_t get_selected() const override;
 
-		Texture textures[Button::State::NUM_STATES][3];
-		std::vector<std::string> options;
-		std::vector<Text> option_text;
-		Text selected;
-		ColorBox background;
-		ColorBox rect;
-		ColorBox current_rect;
-		uint16_t rwidth;
-		static constexpr uint16_t HEIGHT = 16;
-		std::map<uint16_t, std::unique_ptr<Button>> buttons;
-		uint16_t current_pos;
-		bool current_shown;
-		uint16_t last_shown;
-		uint16_t selected_index;
-		Point<int16_t> selected_adj;
-		Point<int16_t> parentpos;
-	};
+    protected:
+        State button_pressed(uint16_t buttonid);
+
+    private:
+        enum Buttons : uint16_t {
+            OPTION1,
+            OPTION2,
+            OPTION3,
+            OPTION4,
+            OPTION5,
+            OPTION6,
+            OPTION7,
+            OPTION8,
+            OPTION9,
+            OPTION10
+        };
+
+        Texture textures[NUM_STATES][3];
+        std::vector<std::string> options;
+        std::vector<Text> option_text;
+        Text selected;
+        ColorBox background;
+        ColorBox rect;
+        ColorBox current_rect;
+        uint16_t rwidth;
+        static constexpr uint16_t HEIGHT = 16;
+        std::map<uint16_t, std::unique_ptr<Button>> buttons;
+        uint16_t current_pos;
+        bool current_shown;
+        uint16_t last_shown;
+        uint16_t selected_index;
+        Point<int16_t> selected_adj;
+        Point<int16_t> parentpos;
+    };
 }

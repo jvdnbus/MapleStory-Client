@@ -19,52 +19,86 @@
 
 #include "../PacketHandler.h"
 
-#include "../../Graphics/Text.h"
+#include "../../IO/UI.h"
+#include "../../IO/UITypes/UIChatBar.h"
 
-namespace ms
-{
-	// Show a status message
-	// Opcode: SHOW_STATUS_INFO(39)
-	class ShowStatusInfoHandler : public PacketHandler
-	{
-	public:
-		void handle(InPacket& recv) const override;
-	private:
-		void show_status(Color::Name color, const std::string& message) const;
-	};
+namespace ms {
+    class MessageHandler : public PacketHandler {
+        struct Message {
+            const char* text;
+            UIChatBar::MessageType type;
 
-	// Show a server message
-	// Opcode: SERVER_MESSAGE(68)
-	class ServerMessageHandler : public PacketHandler
-	{
-		void handle(InPacket& recv) const override;
-	};
+            Message(UIChatBar::MessageType type, const char* text) : text(text), type(type) {
+            }
+        };
 
-	// Show another type of server message
-	// Opcode: WEEK_EVENT_MESSAGE(77)
-	class WeekEventMessageHandler : public PacketHandler
-	{
-		void handle(InPacket& recv) const override;
-	};
+        std::vector<Message> message_buffer;
 
-	// Show a chat message
-	// CHAT_RECEIVED(162)
-	class ChatReceivedHandler : public PacketHandler
-	{
-		void handle(InPacket& recv) const override;
-	};
+        void add_to_buffer(UIChatBar::MessageType type, const char* text) {
+            message_buffer.emplace_back(type, text);
+        }
 
-	// Shows the effect of a scroll
-	// Opcode: SCROLL_RESULT(167)
-	class ScrollResultHandler : public PacketHandler
-	{
-		void handle(InPacket& recv) const override;
-	};
+        void flush() {
+            auto uiChatBar = UI::get().get_element<UIChatBar>();
+            if (uiChatBar) {
+                for (auto message : message_buffer) {
+                    uiChatBar->show_message(message.text, message.type);
+                }
+                message_buffer.clear();
+            }
+        }
 
-	// Can contain numerous different effects and messages
-	// Opcode: SHOW_ITEM_GAIN_INCHAT(206)
-	class ShowItemGainInChatHandler : public PacketHandler
-	{
-		void handle(InPacket& recv) const override;
-	};
+    protected:
+        void show_message(const char* text, UIChatBar::MessageType type) {
+            auto uiChatBar = UI::get().get_element<UIChatBar>();
+            if (uiChatBar) {
+                if (!message_buffer.empty()) {
+                    flush();
+                }
+                uiChatBar->show_message(text, type);
+            } else {
+                add_to_buffer(type, text);
+            }
+        }
+    };
+
+    // Show a status message
+    // Opcode: SHOW_STATUS_INFO(39)
+    class ShowStatusInfoHandler : public PacketHandler {
+    public:
+        void handle(InPacket& recv) override;
+
+    private:
+        void show_status(Color::Name color, const std::string& message) const;
+    };
+
+    // Show a server message
+    // Opcode: SERVER_MESSAGE(68)
+    class ServerMessageHandler : public MessageHandler {
+        void handle(InPacket& recv) override;
+    };
+
+    // Show another type of server message
+    // Opcode: WEEK_EVENT_MESSAGE(77)
+    class WeekEventMessageHandler : public MessageHandler {
+        void handle(InPacket& recv) override;
+    };
+
+    // Show a chat message
+    // CHAT_RECEIVED(162)
+    class ChatReceivedHandler : public MessageHandler {
+        void handle(InPacket& recv) override;
+    };
+
+    // Shows the effect of a scroll
+    // Opcode: SCROLL_RESULT(167)
+    class ScrollResultHandler : public MessageHandler {
+        void handle(InPacket& recv) override;
+    };
+
+    // Can contain numerous different effects and messages
+    // Opcode: SHOW_ITEM_GAIN_INCHAT(206)
+    class ShowItemGainInChatHandler : public MessageHandler {
+        void handle(InPacket& recv) override;
+    };
 }

@@ -23,73 +23,68 @@
 
 #include <iostream>
 
-namespace ms
-{
-	class Background
-	{
-	public:
-		Background(nl::node src);
+namespace ms {
+    class Background {
+    public:
+        Background(nl::node src);
 
-		void draw(double viewx, double viewy, float alpha) const;
-		void update();
+        void draw(double viewx, double viewy, float alpha) const;
+        void update();
 
-	private:
-		enum Type
-		{
-			NORMAL,
-			HTILED,
-			VTILED,
-			TILED,
-			HMOVEA,
-			VMOVEA,
-			HMOVEB,
-			VMOVEB
-		};
+    private:
+        enum Type {
+            NORMAL,
+            HTILED,
+            VTILED,
+            TILED,
+            HMOVEA,
+            VMOVEA,
+            HMOVEB,
+            VMOVEB
+        };
 
-		static Type typebyid(int32_t id)
-		{
-			if (id >= NORMAL && id <= VMOVEB)
-				return static_cast<Type>(id);
+        static Type typebyid(int32_t id) {
+            if (id >= NORMAL && id <= VMOVEB)
+                return static_cast<Type>(id);
 
-			LOG(LOG_DEBUG, "Unknown Background::Type id: [" << id << "]");
+            LOG(LOG_DEBUG, "Unknown Background::Type id: [" << id << "]");
 
-			return NORMAL;
-		}
+            return NORMAL;
+        }
 
-		void settype(Type type);
+        void settype(Type type);
 
-		int16_t VWIDTH;
-		int16_t VHEIGHT;
-		int16_t WOFFSET;
-		int16_t HOFFSET;
+        int16_t VWIDTH;
+        int16_t VHEIGHT;
+        int16_t WOFFSET;
+        int16_t HOFFSET;
 
-		Animation animation;
-		bool animated;
-		int16_t cx;
-		int16_t cy;
-		double rx;
-		double ry;
-		int16_t htile;
-		int16_t vtile;
-		float opacity;
-		bool flipped;
+        Animation animation;
+        bool animated;
+        int16_t cx;
+        int16_t cy;
+        double rx;
+        double ry;
+        int16_t htile;
+        int16_t vtile;
+        float opacity;
+        bool flipped;
 
-		MovingObject moveobj;
-	};
+        MovingObject moveobj;
+    };
 
-	class MapBackgrounds
-	{
-	public:
-		MapBackgrounds(nl::node src);
-		MapBackgrounds();
+    class MapBackgrounds {
+    public:
+        MapBackgrounds(nl::node src);
+        MapBackgrounds();
 
-		void drawbackgrounds(double viewx, double viewy, float alpha) const;
-		void drawforegrounds(double viewx, double viewy, float alpha) const;
-		void update();
+        void drawbackgrounds(double viewx, double viewy, float alpha) const;
+        void drawforegrounds(double viewx, double viewy, float alpha) const;
+        void update();
 
-	private:
-		std::vector<Background> backgrounds;
-		std::vector<Background> foregrounds;
-		bool black;
-	};
+    private:
+        std::vector<Background> backgrounds;
+        std::vector<Background> foregrounds;
+        bool black;
+    };
 }

@@ -21,69 +21,64 @@
 
 #include "UITypes/UIChatBar.h"
 
-namespace ms
-{
-	const EnumMap<Messages::Type, const char*> Messages::messages =
-	{
-		"",
-		"You cannot use this skill with this weapon.",
-		"You do not have enough hp to use this skill.",
-		"You do not have enough mp to use this skill.",
-		"You do not have enough arrows to use this attack.",
-		"You do not have enough bullets to use this attack.",
-		"You do not have enough throwing stars to use this attack.",
-		"You cannot use this skill as it is on cooldown.",
-		"The scroll lights up and it's mysterious powers have been transferred to the item.",
-		"The scroll lights up but the item remains as if nothing happened.",
-		"The item has been destroyed due to the overwhelming power of the scroll."
-	};
+namespace ms {
+    const EnumMap<Messages::Type, const char*> Messages::messages =
+    {
+        "",
+        "You cannot use this skill with this weapon.",
+        "You do not have enough hp to use this skill.",
+        "You do not have enough mp to use this skill.",
+        "You do not have enough arrows to use this attack.",
+        "You do not have enough bullets to use this attack.",
+        "You do not have enough throwing stars to use this attack.",
+        "You cannot use this skill as it is on cooldown.",
+        "The scroll lights up and it's mysterious powers have been transferred to the item.",
+        "The scroll lights up but the item remains as if nothing happened.",
+        "The item has been destroyed due to the overwhelming power of the scroll."
+    };
 
-	InChatMessage::InChatMessage(Messages::Type t)
-	{
-		type = t;
-	}
+    InChatMessage::InChatMessage(Messages::Type t) {
+        type = t;
+    }
 
-	void InChatMessage::drop() const
-	{
-		if (type == Messages::Type::NONE)
-			return;
+    void InChatMessage::drop() const {
+        if (type == Messages::Type::NONE)
+            return;
 
-		if (auto chatbar = UI::get().get_element<UIChatBar>())
-			chatbar->show_message(Messages::messages[type], UIChatBar::RED);
-	}
+        if (auto chatbar = UI::get().get_element<UIChatBar>())
+            chatbar->show_message(Messages::messages[type], UIChatBar::RED);
+    }
 
-	ForbidSkillMessage::ForbidSkillMessage(SpecialMove::ForbidReason reason, Weapon::Type weapon) : InChatMessage(message_by_reason(reason, weapon)) {}
+    ForbidSkillMessage::ForbidSkillMessage(SpecialMove::ForbidReason reason, Weapon::Type weapon) : InChatMessage(
+        message_by_reason(reason, weapon)) {
+    }
 
-	Messages::Type ForbidSkillMessage::message_by_reason(SpecialMove::ForbidReason reason, Weapon::Type weapon)
-	{
-		switch (reason)
-		{
-		case SpecialMove::ForbidReason::FBR_WEAPONTYPE:
-			return Messages::Type::SKILL_WEAPONTYPE;
-		case SpecialMove::ForbidReason::FBR_HPCOST:
-			return Messages::Type::SKILL_HPCOST;
-		case SpecialMove::ForbidReason::FBR_MPCOST:
-			return Messages::Type::SKILL_MPCOST;
-		case SpecialMove::ForbidReason::FBR_COOLDOWN:
-			return Messages::Type::SKILL_COOLDOWN;
-		case SpecialMove::ForbidReason::FBR_BULLETCOST:
-			return message_by_weapon(weapon);
-		default:
-			return Messages::Type::NONE;
-		}
-	}
+    Messages::Type ForbidSkillMessage::message_by_reason(SpecialMove::ForbidReason reason, Weapon::Type weapon) {
+        switch (reason) {
+        case SpecialMove::ForbidReason::FBR_WEAPONTYPE:
+            return Messages::Type::SKILL_WEAPONTYPE;
+        case SpecialMove::ForbidReason::FBR_HPCOST:
+            return Messages::Type::SKILL_HPCOST;
+        case SpecialMove::ForbidReason::FBR_MPCOST:
+            return Messages::Type::SKILL_MPCOST;
+        case SpecialMove::ForbidReason::FBR_COOLDOWN:
+            return Messages::Type::SKILL_COOLDOWN;
+        case SpecialMove::ForbidReason::FBR_BULLETCOST:
+            return message_by_weapon(weapon);
+        default:
+            return Messages::Type::NONE;
+        }
+    }
 
-	Messages::Type ForbidSkillMessage::message_by_weapon(Weapon::Type weapon)
-	{
-		switch (weapon)
-		{
-		case Weapon::Type::BOW:
-		case Weapon::Type::CROSSBOW:
-			return Messages::Type::SKILL_NOARROWS;
-		case Weapon::Type::CLAW:
-			return Messages::Type::SKILL_NOSTARS;
-		default:
-			return Messages::Type::SKILL_NOBULLETS;
-		}
-	}
+    Messages::Type ForbidSkillMessage::message_by_weapon(Weapon::Type weapon) {
+        switch (weapon) {
+        case Weapon::Type::BOW:
+        case Weapon::Type::CROSSBOW:
+            return Messages::Type::SKILL_NOARROWS;
+        case Weapon::Type::CLAW:
+            return Messages::Type::SKILL_NOSTARS;
+        default:
+            return Messages::Type::SKILL_NOBULLETS;
+        }
+    }
 }

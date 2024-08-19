@@ -19,22 +19,27 @@
 
 #include "Button.h"
 
-namespace ms
-{
-	// An invisible button which is only defined by it's area.
-	class AreaButton : public Button
-	{
-	public:
-		AreaButton(Point<int16_t> position, Point<int16_t> dimensions);
+namespace ms {
+    // An invisible button which is only defined by it's area.
+    class AreaButton : public Button {
+    public:
+        AreaButton(Point<int16_t> position, Point<int16_t> dimensions);
 
-		void draw(Point<int16_t>) const {}
-		void update() {}
-		Rectangle<int16_t> bounds(Point<int16_t> parentpos) const;
-		int16_t width() const;
-		Point<int16_t> origin() const;
-		Cursor::State send_cursor(bool, Point<int16_t>) { return Cursor::State::IDLE; }
+        void draw(Point<int16_t>) const override {
+        }
 
-	private:
-		Point<int16_t> dimension;
-	};
+        void update() override {
+        }
+
+        Rectangle<int16_t> bounds(Point<int16_t> parentpos) const override;
+        int16_t width() const override;
+        Point<int16_t> origin() const override;
+
+        Cursor::State send_cursor(bool, Point<int16_t>) override {
+            return Cursor::State::IDLE;
+        }
+
+    private:
+        Point<int16_t> dimension;
+    };
 }

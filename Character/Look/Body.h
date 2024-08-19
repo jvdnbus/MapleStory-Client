@@ -21,43 +21,40 @@
 
 #include "../../Graphics/Texture.h"
 
-namespace ms
-{
-	class Body
-	{
-	public:
-		enum Layer
-		{
-			NONE,
-			BODY,
-			ARM,
-			ARM_BELOW_HEAD,
-			ARM_BELOW_HEAD_OVER_MAIL,
-			ARM_OVER_HAIR,
-			ARM_OVER_HAIR_BELOW_WEAPON,
-			HAND_BELOW_WEAPON,
-			HAND_OVER_HAIR,
-			HAND_OVER_WEAPON,
-			EAR,
-			HEAD,
-			HIGH_LEF_EAR,
-			HUMAN_EAR,
-			LEF_EAR,
-			NUM_LAYERS
-		};
+namespace ms {
+    class Body {
+    public:
+        enum Layer {
+            NONE,
+            BODY,
+            ARM,
+            ARM_BELOW_HEAD,
+            ARM_BELOW_HEAD_OVER_MAIL,
+            ARM_OVER_HAIR,
+            ARM_OVER_HAIR_BELOW_WEAPON,
+            HAND_BELOW_WEAPON,
+            HAND_OVER_HAIR,
+            HAND_OVER_WEAPON,
+            EAR,
+            HEAD,
+            HIGH_LEF_EAR,
+            HUMAN_EAR,
+            LEF_EAR,
+            NUM_LAYERS
+        };
 
-		Body(int32_t skin, const BodyDrawInfo& drawinfo);
+        Body(int32_t skin, const BodyDrawInfo& drawinfo);
 
-		void draw(Layer layer, Stance::Id stance, uint8_t frame, const DrawArgument& args) const;
+        void draw(Layer layer, Stance::Id stance, uint8_t frame, const DrawArgument& args) const;
 
-		const std::string& get_name() const;
+        const std::string& get_name() const;
 
-		static Layer layer_by_name(const std::string& name);
+        static Layer layer_by_name(const std::string& name);
 
-	private:
-		std::unordered_map<uint8_t, Texture> stances[Stance::Id::LENGTH][Layer::NUM_LAYERS];
-		std::string name;
+    private:
+        std::unordered_map<uint8_t, Texture> stances[Stance::Id::LENGTH][NUM_LAYERS];
+        std::string name;
 
-		static const std::unordered_map<std::string, Layer> layers_by_name;
-	};
+        static const std::unordered_map<std::string, Layer> layers_by_name;
+    };
 }

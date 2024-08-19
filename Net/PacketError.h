@@ -20,15 +20,14 @@
 #include <string>
 #include <stdexcept>
 
-namespace ms
-{
-	// Error which is thrown by packet handling functions.
-	class PacketError : public std::runtime_error
-	{
-	public:
-		PacketError(const std::string& msg): std::runtime_error(PREFIX + msg) {}
+namespace ms {
+    // Error which is thrown by packet handling functions.
+    class PacketError : public std::runtime_error {
+    public:
+        PacketError(const std::string& msg): std::runtime_error(PREFIX + msg) {
+        }
 
-	private:
-		static constexpr const char* PREFIX = "Packet Error: ";
-	};
+    private:
+        static constexpr auto PREFIX = "Packet Error: ";
+    };
 }

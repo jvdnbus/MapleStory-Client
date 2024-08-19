@@ -20,23 +20,21 @@
 #include "../../Graphics/Geometry.h"
 #include "../../Template/Interpolated.h"
 
-namespace ms
-{
-	// The scrolling server notice at the top of the screen
-	class ScrollingNotice
-	{
-	public:
-		ScrollingNotice();
+namespace ms {
+    // The scrolling server notice at the top of the screen
+    class ScrollingNotice {
+    public:
+        ScrollingNotice();
 
-		void setnotice(std::string notice);
-		void draw(float alpha) const;
-		void update();
+        void setnotice(std::string notice);
+        void draw(float alpha) const;
+        void update();
 
-	private:
-		ColorBox background;
-		Text notice;
-		Linear<double> xpos;
-		bool active;
-		int16_t width;
-	};
+    private:
+        ColorBox background;
+        Text notice;
+        Linear<double> xpos;
+        bool active;
+        int16_t width;
+    };
 }

@@ -19,69 +19,58 @@
 
 #include "../OutPacket.h"
 
-namespace ms
-{
-	// Tell the server which character was picked.
-	// Opcode: SELECT_CHAR(19)
-	class SelectCharPacket : public OutPacket
-	{
-	public:
-		SelectCharPacket(int32_t cid) : OutPacket(OutPacket::Opcode::SELECT_CHAR)
-		{
-			write_int(cid);
-			write_hardware_info();
-		}
-	};
+namespace ms {
+    // Tell the server which character was picked.
+    // Opcode: SELECT_CHAR(19)
+    class SelectCharPacket : public OutPacket {
+    public:
+        SelectCharPacket(int32_t cid) : OutPacket(SELECT_CHAR) {
+            write_int(cid);
+            write_hardware_info();
+        }
+    };
 
-	// Registers a pic and tells the server which character was picked.
-	// Opcode: REGISTER_PIC(29)
-	class RegisterPicPacket : public OutPacket
-	{
-	public:
-		RegisterPicPacket(int32_t cid, const std::string& pic) : OutPacket(OutPacket::Opcode::REGISTER_PIC)
-		{
-			skip(1);
+    // Registers a pic and tells the server which character was picked.
+    // Opcode: REGISTER_PIC(29)
+    class RegisterPicPacket : public OutPacket {
+    public:
+        RegisterPicPacket(int32_t cid, const std::string& pic) : OutPacket(REGISTER_PIC) {
+            skip(1);
 
-			write_int(cid);
-			write_hardware_info();
-			write_string(pic);
-		}
-	};
+            write_int(cid);
+            write_hardware_info();
+            write_string(pic);
+        }
+    };
 
-	// Requests using the specified character with the specified pic.
-	// Opcode: SELECT_CHAR_PIC(30)
-	class SelectCharPicPacket : public OutPacket
-	{
-	public:
-		SelectCharPicPacket(const std::string& pic, int32_t cid) : OutPacket(OutPacket::Opcode::SELECT_CHAR_PIC)
-		{
-			write_string(pic);
-			write_int(cid);
-			write_hardware_info();
-		}
-	};
+    // Requests using the specified character with the specified pic.
+    // Opcode: SELECT_CHAR_PIC(30)
+    class SelectCharPicPacket : public OutPacket {
+    public:
+        SelectCharPicPacket(const std::string& pic, int32_t cid) : OutPacket(SELECT_CHAR_PIC) {
+            write_string(pic);
+            write_int(cid);
+            write_hardware_info();
+        }
+    };
 
-	// Requests deleting the specified character without a pic.
-	// Opcode: DELETE_CHAR(23)
-	class DeleteCharPacket : public OutPacket
-	{
-	public:
-		DeleteCharPacket(int32_t cid) : OutPacket(OutPacket::Opcode::DELETE_CHAR)
-		{
-			write_string("");
-			write_int(cid);
-		}
-	};
+    // Requests deleting the specified character without a pic.
+    // Opcode: DELETE_CHAR(23)
+    class DeleteCharPacket : public OutPacket {
+    public:
+        DeleteCharPacket(int32_t cid) : OutPacket(DELETE_CHAR) {
+            write_string("");
+            write_int(cid);
+        }
+    };
 
-	// Requests deleting the specified character with the specified pic.
-	// Opcode: DELETE_CHAR(23)
-	class DeleteCharPicPacket : public OutPacket
-	{
-	public:
-		DeleteCharPicPacket(const std::string& pic, int32_t cid) : OutPacket(OutPacket::Opcode::DELETE_CHAR)
-		{
-			write_string(pic);
-			write_int(cid);
-		}
-	};
+    // Requests deleting the specified character with the specified pic.
+    // Opcode: DELETE_CHAR(23)
+    class DeleteCharPicPacket : public OutPacket {
+    public:
+        DeleteCharPicPacket(const std::string& pic, int32_t cid) : OutPacket(DELETE_CHAR) {
+            write_string(pic);
+            write_int(cid);
+        }
+    };
 }

@@ -17,66 +17,59 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "Gauge.h"
 
-namespace ms
-{
-	Gauge::Gauge(Type type, Texture front, int16_t maximum, float percentage) : Gauge(type, front, {}, maximum, percentage) {}
-	Gauge::Gauge(Type type, Texture front, Texture middle, int16_t maximum, float percentage) : Gauge(type, front, {}, {}, maximum, percentage) {}
-	Gauge::Gauge(Type type, Texture front, Texture middle, Texture end, int16_t maximum, float percentage) : type(type), barfront(front), barmid(middle), barend(end), maximum(maximum), percentage(percentage), target(percentage) {}
+namespace ms {
+    Gauge::Gauge(Type type, Texture front, int16_t maximum, float percentage) : Gauge(
+        type, front, {}, maximum, percentage) {
+    }
 
-	void Gauge::draw(const DrawArgument& args) const
-	{
-		int16_t length = static_cast<int16_t>(percentage * maximum);
+    Gauge::Gauge(Type type, Texture front, Texture middle, int16_t maximum, float percentage) : Gauge(
+        type, front, {}, {}, maximum, percentage) {
+    }
 
-		if (length > 0)
-		{
-			if (type == Type::DEFAULT)
-			{
-				barfront.draw(args + DrawArgument(Point<int16_t>(0, 0), Point<int16_t>(length, 0)));
-				barmid.draw(args);
-				barend.draw(args + Point<int16_t>(length + 8, 20));
-			}
-			else if (type == Type::CASHSHOP)
-			{
-				Point<int16_t> pos_adj = Point<int16_t>(45, 1);
+    Gauge::Gauge(Type type, Texture front, Texture middle, Texture end, int16_t maximum, float percentage) :
+        barfront(front), barmid(middle), barend(end), maximum(maximum), percentage(percentage), target(percentage),
+        type(type) {
+    }
 
-				barfront.draw(args - pos_adj);
-				barmid.draw(args + DrawArgument(Point<int16_t>(0, 0), Point<int16_t>(length, 0)));
-				barend.draw(args - pos_adj + Point<int16_t>(length + barfront.width(), 0));
-			}
-			else if (type == Type::WORLDSELECT)
-			{
-				barfront.draw(args, {}, Range<int16_t>(0, barfront.width() - length));
-			}
-		}
-		else
-		{
-			if (type == Type::WORLDSELECT)
-				barfront.draw(args, {}, Range<int16_t>(0, barfront.width() - 1));
-		}
-	}
+    void Gauge::draw(const DrawArgument& args) const {
+        int16_t length = static_cast<int16_t>(percentage * maximum);
 
-	void Gauge::update(float t)
-	{
-		if (target != t)
-		{
-			target = t;
-			step = (target - percentage) / 24;
-		}
+        if (length > 0) {
+            if (type == DEFAULT) {
+                barfront.draw(args + DrawArgument(Point<int16_t>(0, 0), Point<int16_t>(length, 0)));
+                barmid.draw(args);
+                barend.draw(args + Point<int16_t>(length + 8, 20));
+            } else if (type == CASHSHOP) {
+                auto pos_adj = Point<int16_t>(45, 1);
 
-		if (percentage != target)
-		{
-			percentage += step;
+                barfront.draw(args - pos_adj);
+                barmid.draw(args + DrawArgument(Point<int16_t>(0, 0), Point<int16_t>(length, 0)));
+                barend.draw(args - pos_adj + Point<int16_t>(length + barfront.width(), 0));
+            } else if (type == WORLDSELECT) {
+                barfront.draw(args, {}, Range<int16_t>(0, barfront.width() - length));
+            }
+        } else {
+            if (type == WORLDSELECT)
+                barfront.draw(args, {}, Range<int16_t>(0, barfront.width() - 1));
+        }
+    }
 
-			if (step < 0.0f)
-			{
-				if (target - percentage >= step)
-					percentage = target;
-			}
-			else if (step > 0.0f)
-			{
-				if (target - percentage <= step)
-					percentage = target;
-			}
-		}
-	}
+    void Gauge::update(float t) {
+        if (target != t) {
+            target = t;
+            step = (target - percentage) / 24;
+        }
+
+        if (percentage != target) {
+            percentage += step;
+
+            if (step < 0.0f) {
+                if (target - percentage >= step)
+                    percentage = target;
+            } else if (step > 0.0f) {
+                if (target - percentage <= step)
+                    percentage = target;
+            }
+        }
+    }
 }

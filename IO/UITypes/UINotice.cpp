@@ -27,347 +27,299 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	UINotice::UINotice(std::string message, NoticeType t, Text::Alignment a) : UIDragElement<PosNOTICE>(), type(t), alignment(a)
-	{
-		nl::node src = nl::nx::UI["Basic.img"]["Notice6"];
+namespace ms {
+    UINotice::UINotice(std::string message, NoticeType t, Text::Alignment a) : UIDragElement<PosNOTICE>(), type(t),
+                                                                               alignment(a) {
+        nl::node src = nl::nx::UI["Basic.img"]["Notice6"];
 
-		top = src["t"];
-		center = src["c"];
-		centerbox = src["c_box"];
-		box = src["box"];
-		box2 = src["box2"];
-		bottom = src["s"];
-		bottombox = src["s_box"];
+        top = src["t"];
+        center = src["c"];
+        centerbox = src["c_box"];
+        box = src["box"];
+        box2 = src["box2"];
+        bottom = src["s"];
+        bottombox = src["s_box"];
 
-		if (type == NoticeType::YESNO)
-		{
-			position.shift_y(-8);
-			question = Text(Text::Font::A11M, alignment, Color::Name::WHITE, message, 200);
-		}
-		else if (type == NoticeType::ENTERNUMBER)
-		{
-			position.shift_y(-16);
-			question = Text(Text::Font::A12M, Text::Alignment::LEFT, Color::Name::WHITE, message, 200);
-		}
-		else if (type == NoticeType::OK)
-		{
-			uint16_t maxwidth = top.width() - 6;
+        if (type == YESNO) {
+            position.shift_y(-8);
+            question = Text(Text::Font::A11M, alignment, Color::Name::WHITE, message, 200);
+        } else if (type == ENTERNUMBER) {
+            position.shift_y(-16);
+            question = Text(Text::Font::A12M, Text::Alignment::LEFT, Color::Name::WHITE, message, 200);
+        } else if (type == OK) {
+            uint16_t maxwidth = top.width() - 6;
 
-			position.shift_y(-8);
-			question = Text(Text::Font::A11M, Text::Alignment::CENTER, Color::Name::WHITE, message, maxwidth);
-		}
+            position.shift_y(-8);
+            question = Text(Text::Font::A11M, Text::Alignment::CENTER, Color::Name::WHITE, message, maxwidth);
+        }
 
-		height = question.height();
-		dimension = Point<int16_t>(top.width(), top.height() + height + bottom.height());
-		position = Point<int16_t>(position.x() - dimension.x() / 2, position.y() - dimension.y() / 2);
-		dragarea = Point<int16_t>(dimension.x(), 20);
+        height = question.height();
+        dimension = Point<int16_t>(top.width(), top.height() + height + bottom.height());
+        position = Point<int16_t>(position.x() - dimension.x() / 2, position.y() - dimension.y() / 2);
+        dragarea = Point<int16_t>(dimension.x(), 20);
 
-		if (type != NoticeType::ENTERNUMBER)
-			Sound(Sound::Name::DLGNOTICE).play();
-	}
+        if (type != ENTERNUMBER)
+            Sound(Sound::Name::DLGNOTICE).play();
+    }
 
-	UINotice::UINotice(std::string message, NoticeType t) : UINotice(message, t, Text::Alignment::CENTER) {}
+    UINotice::UINotice(std::string message, NoticeType t) : UINotice(message, t, Text::Alignment::CENTER) {
+    }
 
-	void UINotice::draw(bool textfield) const
-	{
-		Point<int16_t> start = position;
+    void UINotice::draw(bool textfield) const {
+        Point<int16_t> start = position;
 
-		top.draw(start);
-		start.shift_y(top.height());
+        top.draw(start);
+        start.shift_y(top.height());
 
-		if (textfield)
-		{
-			center.draw(start);
-			start.shift_y(center.height());
-			centerbox.draw(start);
-			start.shift_y(centerbox.height() - 1);
-			box2.draw(start);
-			start.shift_y(box2.height());
-			box.draw(DrawArgument(start, Point<int16_t>(0, 29)));
-			start.shift_y(29);
+        if (textfield) {
+            center.draw(start);
+            start.shift_y(center.height());
+            centerbox.draw(start);
+            start.shift_y(centerbox.height() - 1);
+            box2.draw(start);
+            start.shift_y(box2.height());
+            box.draw(DrawArgument(start, Point<int16_t>(0, 29)));
+            start.shift_y(29);
 
-			question.draw(position + Point<int16_t>(13, 13));
-		}
-		else
-		{
-			int16_t pos_y = height >= 32 ? height : 32;
+            question.draw(position + Point<int16_t>(13, 13));
+        } else {
+            int16_t pos_y = height >= 32 ? height : 32;
 
-			center.draw(DrawArgument(start, Point<int16_t>(0, pos_y)));
-			start.shift_y(pos_y);
-			centerbox.draw(start);
-			start.shift_y(centerbox.height());
-			box.draw(start);
-			start.shift_y(box.height());
+            center.draw(DrawArgument(start, Point<int16_t>(0, pos_y)));
+            start.shift_y(pos_y);
+            centerbox.draw(start);
+            start.shift_y(centerbox.height());
+            box.draw(start);
+            start.shift_y(box.height());
 
-			if (type == NoticeType::YESNO && alignment == Text::Alignment::LEFT)
-				question.draw(position + Point<int16_t>(31, 14));
-			else
-				question.draw(position + Point<int16_t>(131, 14));
-		}
+            if (type == YESNO && alignment == Text::Alignment::LEFT)
+                question.draw(position + Point<int16_t>(31, 14));
+            else
+                question.draw(position + Point<int16_t>(131, 14));
+        }
 
-		bottombox.draw(start);
-	}
+        bottombox.draw(start);
+    }
 
-	int16_t UINotice::box2offset(bool textfield) const
-	{
-		int16_t offset = top.height() + centerbox.height() + box.height() + height - (textfield ? 0 : 16);
+    int16_t UINotice::box2offset(bool textfield) const {
+        int16_t offset = top.height() + centerbox.height() + box.height() + height - (textfield ? 0 : 16);
 
-		if (type == NoticeType::OK)
-			if (height < 34)
-				offset += 15;
+        if (type == OK)
+            if (height < 34)
+                offset += 15;
 
-		return offset;
-	}
+        return offset;
+    }
 
-	UIYesNo::UIYesNo(std::string message, std::function<void(bool yes)> yh, Text::Alignment alignment) : UINotice(message, NoticeType::YESNO, alignment)
-	{
-		yesnohandler = yh;
+    UIYesNo::UIYesNo(std::string message, std::function<void(bool yes)> yh, Text::Alignment alignment) : UINotice(
+        message, YESNO, alignment) {
+        yesnohandler = yh;
 
-		int16_t belowtext = box2offset(false);
+        int16_t belowtext = box2offset(false);
 
-		nl::node src = nl::nx::UI["Basic.img"];
+        nl::node src = nl::nx::UI["Basic.img"];
 
-		buttons[Buttons::YES] = std::make_unique<MapleButton>(src["BtOK4"], Point<int16_t>(156, belowtext));
-		buttons[Buttons::NO] = std::make_unique<MapleButton>(src["BtCancel4"], Point<int16_t>(198, belowtext));
-	}
+        buttons[YES] = std::make_unique<MapleButton>(src["BtOK4"], Point<int16_t>(156, belowtext));
+        buttons[NO] = std::make_unique<MapleButton>(src["BtCancel4"], Point<int16_t>(198, belowtext));
+    }
 
-	UIYesNo::UIYesNo(std::string message, std::function<void(bool yes)> yesnohandler) : UIYesNo(message, yesnohandler, Text::Alignment::CENTER) {}
+    UIYesNo::UIYesNo(std::string message, std::function<void(bool yes)> yesnohandler) : UIYesNo(
+        message, yesnohandler, Text::Alignment::CENTER) {
+    }
 
-	void UIYesNo::draw(float alpha) const
-	{
-		UINotice::draw(false);
-		UIElement::draw(alpha);
-	}
+    void UIYesNo::draw(float alpha) const {
+        UINotice::draw(false);
+        UIElement::draw(alpha);
+    }
 
-	void UIYesNo::send_key(int32_t keycode, bool pressed, bool escape)
-	{
-		if (keycode == KeyAction::Id::RETURN)
-		{
-			yesnohandler(true);
-			deactivate();
-		}
-		else if (escape)
-		{
-			yesnohandler(false);
-			deactivate();
-		}
-	}
+    void UIYesNo::send_key(int32_t keycode, bool pressed, bool escape) {
+        if (keycode == KeyAction::Id::RETURN) {
+            yesnohandler(true);
+            deactivate();
+        } else if (escape) {
+            yesnohandler(false);
+            deactivate();
+        }
+    }
 
-	UIElement::Type UIYesNo::get_type() const
-	{
-		return TYPE;
-	}
+    UIElement::Type UIYesNo::get_type() const {
+        return TYPE;
+    }
 
-	Button::State UIYesNo::button_pressed(uint16_t buttonid)
-	{
-		deactivate();
+    Button::State UIYesNo::button_pressed(uint16_t buttonid) {
+        deactivate();
 
-		switch (buttonid)
-		{
-			case Buttons::YES:
-				yesnohandler(true);
-				break;
-			case Buttons::NO:
-				yesnohandler(false);
-				break;
-		}
+        switch (buttonid) {
+        case YES:
+            yesnohandler(true);
+            break;
+        case NO:
+            yesnohandler(false);
+            break;
+        }
 
-		return Button::State::PRESSED;
-	}
+        return Button::State::PRESSED;
+    }
 
-	UIEnterNumber::UIEnterNumber(std::string message, std::function<void(int32_t)> nh, int32_t m, int32_t quantity) : UINotice(message, NoticeType::ENTERNUMBER)
-	{
-		numhandler = nh;
-		max = m;
+    UIEnterNumber::UIEnterNumber(std::string message, std::function<void(int32_t)> nh, int32_t m,
+                                 int32_t quantity) : UINotice(message, ENTERNUMBER) {
+        numhandler = nh;
+        max = m;
 
-		int16_t belowtext = box2offset(true) - 21;
-		int16_t pos_y = belowtext + 35;
+        int16_t belowtext = box2offset(true) - 21;
+        int16_t pos_y = belowtext + 35;
 
-		nl::node src = nl::nx::UI["Basic.img"];
+        nl::node src = nl::nx::UI["Basic.img"];
 
-		buttons[Buttons::OK] = std::make_unique<MapleButton>(src["BtOK4"], 156, pos_y);
-		buttons[Buttons::CANCEL] = std::make_unique<MapleButton>(src["BtCancel4"], 198, pos_y);
+        buttons[OK] = std::make_unique<MapleButton>(src["BtOK4"], 156, pos_y);
+        buttons[CANCEL] = std::make_unique<MapleButton>(src["BtCancel4"], 198, pos_y);
 
-		Point<int16_t> numfield_pos = position + Point<int16_t>(22, belowtext + 5);
-		Point<int16_t> numfield_dim = Point<int16_t>(217, 16);
+        Point<int16_t> numfield_pos = position + Point<int16_t>(22, belowtext + 5);
+        auto numfield_dim = Point<int16_t>(217, 16);
 
-		int16_t numfield_limit = 10;
+        int16_t numfield_limit = 10;
 
-		numfield = Textfield(Text::Font::A11M, Text::Alignment::LEFT, Color::Name::LIGHTGREY, Rectangle<int16_t>(numfield_pos, numfield_pos + numfield_dim), numfield_limit);
-		numfield.change_text(std::to_string(quantity));
+        numfield = Textfield(Text::Font::A11M, Text::Alignment::LEFT, Color::Name::LIGHTGREY,
+                             Rectangle<int16_t>(numfield_pos, numfield_pos + numfield_dim), numfield_limit);
+        numfield.change_text(std::to_string(quantity));
 
-		numfield.set_enter_callback(
-			[&](std::string numstr)
-			{
-				handlestring(numstr);
-			}
-		);
+        numfield.set_enter_callback(
+            [&](std::string numstr) {
+                handlestring(numstr);
+            }
+        );
 
-		numfield.set_key_callback(
-			KeyAction::Id::ESCAPE,
-			[&]()
-			{
-				deactivate();
-			}
-		);
+        numfield.set_key_callback(
+            KeyAction::Id::ESCAPE,
+            [&]() {
+                deactivate();
+            }
+        );
 
-		numfield.set_state(Textfield::State::FOCUSED);
-	}
+        numfield.set_state(Textfield::State::FOCUSED);
+    }
 
-	void UIEnterNumber::draw(float alpha) const
-	{
-		UINotice::draw(true);
-		UIElement::draw(alpha);
+    void UIEnterNumber::draw(float alpha) const {
+        UINotice::draw(true);
+        UIElement::draw(alpha);
 
-		numfield.draw(Point<int16_t>(2, -4));
-	}
+        numfield.draw(Point<int16_t>(2, -4));
+    }
 
-	void UIEnterNumber::update()
-	{
-		UIElement::update();
+    void UIEnterNumber::update() {
+        UIElement::update();
 
-		numfield.update();
-	}
+        numfield.update();
+    }
 
-	Cursor::State UIEnterNumber::send_cursor(bool clicked, Point<int16_t> cursorpos)
-	{
-		if (numfield.get_state() == Textfield::State::NORMAL)
-		{
-			Cursor::State nstate = numfield.send_cursor(cursorpos, clicked);
+    Cursor::State UIEnterNumber::send_cursor(bool clicked, Point<int16_t> cursorpos) {
+        if (numfield.get_state() == Textfield::State::NORMAL) {
+            Cursor::State nstate = numfield.send_cursor(cursorpos, clicked);
 
-			if (nstate != Cursor::State::IDLE)
-				return nstate;
-		}
+            if (nstate != Cursor::State::IDLE)
+                return nstate;
+        }
 
-		return UIElement::send_cursor(clicked, cursorpos);
-	}
+        return UIElement::send_cursor(clicked, cursorpos);
+    }
 
-	void UIEnterNumber::send_key(int32_t keycode, bool pressed, bool escape)
-	{
-		if (keycode == KeyAction::Id::RETURN)
-		{
-			handlestring(numfield.get_text());
-			deactivate();
-		}
-		else if (escape)
-		{
-			deactivate();
-		}
-	}
+    void UIEnterNumber::send_key(int32_t keycode, bool pressed, bool escape) {
+        if (keycode == KeyAction::Id::RETURN) {
+            handlestring(numfield.get_text());
+            deactivate();
+        } else if (escape) {
+            deactivate();
+        }
+    }
 
-	UIElement::Type UIEnterNumber::get_type() const
-	{
-		return TYPE;
-	}
+    UIElement::Type UIEnterNumber::get_type() const {
+        return TYPE;
+    }
 
-	Button::State UIEnterNumber::button_pressed(uint16_t buttonid)
-	{
-		switch (buttonid)
-		{
-			case Buttons::OK:
-				handlestring(numfield.get_text());
-				break;
-			case Buttons::CANCEL:
-				deactivate();
-				break;
-		}
+    Button::State UIEnterNumber::button_pressed(uint16_t buttonid) {
+        switch (buttonid) {
+        case OK:
+            handlestring(numfield.get_text());
+            break;
+        case CANCEL:
+            deactivate();
+            break;
+        }
 
-		return Button::State::NORMAL;
-	}
+        return Button::State::NORMAL;
+    }
 
-	void UIEnterNumber::handlestring(std::string numstr)
-	{
-		int num = -1;
-		bool has_only_digits = (numstr.find_first_not_of("0123456789") == std::string::npos);
+    void UIEnterNumber::handlestring(std::string numstr) {
+        int num = -1;
+        bool has_only_digits = (numstr.find_first_not_of("0123456789") == std::string::npos);
 
-		auto okhandler = [&](bool)
-		{
-			numfield.set_state(Textfield::State::FOCUSED);
-			buttons[Buttons::OK]->set_state(Button::State::NORMAL);
-		};
+        auto okhandler = [&](bool) {
+            numfield.set_state(Textfield::State::FOCUSED);
+            buttons[OK]->set_state(Button::State::NORMAL);
+        };
 
-		if (!has_only_digits)
-		{
-			numfield.set_state(Textfield::State::DISABLED);
-			UI::get().emplace<UIOk>("Only numbers are allowed.", okhandler);
-			return;
-		}
-		else
-		{
-			num = std::stoi(numstr);
-		}
+        if (!has_only_digits) {
+            numfield.set_state(Textfield::State::DISABLED);
+            UI::get().emplace<UIOk>("Only numbers are allowed.", okhandler);
+            return;
+        }
+        num = std::stoi(numstr);
 
-		if (num < 1)
-		{
-			numfield.set_state(Textfield::State::DISABLED);
-			UI::get().emplace<UIOk>("You may only enter a number equal to or higher than 1.", okhandler);
-			return;
-		}
-		else if (num > max)
-		{
-			numfield.set_state(Textfield::State::DISABLED);
-			UI::get().emplace<UIOk>("You may only enter a number equal to or lower than " + std::to_string(max) + ".", okhandler);
-			return;
-		}
-		else
-		{
-			numhandler(num);
-			deactivate();
-		}
+        if (num < 1) {
+            numfield.set_state(Textfield::State::DISABLED);
+            UI::get().emplace<UIOk>("You may only enter a number equal to or higher than 1.", okhandler);
+            return;
+        }
+        if (num > max) {
+            numfield.set_state(Textfield::State::DISABLED);
+            UI::get().emplace<UIOk>("You may only enter a number equal to or lower than " + std::to_string(max) + ".",
+                                    okhandler);
+            return;
+        }
+        numhandler(num);
+        deactivate();
 
-		buttons[Buttons::OK]->set_state(Button::State::NORMAL);
-	}
+        buttons[OK]->set_state(Button::State::NORMAL);
+    }
 
-	UIOk::UIOk(std::string message, std::function<void(bool ok)> oh) : UINotice(message, NoticeType::OK)
-	{
-		okhandler = oh;
+    UIOk::UIOk(std::string message, std::function<void(bool ok)> oh) : UINotice(message, NoticeType::OK) {
+        okhandler = oh;
 
-		nl::node src = nl::nx::UI["Basic.img"];
+        nl::node src = nl::nx::UI["Basic.img"];
 
-		buttons[Buttons::OK] = std::make_unique<MapleButton>(src["BtOK4"], 197, box2offset(false));
-	}
+        buttons[OK] = std::make_unique<MapleButton>(src["BtOK4"], 197, box2offset(false));
+    }
 
-	void UIOk::draw(float alpha) const
-	{
-		UINotice::draw(false);
-		UIElement::draw(alpha);
-	}
+    void UIOk::draw(float alpha) const {
+        UINotice::draw(false);
+        UIElement::draw(alpha);
+    }
 
-	void UIOk::send_key(int32_t keycode, bool pressed, bool escape)
-	{
-		if (pressed)
-		{
-			if (keycode == KeyAction::Id::RETURN)
-			{
-				okhandler(true);
-				deactivate();
-			}
-			else if (escape)
-			{
-				okhandler(false);
-				deactivate();
-			}
-		}
-	}
+    void UIOk::send_key(int32_t keycode, bool pressed, bool escape) {
+        if (pressed) {
+            if (keycode == KeyAction::Id::RETURN) {
+                okhandler(true);
+                deactivate();
+            } else if (escape) {
+                okhandler(false);
+                deactivate();
+            }
+        }
+    }
 
-	UIElement::Type UIOk::get_type() const
-	{
-		return TYPE;
-	}
+    UIElement::Type UIOk::get_type() const {
+        return TYPE;
+    }
 
-	Button::State UIOk::button_pressed(uint16_t buttonid)
-	{
-		deactivate();
+    Button::State UIOk::button_pressed(uint16_t buttonid) {
+        deactivate();
 
-		switch (buttonid)
-		{
-			case Buttons::OK:
-				okhandler(true);
-				break;
-		}
+        switch (buttonid) {
+        case OK:
+            okhandler(true);
+            break;
+        }
 
-		return Button::State::NORMAL;
-	}
+        return Button::State::NORMAL;
+    }
 }

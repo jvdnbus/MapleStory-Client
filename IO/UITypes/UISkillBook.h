@@ -26,174 +26,181 @@
 #include "../../Character/CharStats.h"
 #include "../../Character/SkillBook.h"
 
-namespace ms
-{
-	class UISkillBook : public UIDragElement<PosSKILL>
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::SKILLBOOK;
-		static constexpr bool FOCUSED = false;
-		static constexpr bool TOGGLED = true;
+namespace ms {
+    class UISkillBook : public UIDragElement<PosSKILL> {
+    public:
+        static constexpr Type TYPE = SKILLBOOK;
+        static constexpr bool FOCUSED = false;
+        static constexpr bool TOGGLED = true;
 
-		UISkillBook(const CharStats& stats, const SkillBook& skillbook);
+        UISkillBook(const CharStats& stats, const SkillBook& skillbook);
 
-		void draw(float alpha) const override;
+        void draw(float alpha) const override;
 
-		void toggle_active() override;
-		void doubleclick(Point<int16_t> cursorpos) override;
-		void remove_cursor() override;
-		Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
-		void send_key(int32_t keycode, bool pressed, bool escape) override;
+        void toggle_active() override;
+        void doubleclick(Point<int16_t> cursorpos) override;
+        void remove_cursor() override;
+        Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
+        void send_key(int32_t keycode, bool pressed, bool escape) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-		void update_stat(MapleStat::Id stat, int16_t value);
-		void update_skills(int32_t skill_id);
-		bool is_skillpoint_enabled();
+        void update_stat(MapleStat::Id stat, int16_t value);
+        void update_skills(int32_t skill_id);
+        bool is_skillpoint_enabled();
 
-	protected:
-		Button::State button_pressed(uint16_t id) override;
+    protected:
+        Button::State button_pressed(uint16_t id) override;
 
-	private:
-		class SkillIcon : public StatefulIcon::Type
-		{
-		public:
-			SkillIcon(int32_t skill_id);
+    private:
+        class SkillIcon : public StatefulIcon::Type {
+        public:
+            SkillIcon(int32_t skill_id);
 
-			void drop_on_stage() const override {}
-			void drop_on_equips(EquipSlot::Id) const override {}
-			bool drop_on_items(InventoryType::Id, EquipSlot::Id, int16_t, bool) const override { return true; }
-			void drop_on_bindings(Point<int16_t> cursorposition, bool remove) const override;
-			void set_count(int16_t) override {}
-			void set_state(StatefulIcon::State) override {}
-			Icon::IconType get_type() override;
+            void drop_on_stage() const override {
+            }
 
-		private:
-			int32_t skill_id;
-		};
+            void drop_on_equips(EquipSlot::Id) const override {
+            }
 
-		class SkillDisplayMeta
-		{
-		public:
-			SkillDisplayMeta(int32_t id, int32_t level);
+            bool drop_on_items(InventoryType::Id, EquipSlot::Id, int16_t, bool) const override {
+                return true;
+            }
 
-			void draw(const DrawArgument& args) const;
+            void drop_on_bindings(Point<int16_t> cursorposition, bool remove) const override;
 
-			int32_t get_id() const;
-			int32_t get_level() const;
-			StatefulIcon* get_icon() const;
+            void set_count(int16_t) override {
+            }
 
-		private:
-			int32_t id;
-			int32_t level;
-			std::unique_ptr<StatefulIcon> icon;
-			Text name_text;
-			Text level_text;
-		};
+            void set_state(StatefulIcon::State) override {
+            }
 
-		void change_job(uint16_t id);
-		void change_sp();
-		void change_tab(uint16_t new_tab);
-		void change_offset(uint16_t new_offset);
+            Icon::IconType get_type() override;
 
-		void show_skill(int32_t skill_id);
-		void clear_tooltip();
+        private:
+            int32_t skill_id;
+        };
 
-		bool can_raise(int32_t skill_id) const;
-		void send_spup(uint16_t row);
-		void spend_sp(int32_t skill_id);
+        class SkillDisplayMeta {
+        public:
+            SkillDisplayMeta(int32_t id, int32_t level);
 
-		Job::Level joblevel_by_tab(uint16_t tab) const;
-		const UISkillBook::SkillDisplayMeta* skill_by_position(Point<int16_t> cursorpos) const;
+            void draw(const DrawArgument& args) const;
 
-		void close();
-		bool check_required(int32_t id) const;
+            int32_t get_id() const;
+            int32_t get_level() const;
+            StatefulIcon* get_icon() const;
 
-		void set_macro(bool enabled);
-		void set_skillpoint(bool enabled);
+        private:
+            int32_t id;
+            int32_t level;
+            std::unique_ptr<StatefulIcon> icon;
+            Text name_text;
+            Text level_text;
+        };
 
-		enum Buttons : uint16_t
-		{
-			BT_CLOSE,
-			BT_HYPER,
-			BT_GUILDSKILL,
-			BT_RIDE,
-			BT_MACRO,
-			BT_MACRO_OK,
-			BT_CANCLE,
-			BT_OKAY,
-			BT_SPDOWN,
-			BT_SPMAX,
-			BT_SPUP,
-			BT_TAB0,
-			BT_TAB1,
-			BT_TAB2,
-			BT_TAB3,
-			BT_TAB4,
-			BT_SPUP0,
-			BT_SPUP1,
-			BT_SPUP2,
-			BT_SPUP3,
-			BT_SPUP4,
-			BT_SPUP5,
-			BT_SPUP6,
-			BT_SPUP7,
-			BT_SPUP8,
-			BT_SPUP9,
-			BT_SPUP10,
-			BT_SPUP11
-		};
+        void change_job(uint16_t id);
+        void change_sp();
+        void change_tab(uint16_t new_tab);
+        void change_offset(uint16_t new_offset);
 
-		static constexpr int16_t ROWS = 12;
-		static constexpr int16_t ROW_HEIGHT = 40;
-		static constexpr int16_t ROW_WIDTH = 143;
-		static constexpr Point<int16_t> SKILL_OFFSET = Point<int16_t>(11, 93);
-		static constexpr Point<int16_t> SKILL_META_OFFSET = Point<int16_t>(2, 2);
-		static constexpr Point<int16_t> LINE_OFFSET = Point<int16_t>(0, 37);
+        void show_skill(int32_t skill_id);
+        void clear_tooltip();
 
-		const CharStats& stats;
-		const SkillBook& skillbook;
+        bool can_raise(int32_t skill_id) const;
+        void send_spup(uint16_t row);
+        void spend_sp(int32_t skill_id);
 
-		Slider slider;
-		Texture skille;
-		Texture skilld;
-		Texture skillb;
-		Texture line;
-		Texture bookicon;
-		Text booktext;
-		Text splabel;
+        Job::Level joblevel_by_tab(uint16_t tab) const;
+        const SkillDisplayMeta* skill_by_position(Point<int16_t> cursorpos) const;
 
-		Job job;
-		int16_t sp;
-		int16_t beginner_sp;
+        void close();
+        bool check_required(int32_t id) const;
 
-		uint16_t tab;
-		uint16_t skillcount;
-		uint16_t offset;
+        void set_macro(bool enabled);
+        void set_skillpoint(bool enabled);
 
-		std::vector<SkillDisplayMeta> skills;
-		bool grabbing;
+        enum Buttons : uint16_t {
+            BT_CLOSE,
+            BT_HYPER,
+            BT_GUILDSKILL,
+            BT_RIDE,
+            BT_MACRO,
+            BT_MACRO_OK,
+            BT_CANCLE,
+            BT_OKAY,
+            BT_SPDOWN,
+            BT_SPMAX,
+            BT_SPUP,
+            BT_TAB0,
+            BT_TAB1,
+            BT_TAB2,
+            BT_TAB3,
+            BT_TAB4,
+            BT_SPUP0,
+            BT_SPUP1,
+            BT_SPUP2,
+            BT_SPUP3,
+            BT_SPUP4,
+            BT_SPUP5,
+            BT_SPUP6,
+            BT_SPUP7,
+            BT_SPUP8,
+            BT_SPUP9,
+            BT_SPUP10,
+            BT_SPUP11
+        };
 
-		Point<int16_t> bg_dimensions;
+        static constexpr int16_t ROWS = 12;
+        static constexpr int16_t ROW_HEIGHT = 40;
+        static constexpr int16_t ROW_WIDTH = 143;
+        static constexpr auto SKILL_OFFSET = Point<int16_t>(11, 93);
+        static constexpr auto SKILL_META_OFFSET = Point<int16_t>(2, 2);
+        static constexpr auto LINE_OFFSET = Point<int16_t>(0, 37);
 
-		bool macro_enabled;
-		Texture macro_backgrnd;
-		Texture macro_backgrnd2;
-		Texture macro_backgrnd3;
+        const CharStats& stats;
+        const SkillBook& skillbook;
 
-		bool sp_enabled;
-		Texture sp_backgrnd;
-		Texture sp_backgrnd2;
-		Texture sp_backgrnd3;
-		Charset sp_before;
-		Charset sp_after;
-		std::string sp_before_text;
-		std::string sp_after_text;
-		Text sp_used;
-		Text sp_remaining;
-		Text sp_name;
-		Texture sp_skill;
-		int32_t sp_id;
-		int32_t sp_masterlevel;
-	};
+        Slider slider;
+        Texture skille;
+        Texture skilld;
+        Texture skillb;
+        Texture line;
+        Texture bookicon;
+        Text booktext;
+        Text splabel;
+
+        Job job;
+        int16_t sp;
+        int16_t beginner_sp;
+
+        uint16_t tab;
+        uint16_t skillcount;
+        uint16_t offset;
+
+        std::vector<SkillDisplayMeta> skills;
+        bool grabbing;
+
+        Point<int16_t> bg_dimensions;
+
+        bool macro_enabled;
+        Texture macro_backgrnd;
+        Texture macro_backgrnd2;
+        Texture macro_backgrnd3;
+
+        bool sp_enabled;
+        Texture sp_backgrnd;
+        Texture sp_backgrnd2;
+        Texture sp_backgrnd3;
+        Charset sp_before;
+        Charset sp_after;
+        std::string sp_before_text;
+        std::string sp_after_text;
+        Text sp_used;
+        Text sp_remaining;
+        Text sp_name;
+        Texture sp_skill;
+        int32_t sp_id;
+        int32_t sp_masterlevel;
+    };
 }

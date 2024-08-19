@@ -21,10 +21,8 @@
 
 #include "../../../Character/Inventory/Inventory.h"
 
-namespace ms
-{
-	namespace ItemParser
-	{
-		void parse_item(InPacket& recv, InventoryType::Id invtype, int16_t slot, Inventory& inventory);
-	}
+namespace ms {
+    namespace ItemParser {
+        void parse_item(InPacket& recv, InventoryType::Id invtype, int16_t slot, Inventory& inventory);
+    }
 }

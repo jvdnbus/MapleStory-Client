@@ -23,126 +23,107 @@
 // TODO: Can this be moved?
 #pragma comment (lib, "Ws2_32.lib")
 
-namespace ms
-{
-	bool SocketWinsock::open(const char* iaddr, const char* port)
-	{
-		WSADATA wsa_info;
-		sock = INVALID_SOCKET;
+namespace ms {
+    bool SocketWinsock::open(const char* iaddr, const char* port) {
+        WSADATA wsa_info;
+        sock = INVALID_SOCKET;
 
-		struct addrinfo* addr_info = NULL;
-		struct addrinfo* ptr = NULL;
-		struct addrinfo hints;
+        struct addrinfo* addr_info = nullptr;
+        struct addrinfo* ptr = nullptr;
+        struct addrinfo hints;
 
-		int result = WSAStartup(MAKEWORD(2, 2), &wsa_info);
+        int result = WSAStartup(MAKEWORD(2, 2), &wsa_info);
 
-		if (result != 0)
-			return false;
+        if (result != 0)
+            return false;
 
-		ZeroMemory(&hints, sizeof(hints));
+        ZeroMemory(&hints, sizeof(hints));
 
-		hints.ai_family = AF_UNSPEC;
-		hints.ai_socktype = SOCK_STREAM;
-		hints.ai_protocol = IPPROTO_TCP;
+        hints.ai_family = AF_UNSPEC;
+        hints.ai_socktype = SOCK_STREAM;
+        hints.ai_protocol = IPPROTO_TCP;
 
-		result = getaddrinfo(iaddr, port, &hints, &addr_info);
+        result = getaddrinfo(iaddr, port, &hints, &addr_info);
 
-		if (result != 0)
-		{
-			WSACleanup();
+        if (result != 0) {
+            WSACleanup();
 
-			return false;
-		}
+            return false;
+        }
 
-		for (ptr = addr_info; ptr != NULL; ptr = ptr->ai_next)
-		{
-			sock = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+        for (ptr = addr_info; ptr != nullptr; ptr = ptr->ai_next) {
+            sock = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 
-			if (sock == INVALID_SOCKET)
-			{
-				WSACleanup();
+            if (sock == INVALID_SOCKET) {
+                WSACleanup();
 
-				return false;
-			}
+                return false;
+            }
 
-			result = connect(sock, ptr->ai_addr, (int)ptr->ai_addrlen);
+            result = connect(sock, ptr->ai_addr, static_cast<int>(ptr->ai_addrlen));
 
-			if (result == SOCKET_ERROR)
-			{
-				closesocket(sock);
+            if (result == SOCKET_ERROR) {
+                closesocket(sock);
 
-				sock = INVALID_SOCKET;
+                sock = INVALID_SOCKET;
 
-				continue;
-			}
+                continue;
+            }
 
-			break;
-		}
+            break;
+        }
 
-		freeaddrinfo(addr_info);
+        freeaddrinfo(addr_info);
 
-		if (sock == INVALID_SOCKET)
-		{
-			WSACleanup();
+        if (sock == INVALID_SOCKET) {
+            WSACleanup();
 
-			return false;
-		}
+            return false;
+        }
 
-		result = recv(sock, (char*)buffer, 32, 0);
+        result = recv(sock, (char*)buffer, 32, 0);
 
-		if (result == HANDSHAKE_LEN)
-		{
-			return true;
-		}
-		else
-		{
-			WSACleanup();
+        if (result == HANDSHAKE_LEN) {
+            return true;
+        }
+        WSACleanup();
 
-			return false;
-		}
-	}
+        return false;
+    }
 
-	bool SocketWinsock::close()
-	{
-		int error = closesocket(sock);
+    bool SocketWinsock::close() {
+        int error = closesocket(sock);
 
-		WSACleanup();
+        WSACleanup();
 
-		return error != SOCKET_ERROR;
-	}
+        return error != SOCKET_ERROR;
+    }
 
-	bool SocketWinsock::dispatch(const int8_t* bytes, size_t length) const
-	{
-		return send(sock, (char*)bytes, static_cast<int>(length), 0) != SOCKET_ERROR;
-	}
+    bool SocketWinsock::dispatch(const int8_t* bytes, size_t length) const {
+        return send(sock, (char*)bytes, static_cast<int>(length), 0) != SOCKET_ERROR;
+    }
 
-	size_t SocketWinsock::receive(bool* success)
-	{
-		timeval timeout = { 0, 0 };
-		fd_set sockset = { 0 };
+    size_t SocketWinsock::receive(bool* success) {
+        timeval timeout = {0, 0};
+        fd_set sockset = {0};
 
-		FD_SET(sock, &sockset);
+        FD_SET(sock, &sockset);
 
-		int result = select(0, &sockset, 0, 0, &timeout);
+        int result = select(0, &sockset, nullptr, nullptr, &timeout);
 
-		if (result > 0)
-			result = recv(sock, (char*)buffer, MAX_PACKET_LENGTH, 0);
+        if (result > 0)
+            result = recv(sock, (char*)buffer, MAX_PACKET_LENGTH, 0);
 
-		if (result == SOCKET_ERROR)
-		{
-			*success = false;
+        if (result == SOCKET_ERROR) {
+            *success = false;
 
-			return 0;
-		}
-		else
-		{
-			return result;
-		}
-	}
+            return 0;
+        }
+        return result;
+    }
 
-	const int8_t* SocketWinsock::get_buffer() const
-	{
-		return buffer;
-	}
+    const int8_t* SocketWinsock::get_buffer() const {
+        return buffer;
+    }
 }
 #endif

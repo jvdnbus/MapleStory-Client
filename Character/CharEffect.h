@@ -19,21 +19,18 @@
 
 #include "../Template/EnumMap.h"
 
-namespace ms
-{
-	namespace CharEffect
-	{
-		// Character effects from Effect.wz
-		enum Id
-		{
-			LEVELUP,
-			JOBCHANGE,
-			SCROLL_SUCCESS,
-			SCROLL_FAILURE,
-			MONSTER_CARD,
-			LENGTH
-		};
+namespace ms {
+    namespace CharEffect {
+        // Character effects from Effect.wz
+        enum Id {
+            LEVELUP,
+            JOBCHANGE,
+            SCROLL_SUCCESS,
+            SCROLL_FAILURE,
+            MONSTER_CARD,
+            LENGTH
+        };
 
-		extern const EnumMap<Id, const char*> PATHS;
-	}
+        extern const EnumMap<Id, const char*> PATHS;
+    }
 }

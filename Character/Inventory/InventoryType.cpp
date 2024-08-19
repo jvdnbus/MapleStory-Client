@@ -21,48 +21,44 @@
 
 #include <iostream>
 
-namespace ms
-{
-	InventoryType::Id InventoryType::by_item_id(int32_t item_id)
-	{
-		constexpr Id values_by_id[7] =
-		{
-			NONE,
-			EQUIP,
-			USE,
-			SETUP,
-			ETC,
-			CASH,
-			DEC
-		};
+namespace ms {
+    InventoryType::Id InventoryType::by_item_id(int32_t item_id) {
+        constexpr Id values_by_id[7] =
+        {
+            NONE,
+            EQUIP,
+            USE,
+            SETUP,
+            ETC,
+            CASH,
+            DEC
+        };
 
-		int32_t prefix = item_id / 1000000;
+        int32_t prefix = item_id / 1000000;
 
-		return (prefix > Id::NONE && prefix <= Id::CASH) ? values_by_id[prefix] : Id::NONE;
-	}
+        return (prefix > NONE && prefix <= CASH) ? values_by_id[prefix] : NONE;
+    }
 
-	InventoryType::Id InventoryType::by_value(int8_t value)
-	{
-		switch (value)
-		{
-		case -1:
-			return Id::EQUIPPED;
-		case 1:
-			return Id::EQUIP;
-		case 2:
-			return Id::USE;
-		case 3:
-			return Id::SETUP;
-		case 4:
-			return Id::ETC;
-		case 5:
-			return Id::CASH;
-		case 6:
-			return Id::DEC;
-		}
+    InventoryType::Id InventoryType::by_value(int8_t value) {
+        switch (value) {
+        case -1:
+            return EQUIPPED;
+        case 1:
+            return EQUIP;
+        case 2:
+            return USE;
+        case 3:
+            return SETUP;
+        case 4:
+            return ETC;
+        case 5:
+            return CASH;
+        case 6:
+            return DEC;
+        }
 
-		LOG(LOG_DEBUG, "Unknown InventoryType::Id value: [" << value << "]");
+        LOG(LOG_DEBUG, "Unknown InventoryType::Id value: [" << value << "]");
 
-		return Id::NONE;
-	}
+        return NONE;
+    }
 }

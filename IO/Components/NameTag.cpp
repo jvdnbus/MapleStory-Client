@@ -17,49 +17,45 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "NameTag.h"
 
-namespace ms
-{
-	NameTag::NameTag(nl::node src, Text::Font f, std::string n)
-	{
-		name = OutlinedText(f, Text::Alignment::CENTER, Color::Name::EAGLE, Color::Name::JAMBALAYA);
-		name.change_text(n);
+namespace ms {
+    NameTag::NameTag(nl::node src, Text::Font f, std::string n) {
+        name = OutlinedText(f, Text::Alignment::CENTER, Color::Name::EAGLE, Color::Name::JAMBALAYA);
+        name.change_text(n);
 
-		textures[false].push_back(src["0"]["0"]);
-		textures[false].push_back(src["0"]["1"]);
-		textures[false].push_back(src["0"]["2"]);
+        textures[false].push_back(src["0"]["0"]);
+        textures[false].push_back(src["0"]["1"]);
+        textures[false].push_back(src["0"]["2"]);
 
-		textures[true].push_back(src["1"]["0"]);
-		textures[true].push_back(src["1"]["1"]);
-		textures[true].push_back(src["1"]["2"]);
+        textures[true].push_back(src["1"]["0"]);
+        textures[true].push_back(src["1"]["1"]);
+        textures[true].push_back(src["1"]["2"]);
 
-		selected = false;
-	}
+        selected = false;
+    }
 
-	void NameTag::draw(Point<int16_t> position) const
-	{
-		position.shift(Point<int16_t>(1, 2));
+    void NameTag::draw(Point<int16_t> position) const {
+        position.shift(Point<int16_t>(1, 2));
 
-		auto& tag = textures[selected];
+        auto& tag = textures[selected];
 
-		int16_t width = name.width();
+        int16_t width = name.width();
 
-		// If ever changing startpos, confirm with UICharSelect.cpp
-		Point<int16_t> startpos = position - Point<int16_t>(6 + width / 2, 0);
+        // If ever changing startpos, confirm with UICharSelect.cpp
+        Point<int16_t> startpos = position - Point<int16_t>(6 + width / 2, 0);
 
-		tag[0].draw(startpos);
-		tag[1].draw(DrawArgument(startpos + Point<int16_t>(6, 0), Point<int16_t>(width, 0)));
-		tag[2].draw(DrawArgument(startpos + Point<int16_t>(width + 6, 0)));
+        tag[0].draw(startpos);
+        tag[1].draw(DrawArgument(startpos + Point<int16_t>(6, 0), Point<int16_t>(width, 0)));
+        tag[2].draw(DrawArgument(startpos + Point<int16_t>(width + 6, 0)));
 
-		name.draw(position);
-	}
+        name.draw(position);
+    }
 
-	void NameTag::set_selected(bool s)
-	{
-		selected = s;
+    void NameTag::set_selected(bool s) {
+        selected = s;
 
-		if (s)
-			name.change_color(Color::Name::WHITE);
-		else
-			name.change_color(Color::Name::EAGLE);
-	}
+        if (s)
+            name.change_color(Color::Name::WHITE);
+        else
+            name.change_color(Color::Name::EAGLE);
+    }
 }

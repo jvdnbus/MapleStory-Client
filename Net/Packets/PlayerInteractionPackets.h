@@ -19,17 +19,14 @@
 
 #include "../OutPacket.h"
 
-namespace ms
-{
-	// Packet to request character info
-	// Opcode: CHAR_INFO_REQUEST(97)
-	class CharInfoRequestPacket : public OutPacket
-	{
-	public:
-		CharInfoRequestPacket(int32_t character_id) : OutPacket(OutPacket::Opcode::CHAR_INFO_REQUEST)
-		{
-			write_random();
-			write_int(character_id);
-		}
-	};
+namespace ms {
+    // Packet to request character info
+    // Opcode: CHAR_INFO_REQUEST(97)
+    class CharInfoRequestPacket : public OutPacket {
+    public:
+        CharInfoRequestPacket(int32_t character_id) : OutPacket(CHAR_INFO_REQUEST) {
+            write_random();
+            write_int(character_id);
+        }
+    };
 }

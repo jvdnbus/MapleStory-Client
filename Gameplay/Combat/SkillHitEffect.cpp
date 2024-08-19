@@ -19,86 +19,78 @@
 
 #include "../../Util/Misc.h"
 
-namespace ms
-{
-	SingleHitEffect::SingleHitEffect(nl::node src) : effect(src["hit"]["0"]) {}
+namespace ms {
+    SingleHitEffect::SingleHitEffect(nl::node src) : effect(src["hit"]["0"]) {
+    }
 
-	void SingleHitEffect::apply(const AttackUser& user, Mob& target) const
-	{
-		effect.apply(target, user.flip);
-	}
+    void SingleHitEffect::apply(const AttackUser& user, Mob& target) const {
+        effect.apply(target, user.flip);
+    }
 
-	TwoHandedHitEffect::TwoHandedHitEffect(nl::node src) : effects(src["hit"]["0"], src["hit"]["1"]) {}
+    TwoHandedHitEffect::TwoHandedHitEffect(nl::node src) : effects(src["hit"]["0"], src["hit"]["1"]) {
+    }
 
-	void TwoHandedHitEffect::apply(const AttackUser& user, Mob& target) const
-	{
-		effects[user.secondweapon].apply(target, user.flip);
-	}
+    void TwoHandedHitEffect::apply(const AttackUser& user, Mob& target) const {
+        effects[user.secondweapon].apply(target, user.flip);
+    }
 
-	ByLevelHitEffect::ByLevelHitEffect(nl::node src)
-	{
-		for (auto sub : src["CharLevel"])
-		{
-			uint16_t level = string_conversion::or_zero<uint16_t>(sub.name());
-			effects.emplace(level, sub["hit"]["0"]);
-		}
-	}
+    ByLevelHitEffect::ByLevelHitEffect(nl::node src) {
+        for (auto sub : src["CharLevel"]) {
+            uint16_t level = string_conversion::or_zero<uint16_t>(sub.name());
+            effects.emplace(level, sub["hit"]["0"]);
+        }
+    }
 
-	void ByLevelHitEffect::apply(const AttackUser& user, Mob& target) const
-	{
-		if (effects.empty())
-			return;
+    void ByLevelHitEffect::apply(const AttackUser& user, Mob& target) const {
+        if (effects.empty())
+            return;
 
-		auto iter = effects.begin();
-		for (; iter != effects.end() && user.level > iter->first; ++iter) {}
+        auto iter = effects.begin();
+        for (; iter != effects.end() && user.level > iter->first; ++iter) {
+        }
 
-		if (iter != effects.begin())
-			iter--;
+        if (iter != effects.begin())
+            --iter;
 
-		iter->second.apply(target, user.flip);
-	}
+        iter->second.apply(target, user.flip);
+    }
 
-	ByLevelTwoHHitEffect::ByLevelTwoHHitEffect(nl::node src)
-	{
-		for (auto sub : src["CharLevel"])
-		{
-			auto level = string_conversion::or_zero<uint16_t>(sub.name());
+    ByLevelTwoHHitEffect::ByLevelTwoHHitEffect(nl::node src) {
+        for (auto sub : src["CharLevel"]) {
+            auto level = string_conversion::or_zero<uint16_t>(sub.name());
 
-			effects.emplace(std::piecewise_construct,
-				std::forward_as_tuple(level),
-				std::forward_as_tuple(sub["hit"]["0"], sub["hit"]["1"])
-				);
-		}
-	}
+            effects.emplace(std::piecewise_construct,
+                            std::forward_as_tuple(level),
+                            std::forward_as_tuple(sub["hit"]["0"], sub["hit"]["1"])
+            );
+        }
+    }
 
-	void ByLevelTwoHHitEffect::apply(const AttackUser& user, Mob& target) const
-	{
-		if (effects.empty())
-			return;
+    void ByLevelTwoHHitEffect::apply(const AttackUser& user, Mob& target) const {
+        if (effects.empty())
+            return;
 
-		auto iter = effects.begin();
-		for (; iter != effects.end() && user.level > iter->first; ++iter) {}
+        auto iter = effects.begin();
+        for (; iter != effects.end() && user.level > iter->first; ++iter) {
+        }
 
-		if (iter != effects.begin())
-			iter--;
+        if (iter != effects.begin())
+            --iter;
 
-		iter->second[user.secondweapon].apply(target, user.flip);
-	}
+        iter->second[user.secondweapon].apply(target, user.flip);
+    }
 
-	BySkillLevelHitEffect::BySkillLevelHitEffect(nl::node src)
-	{
-		for (auto sub : src["level"])
-		{
-			auto level = string_conversion::or_zero<int32_t>(sub.name());
-			effects.emplace(level, sub["hit"]["0"]);
-		}
-	}
+    BySkillLevelHitEffect::BySkillLevelHitEffect(nl::node src) {
+        for (auto sub : src["level"]) {
+            auto level = string_conversion::or_zero<int32_t>(sub.name());
+            effects.emplace(level, sub["hit"]["0"]);
+        }
+    }
 
-	void BySkillLevelHitEffect::apply(const AttackUser& user, Mob& target) const
-	{
-		auto iter = effects.find(user.skilllevel);
+    void BySkillLevelHitEffect::apply(const AttackUser& user, Mob& target) const {
+        auto iter = effects.find(user.skilllevel);
 
-		if (iter != effects.end())
-			iter->second.apply(target, user.flip);
-	}
+        if (iter != effects.end())
+            iter->second.apply(target, user.flip);
+    }
 }

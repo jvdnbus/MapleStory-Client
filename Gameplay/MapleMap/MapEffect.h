@@ -19,20 +19,18 @@
 
 #include "../../Graphics/Animation.h"
 
-namespace ms
-{
-	class MapEffect
-	{
-	public:
-		MapEffect(std::string path);
-		MapEffect();
+namespace ms {
+    class MapEffect {
+    public:
+        MapEffect(std::string path);
+        MapEffect();
 
-		void draw() const;
-		void update();
+        void draw() const;
+        void update();
 
-	private:
-		bool active;
-		Animation effect;
-		Point<int16_t> position;
-	};
+    private:
+        bool active;
+        Animation effect;
+        Point<int16_t> position;
+    };
 }

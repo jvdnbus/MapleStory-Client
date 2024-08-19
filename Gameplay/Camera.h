@@ -23,38 +23,36 @@
 
 #include <cstdint>
 
-namespace ms
-{
-	// View on stage which follows the player object.
-	class Camera
-	{
-	public:
-		// Initialize everything to 0, we need the player's spawnpoint first to properly set the position.
-		Camera();
+namespace ms {
+    // View on stage which follows the player object.
+    class Camera {
+    public:
+        // Initialize everything to 0, we need the player's spawnpoint first to properly set the position.
+        Camera();
 
-		// Update the view with the current player position. (Or any other target)
-		void update(Point<int16_t> position);
-		// Set the position, changing the view immediately.
-		void set_position(Point<int16_t> position);
-		// Updates the view's boundaries. Determined by mapinfo or footholds.
-		void set_view(Range<int16_t> hborders, Range<int16_t> vborders);
-		// Return the current position.
-		Point<int16_t> position() const;
-		// Return the interpolated position.
-		Point<int16_t> position(float alpha) const;
-		// Return the interpolated position.
-		Point<double> realposition(float alpha) const;
+        // Update the view with the current player position. (Or any other target)
+        void update(Point<int16_t> position);
+        // Set the position, changing the view immediately.
+        void set_position(Point<int16_t> position);
+        // Updates the view's boundaries. Determined by mapinfo or footholds.
+        void set_view(Range<int16_t> hborders, Range<int16_t> vborders);
+        // Return the current position.
+        Point<int16_t> position() const;
+        // Return the interpolated position.
+        Point<int16_t> position(float alpha) const;
+        // Return the interpolated position.
+        Point<double> realposition(float alpha) const;
 
-	private:
-		// Movement variables.
-		Linear<double> x;
-		Linear<double> y;
+    private:
+        // Movement variables.
+        Linear<double> x;
+        Linear<double> y;
 
-		// View limits.
-		Range<int16_t> hbounds;
-		Range<int16_t> vbounds;
+        // View limits.
+        Range<int16_t> hbounds;
+        Range<int16_t> vbounds;
 
-		int16_t VWIDTH;
-		int16_t VHEIGHT;
-	};
+        int16_t VWIDTH;
+        int16_t VHEIGHT;
+    };
 }

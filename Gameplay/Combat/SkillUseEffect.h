@@ -19,97 +19,88 @@
 
 #include "../../Character/Char.h"
 
-namespace ms
-{
-	// Interface for skill effects
-	class SkillUseEffect
-	{
-	public:
-		virtual ~SkillUseEffect() {}
+namespace ms {
+    // Interface for skill effects
+    class SkillUseEffect {
+    public:
+        virtual ~SkillUseEffect() {
+        }
 
-		virtual void apply(Char& target) const = 0;
+        virtual void apply(Char& target) const = 0;
 
-	protected:
-		class Effect
-		{
-		public:
-			Effect(nl::node src)
-			{
-				animation = src;
-				z = src["z"];
-			}
+    protected:
+        class Effect {
+        public:
+            Effect(nl::node src) {
+                animation = src;
+                z = src["z"];
+            }
 
-			void apply(Char& target) const
-			{
-				target.show_attack_effect(animation, z);
-			}
+            void apply(Char& target) const {
+                target.show_attack_effect(animation, z);
+            }
 
-		private:
-			Animation animation;
-			int8_t z;
-		};
-	};
+        private:
+            Animation animation;
+            int8_t z;
+        };
+    };
 
-	// No animation
-	class NoUseEffect : public SkillUseEffect
-	{
-	public:
-		void apply(Char&) const override {}
-	};
+    // No animation
+    class NoUseEffect : public SkillUseEffect {
+    public:
+        void apply(Char&) const override {
+        }
+    };
 
-	// An effect which displays an animation over the character's position
-	class SingleUseEffect : public SkillUseEffect
-	{
-	public:
-		SingleUseEffect(nl::node src);
+    // An effect which displays an animation over the character's position
+    class SingleUseEffect : public SkillUseEffect {
+    public:
+        SingleUseEffect(nl::node src);
 
-		void apply(Char& target) const override;
+        void apply(Char& target) const override;
 
-	private:
-		Effect effect;
-	};
+    private:
+        Effect effect;
+    };
 
-	// An effect which displays an animation over the character's position
-	// The effect changes based on whether the character uses a two-handed weapon
-	class TwoHandedUseEffect : public SkillUseEffect
-	{
-	public:
-		TwoHandedUseEffect(nl::node src);
+    // An effect which displays an animation over the character's position
+    // The effect changes based on whether the character uses a two-handed weapon
+    class TwoHandedUseEffect : public SkillUseEffect {
+    public:
+        TwoHandedUseEffect(nl::node src);
 
-		void apply(Char& target) const override;
+        void apply(Char& target) const override;
 
-	private:
-		BoolPair<Effect> effects;
-	};
+    private:
+        BoolPair<Effect> effects;
+    };
 
-	// An effect which displays multiple animations over the character's position
-	class MultiUseEffect : public SkillUseEffect
-	{
-	public:
-		MultiUseEffect(nl::node src);
+    // An effect which displays multiple animations over the character's position
+    class MultiUseEffect : public SkillUseEffect {
+    public:
+        MultiUseEffect(nl::node src);
 
-		void apply(Char& target) const override;
+        void apply(Char& target) const override;
 
-	private:
-		std::vector<Effect> effects;
-	};
+    private:
+        std::vector<Effect> effects;
+    };
 
-	// The animation changes with the character level
-	class ByLevelUseEffect : public SkillUseEffect
-	{
-	public:
-		ByLevelUseEffect(nl::node src);
+    // The animation changes with the character level
+    class ByLevelUseEffect : public SkillUseEffect {
+    public:
+        ByLevelUseEffect(nl::node src);
 
-		void apply(Char& target) const override;
+        void apply(Char& target) const override;
 
-	private:
-		std::map<uint16_t, Effect> effects;
-	};
+    private:
+        std::map<uint16_t, Effect> effects;
+    };
 
-	// Use effect for Iron Body
-	class IronBodyUseEffect : public SkillUseEffect
-	{
-	public:
-		void apply(Char& target) const override;
-	};
+    // Use effect for Iron Body
+    class IronBodyUseEffect : public SkillUseEffect {
+    public:
+        void apply(Char& target) const override;
+    };
 }

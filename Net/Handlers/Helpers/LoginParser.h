@@ -20,15 +20,13 @@
 #include "../../InPacket.h"
 #include "../../Login.h"
 
-namespace ms
-{
-	namespace LoginParser
-	{
-		Account parse_account(InPacket& recv);
-		World parse_world(InPacket& recv);
-		CharEntry parse_charentry(InPacket& recv);
-		StatsEntry parse_stats(InPacket& recv);
-		LookEntry parse_look(InPacket& recv);
-		void parse_login(InPacket& recv);
-	}
+namespace ms {
+    namespace LoginParser {
+        Account parse_account(InPacket& recv);
+        World parse_world(InPacket& recv);
+        CharEntry parse_charentry(InPacket& recv);
+        StatsEntry parse_stats(InPacket& recv);
+        LookEntry parse_look(InPacket& recv);
+        void parse_login(InPacket& recv);
+    }
 }

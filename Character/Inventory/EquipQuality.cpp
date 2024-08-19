@@ -19,31 +19,28 @@
 
 #include "../../Data/EquipData.h"
 
-namespace ms
-{
-	EquipQuality::Id EquipQuality::check_quality(int32_t item_id, bool scrolled, const EnumMap<EquipStat::Id, uint16_t>& stats)
-	{
-		const EquipData& data = EquipData::get(item_id);
+namespace ms {
+    EquipQuality::Id EquipQuality::check_quality(int32_t item_id, bool scrolled,
+                                                 const EnumMap<EquipStat::Id, uint16_t>& stats) {
+        const EquipData& data = EquipData::get(item_id);
 
-		int16_t delta = 0;
+        int16_t delta = 0;
 
-		for (auto iter : stats)
-		{
-			EquipStat::Id es = iter.first;
-			uint16_t stat = iter.second;
-			uint16_t defstat = data.get_defstat(es);
-			delta += stat - defstat;
-		}
+        for (auto iter : stats) {
+            EquipStat::Id es = iter.first;
+            uint16_t stat = iter.second;
+            uint16_t defstat = data.get_defstat(es);
+            delta += stat - defstat;
+        }
 
-		if (delta < -5)
-			return scrolled ? EquipQuality::Id::ORANGE : EquipQuality::Id::GREY;
-		else if (delta < 7)
-			return scrolled ? EquipQuality::Id::ORANGE : EquipQuality::Id::WHITE;
-		else if (delta < 14)
-			return EquipQuality::Id::BLUE;
-		else if (delta < 21)
-			return EquipQuality::Id::VIOLET;
-		else
-			return EquipQuality::Id::GOLD;
-	}
+        if (delta < -5)
+            return scrolled ? ORANGE : GREY;
+        if (delta < 7)
+            return scrolled ? ORANGE : WHITE;
+        if (delta < 14)
+            return BLUE;
+        if (delta < 21)
+            return VIOLET;
+        return GOLD;
+    }
 }

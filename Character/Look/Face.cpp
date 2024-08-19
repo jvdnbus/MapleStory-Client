@@ -23,95 +23,84 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	Expression::Id Expression::byaction(size_t action)
-	{
-		action -= 98;
+namespace ms {
+    Expression::Id Expression::byaction(size_t action) {
+        action -= 98;
 
-		if (action < Expression::Id::LENGTH)
-			return static_cast<Id>(action);
+        if (action < LENGTH)
+            return static_cast<Id>(action);
 
-		LOG(LOG_DEBUG, "Unknown Expression::Id action: [" << action << "]");
+        LOG(LOG_DEBUG, "Unknown Expression::Id action: [" << action << "]");
 
-		return Expression::Id::DEFAULT;
-	}
+        return DEFAULT;
+    }
 
-	const EnumMap<Expression::Id, std::string> Expression::names =
-	{
-		"default",
-		"blink",
-		"hit",
-		"smile",
-		"troubled",
-		"cry",
-		"angry",
-		"bewildered",
-		"stunned",
-		"blaze",
-		"bowing",
-		"cheers",
-		"chu",
-		"dam",
-		"despair",
-		"glitter",
-		"hot",
-		"hum",
-		"love",
-		"oops",
-		"pain",
-		"shine",
-		"vomit",
-		"wink"
-	};
+    const EnumMap<Expression::Id, std::string> Expression::names =
+    {
+        "default",
+        "blink",
+        "hit",
+        "smile",
+        "troubled",
+        "cry",
+        "angry",
+        "bewildered",
+        "stunned",
+        "blaze",
+        "bowing",
+        "cheers",
+        "chu",
+        "dam",
+        "despair",
+        "glitter",
+        "hot",
+        "hum",
+        "love",
+        "oops",
+        "pain",
+        "shine",
+        "vomit",
+        "wink"
+    };
 
-	Face::Face(int32_t faceid)
-	{
-		std::string strid = "000" + std::to_string(faceid);
-		nl::node facenode = nl::nx::Character["Face"][strid + ".img"];
+    Face::Face(int32_t faceid) {
+        std::string strid = "000" + std::to_string(faceid);
+        nl::node facenode = nl::nx::Character["Face"][strid + ".img"];
 
-		for (auto iter : Expression::names)
-		{
-			Expression::Id exp = iter.first;
+        for (auto iter : Expression::names) {
+            Expression::Id exp = iter.first;
 
-			if (exp == Expression::Id::DEFAULT)
-			{
-				expressions[Expression::Id::DEFAULT].emplace(0, facenode["default"]);
-			}
-			else
-			{
-				const std::string& expname = iter.second;
-				nl::node expnode = facenode[expname];
+            if (exp == Expression::Id::DEFAULT) {
+                expressions[Expression::Id::DEFAULT].emplace(0, facenode["default"]);
+            } else {
+                const std::string& expname = iter.second;
+                nl::node expnode = facenode[expname];
 
-				for (uint8_t frame = 0; nl::node framenode = expnode[frame]; ++frame)
-					expressions[exp].emplace(frame, framenode);
-			}
-		}
+                for (uint8_t frame = 0; nl::node framenode = expnode[frame]; ++frame)
+                    expressions[exp].emplace(frame, framenode);
+            }
+        }
 
-		name = nl::nx::String["Eqp.img"]["Eqp"]["Face"][std::to_string(faceid)]["name"];
-	}
+        name = nl::nx::String["Eqp.img"]["Eqp"]["Face"][std::to_string(faceid)]["name"];
+    }
 
-	void Face::draw(Expression::Id expression, uint8_t frame, const DrawArgument& args) const
-	{
-		auto frameit = expressions[expression].find(frame);
+    void Face::draw(Expression::Id expression, uint8_t frame, const DrawArgument& args) const {
+        auto frameit = expressions[expression].find(frame);
 
-		if (frameit != expressions[expression].end())
-			frameit->second.texture.draw(args);
-	}
+        if (frameit != expressions[expression].end())
+            frameit->second.texture.draw(args);
+    }
 
-	uint8_t Face::nextframe(Expression::Id exp, uint8_t frame) const
-	{
-		return expressions[exp].count(frame + 1) ? frame + 1 : 0;
-	}
+    uint8_t Face::nextframe(Expression::Id exp, uint8_t frame) const {
+        return expressions[exp].count(frame + 1) ? frame + 1 : 0;
+    }
 
-	int16_t Face::get_delay(Expression::Id exp, uint8_t frame) const
-	{
-		auto delayit = expressions[exp].find(frame);
-		return delayit != expressions[exp].end() ? delayit->second.delay : 100;
-	}
+    int16_t Face::get_delay(Expression::Id exp, uint8_t frame) const {
+        auto delayit = expressions[exp].find(frame);
+        return delayit != expressions[exp].end() ? delayit->second.delay : 100;
+    }
 
-	const std::string& Face::get_name() const
-	{
-		return name;
-	}
+    const std::string& Face::get_name() const {
+        return name;
+    }
 }

@@ -19,25 +19,26 @@
 
 #include "Button.h"
 
-namespace ms
-{
-	// A standard MapleStory button with 4 states and a texture for each state
-	class MapleButton : public Button
-	{
-	public:
-		MapleButton(nl::node src, Point<int16_t> position);
-		MapleButton(nl::node src, int16_t x, int16_t y);
-		MapleButton(nl::node src);
+namespace ms {
+    // A standard MapleStory button with 4 states and a texture for each state
+    class MapleButton : public Button {
+    public:
+        MapleButton(nl::node src, Point<int16_t> position);
+        MapleButton(nl::node src, int16_t x, int16_t y);
+        MapleButton(nl::node src);
 
-		void draw(Point<int16_t> position) const;
-		void update();
-		Rectangle<int16_t> bounds(Point<int16_t> parentpos) const;
-		int16_t width() const;
-		Point<int16_t> origin() const;
-		Cursor::State send_cursor(bool, Point<int16_t>) { return Cursor::State::IDLE; }
+        void draw(Point<int16_t> position) const override;
+        void update() override;
+        Rectangle<int16_t> bounds(Point<int16_t> parentpos) const override;
+        int16_t width() const override;
+        Point<int16_t> origin() const override;
 
-	private:
-		Texture textures[Button::State::NUM_STATES];
-		Animation animations[Button::State::NUM_STATES];
-	};
+        Cursor::State send_cursor(bool, Point<int16_t>) override {
+            return Cursor::State::IDLE;
+        }
+
+    private:
+        Texture textures[NUM_STATES];
+        Animation animations[NUM_STATES];
+    };
 }

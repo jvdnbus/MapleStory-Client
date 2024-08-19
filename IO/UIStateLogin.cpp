@@ -25,228 +25,181 @@
 
 #include "../Configuration.h"
 
-namespace ms
-{
-	UIStateLogin::UIStateLogin()
-	{
-		focused = UIElement::Type::NONE;
+namespace ms {
+    UIStateLogin::UIStateLogin() {
+        focused = UIElement::Type::NONE;
 
-		bool start_shown = Configuration::get().get_start_shown();
+        bool start_shown = Configuration::get().get_start_shown();
 
-		if (!start_shown)
-			emplace<UILogo>();
-		else
-			emplace<UILogin>();
-	}
+        if (!start_shown)
+            emplace<UILogo>();
+        else
+            emplace<UILogin>();
+    }
 
-	void UIStateLogin::draw(float inter, Point<int16_t> cursor) const
-	{
-		for (auto iter : elements)
-		{
-			UIElement* element = iter.second.get();
+    void UIStateLogin::draw(float inter, Point<int16_t> cursor) const {
+        for (auto iter : elements) {
+            UIElement* element = iter.second.get();
 
-			if (element && element->is_active())
-				element->draw(inter);
-		}
+            if (element && element->is_active())
+                element->draw(inter);
+        }
 
-		if (tooltip)
-			tooltip->draw(cursor + Point<int16_t>(0, 22));
-	}
+        if (tooltip)
+            tooltip->draw(cursor + Point<int16_t>(0, 22));
+    }
 
-	void UIStateLogin::update()
-	{
-		for (auto iter : elements)
-		{
-			UIElement* element = iter.second.get();
+    void UIStateLogin::update() {
+        for (auto iter : elements) {
+            UIElement* element = iter.second.get();
 
-			if (element && element->is_active())
-				element->update();
-		}
-	}
+            if (element && element->is_active())
+                element->update();
+        }
+    }
 
-	void UIStateLogin::doubleclick(Point<int16_t> pos)
-	{
-		if (auto charselect = UI::get().get_element<UICharSelect>())
-			charselect->doubleclick(pos);
-	}
+    void UIStateLogin::doubleclick(Point<int16_t> pos) {
+        if (auto charselect = UI::get().get_element<UICharSelect>())
+            charselect->doubleclick(pos);
+    }
 
-	void UIStateLogin::send_key(KeyType::Id type, int32_t action, bool pressed, bool escape)
-	{
-		if (UIElement* focusedelement = get(focused))
-		{
-			if (focusedelement->is_active())
-			{
-				return focusedelement->send_key(action, pressed, escape);
-			}
-			else
-			{
-				focused = UIElement::Type::NONE;
+    void UIStateLogin::send_key(KeyType::Id type, int32_t action, bool pressed, bool escape) {
+        if (UIElement* focusedelement = get(focused)) {
+            if (focusedelement->is_active()) {
+                return focusedelement->send_key(action, pressed, escape);
+            }
+            focused = UIElement::Type::NONE;
+        }
+    }
 
-				return;
-			}
-		}
-	}
+    Cursor::State UIStateLogin::send_cursor(Point<int16_t> cursor_position, Cursor::State cursor_state) {
+        bool clicked = cursor_state == Cursor::State::CLICKING || cursor_state == Cursor::State::VSCROLLIDLE;
 
-	Cursor::State UIStateLogin::send_cursor(Point<int16_t> cursor_position, Cursor::State cursor_state)
-	{
-		bool clicked = cursor_state == Cursor::State::CLICKING || cursor_state == Cursor::State::VSCROLLIDLE;
+        if (auto focusedelement = get(focused)) {
+            if (focusedelement->is_active()) {
+                remove_cursor(focusedelement->get_type());
 
-		if (auto focusedelement = get(focused))
-		{
-			if (focusedelement->is_active())
-			{
-				remove_cursor(focusedelement->get_type());
+                return focusedelement->send_cursor(clicked, cursor_position);
+            }
+            focused = UIElement::Type::NONE;
 
-				return focusedelement->send_cursor(clicked, cursor_position);
-			}
-			else
-			{
-				focused = UIElement::Type::NONE;
+            return cursor_state;
+        }
+        if (auto front = get_front()) {
+            remove_cursor(front->get_type());
 
-				return cursor_state;
-			}
-		}
-		else
-		{
-			if (auto front = get_front())
-			{
-				remove_cursor(front->get_type());
+            return front->send_cursor(clicked, cursor_position);
+        }
+        return Cursor::State::IDLE;
+    }
 
-				return front->send_cursor(clicked, cursor_position);
-			}
-			else
-			{
-				return Cursor::State::IDLE;
-			}
-		}
-	}
+    void UIStateLogin::send_close() {
+        auto logo = UI::get().get_element<UILogo>();
+        auto login = UI::get().get_element<UILogin>();
+        auto region = UI::get().get_element<UIRegion>();
 
-	void UIStateLogin::send_close()
-	{
-		auto logo = UI::get().get_element<UILogo>();
-		auto login = UI::get().get_element<UILogin>();
-		auto region = UI::get().get_element<UIRegion>();
+        if (logo && logo->is_active() || login && login->is_active() || region && region->is_active())
+            UI::get().quit();
+        else
+            UI::get().emplace<UIQuitConfirm>();
+    }
 
-		if (logo && logo->is_active() || login && login->is_active() || region && region->is_active())
-			UI::get().quit();
-		else
-			UI::get().emplace<UIQuitConfirm>();
-	}
+    void UIStateLogin::clear_tooltip(Tooltip::Parent parent) {
+        if (parent == tooltipparent) {
+            tetooltip.set_text("");
+            tooltip = {};
+            tooltipparent = Tooltip::Parent::NONE;
+        }
+    }
 
-	void UIStateLogin::clear_tooltip(Tooltip::Parent parent)
-	{
-		if (parent == tooltipparent)
-		{
-			tetooltip.set_text("");
-			tooltip = {};
-			tooltipparent = Tooltip::Parent::NONE;
-		}
-	}
+    void UIStateLogin::show_text(Tooltip::Parent parent, std::string text) {
+        tetooltip.set_text(text);
 
-	void UIStateLogin::show_text(Tooltip::Parent parent, std::string text)
-	{
-		tetooltip.set_text(text);
+        if (!text.empty()) {
+            tooltip = tetooltip;
+            tooltipparent = parent;
+        }
+    }
 
-		if (!text.empty())
-		{
-			tooltip = tetooltip;
-			tooltipparent = parent;
-		}
-	}
+    template <class T, typename... Args>
+    void UIStateLogin::emplace(Args&&... args) {
+        if (auto iter = pre_add(T::TYPE, T::TOGGLED, T::FOCUSED)) {
+            (*iter).second = std::make_unique<T>(
+                std::forward<Args>(args)...
+            );
+        }
+    }
 
-	template <class T, typename...Args>
-	void UIStateLogin::emplace(Args&& ...args)
-	{
-		if (auto iter = pre_add(T::TYPE, T::TOGGLED, T::FOCUSED))
-		{
-			(*iter).second = std::make_unique<T>(
-				std::forward<Args>(args)...
-			);
-		}
-	}
+    UIState::Iterator UIStateLogin::pre_add(UIElement::Type type, bool, bool is_focused) {
+        remove(type);
 
-	UIState::Iterator UIStateLogin::pre_add(UIElement::Type type, bool, bool is_focused)
-	{
-		remove(type);
+        if (is_focused)
+            focused = type;
 
-		if (is_focused)
-			focused = type;
+        return elements.find(type);
+    }
 
-		return elements.find(type);
-	}
+    void UIStateLogin::remove(UIElement::Type type) {
+        if (focused == type)
+            focused = UIElement::Type::NONE;
 
-	void UIStateLogin::remove(UIElement::Type type)
-	{
-		if (focused == type)
-			focused = UIElement::Type::NONE;
+        if (auto& element = elements[type]) {
+            element->deactivate();
+            element.release();
+        }
+    }
 
-		if (auto& element = elements[type])
-		{
-			element->deactivate();
-			element.release();
-		}
-	}
+    UIElement* UIStateLogin::get(UIElement::Type type) {
+        return elements[type].get();
+    }
 
-	UIElement* UIStateLogin::get(UIElement::Type type)
-	{
-		return elements[type].get();
-	}
+    UIElement* UIStateLogin::get_front() {
+        UIElement* front = nullptr;
 
-	UIElement* UIStateLogin::get_front()
-	{
-		UIElement* front = nullptr;
+        for (auto iter : elements) {
+            auto& element = iter.second;
 
-		for (auto iter : elements)
-		{
-			auto& element = iter.second;
+            if (element && element->is_active())
+                front = element.get();
+        }
 
-			if (element && element->is_active())
-				front = element.get();
-		}
+        return front;
+    }
 
-		return front;
-	}
+    UIElement* UIStateLogin::get_front(std::list<UIElement::Type> types) {
+        auto begin = types.rbegin();
+        auto end = types.rend();
 
-	UIElement* UIStateLogin::get_front(std::list<UIElement::Type> types)
-	{
-		auto begin = types.rbegin();
-		auto end = types.rend();
+        for (auto iter = begin; iter != end; ++iter) {
+            auto& element = elements[*iter];
 
-		for (auto iter = begin; iter != end; ++iter)
-		{
-			auto& element = elements[*iter];
+            if (element && element->is_active())
+                return element.get();
+        }
 
-			if (element && element->is_active())
-				return element.get();
-		}
+        return nullptr;
+    }
 
-		return nullptr;
-	}
+    UIElement* UIStateLogin::get_front(Point<int16_t> cursor_position) {
+        auto begin = elements.values().rbegin();
+        auto end = elements.values().rend();
 
-	UIElement* UIStateLogin::get_front(Point<int16_t> cursor_position)
-	{
-		auto begin = elements.values().rbegin();
-		auto end = elements.values().rend();
+        for (auto iter = begin; iter != end; ++iter) {
+            auto& element = *iter;
 
-		for (auto iter = begin; iter != end; ++iter)
-		{
-			auto& element = *iter;
+            if (element && element->is_active() && element->is_in_range(cursor_position))
+                return element.get();
+        }
 
-			if (element && element->is_active() && element->is_in_range(cursor_position))
-				return element.get();
-		}
+        return nullptr;
+    }
 
-		return nullptr;
-	}
+    void UIStateLogin::remove_cursor(UIElement::Type type) {
+        for (auto iter : elements) {
+            auto& element = iter.second;
 
-	void UIStateLogin::remove_cursor(UIElement::Type type)
-	{
-		for (auto iter : elements)
-		{
-			auto& element = iter.second;
-
-			if (element && element->is_active() && element->get_type() != type)
-				element->remove_cursor();
-		}
-	}
+            if (element && element->is_active() && element->get_type() != type)
+                element->remove_cursor();
+        }
+    }
 }

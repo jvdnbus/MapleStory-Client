@@ -19,27 +19,27 @@
 
 #include "../../Graphics/Texture.h"
 
-namespace ms
-{
-	class MapleFrame
-	{
-	public:
-		MapleFrame() {}
-		MapleFrame(nl::node src);
+namespace ms {
+    class MapleFrame {
+    public:
+        MapleFrame() {
+        }
 
-		void draw(Point<int16_t> position, int16_t width, int16_t height) const;
+        MapleFrame(nl::node src);
 
-	private:
-		Texture center;
-		Texture east;
-		Texture northeast;
-		Texture north;
-		Texture northwest;
-		Texture west;
-		Texture southwest;
-		Texture south;
-		Texture southeast;
-		int16_t xtile;
-		int16_t ytile;
-	};
+        void draw(Point<int16_t> position, int16_t width, int16_t height) const;
+
+    private:
+        Texture center;
+        Texture east;
+        Texture northeast;
+        Texture north;
+        Texture northwest;
+        Texture west;
+        Texture southwest;
+        Texture south;
+        Texture southeast;
+        int16_t xtile;
+        int16_t ytile;
+    };
 }

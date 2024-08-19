@@ -19,17 +19,15 @@
 
 #include "../PacketHandler.h"
 
-namespace ms
-{
-	// Handler for a packet which contains all character information on first login or warps the player to a different map
-	class SetFieldHandler : public PacketHandler
-	{
-	public:
-		void handle(InPacket& recv) const override;
+namespace ms {
+    // Handler for a packet which contains all character information on first login or warps the player to a different map
+    class SetFieldHandler : public PacketHandler {
+    public:
+        void handle(InPacket& recv) override;
 
-	private:
-		void transition(int32_t mapid, uint8_t portalid) const;
-		void change_map(InPacket& recv, int32_t map_id) const;
-		void set_field(InPacket& recv) const;
-	};
+    private:
+        void transition(int32_t mapid, uint8_t portalid) const;
+        void change_map(InPacket& recv, int32_t map_id) const;
+        void set_field(InPacket& recv) const;
+    };
 }

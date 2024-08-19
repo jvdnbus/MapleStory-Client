@@ -19,11 +19,10 @@
 
 #include "UICommonCreation.h"
 
-namespace ms
-{
-	class UICygnusCreation : public UICommonCreation
-	{
-	public:
-		UICygnusCreation() : UICommonCreation("1000") {}
-	};
+namespace ms {
+    class UICygnusCreation : public UICommonCreation {
+    public:
+        UICygnusCreation() : UICommonCreation("1000") {
+        }
+    };
 }

@@ -23,10 +23,8 @@
 
 #include <vector>
 
-namespace ms
-{
-	namespace MovementParser
-	{
-		std::vector<Movement> parse_movements(InPacket& recv);
-	}
+namespace ms {
+    namespace MovementParser {
+        std::vector<Movement> parse_movements(InPacket& recv);
+    }
 }

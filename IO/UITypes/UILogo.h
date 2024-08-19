@@ -19,29 +19,27 @@
 
 #include "../UI.h"
 
-namespace ms
-{
-	class UILogo : public UIElement
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::START;
-		static constexpr bool FOCUSED = false;
-		static constexpr bool TOGGLED = false;
+namespace ms {
+    class UILogo : public UIElement {
+    public:
+        static constexpr Type TYPE = START;
+        static constexpr bool FOCUSED = false;
+        static constexpr bool TOGGLED = false;
 
-		UILogo();
+        UILogo();
 
-		void draw(float inter) const override;
-		void update() override;
+        void draw(float inter) const override;
+        void update() override;
 
-		Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
+        Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-	private:
-		Animation Wizet;
-		Texture WizetEnd;
+    private:
+        Animation Wizet;
+        Texture WizetEnd;
 
-		bool wizet_ended;
-		bool user_clicked;
-	};
+        bool wizet_ended;
+        bool user_clicked;
+    };
 }

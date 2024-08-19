@@ -19,37 +19,34 @@
 
 #include "../UIElement.h"
 
-namespace ms
-{
-	class UIGender : public UIElement
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::GENDER;
-		static constexpr bool FOCUSED = true;
-		static constexpr bool TOGGLED = false;
+namespace ms {
+    class UIGender : public UIElement {
+    public:
+        static constexpr Type TYPE = GENDER;
+        static constexpr bool FOCUSED = true;
+        static constexpr bool TOGGLED = false;
 
-		UIGender(std::function<void()> okhandler);
+        UIGender(std::function<void()> okhandler);
 
-		void draw(float inter) const override;
-		void update() override;
+        void draw(float inter) const override;
+        void update() override;
 
-		Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
+        Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-	protected:
-		Button::State button_pressed(uint16_t buttonid) override;
+    protected:
+        Button::State button_pressed(uint16_t buttonid) override;
 
-	private:
-		enum Buttons : uint16_t
-		{
-			NO,
-			YES,
-			SELECT
-		};
+    private:
+        enum Buttons : uint16_t {
+            NO,
+            YES,
+            SELECT
+        };
 
-		Texture gender_sprites[3];
-		uint16_t CUR_TIMESTEP;
-		std::function<void()> okhandler;
-	};
+        Texture gender_sprites[3];
+        uint16_t CUR_TIMESTEP;
+        std::function<void()> okhandler;
+    };
 }

@@ -21,33 +21,31 @@
 
 #include "../Graphics/Animation.h"
 
-namespace ms
-{
-	// Information about a bullet type item.
-	class BulletData : public Cache<BulletData>
-	{
-	public:
-		// Returns whether the bullet was loaded correctly.
-		bool is_valid() const;
-		// Returns whether the bullet was loaded correctly.
-		explicit operator bool() const;
+namespace ms {
+    // Information about a bullet type item.
+    class BulletData : public Cache<BulletData> {
+    public:
+        // Returns whether the bullet was loaded correctly.
+        bool is_valid() const;
+        // Returns whether the bullet was loaded correctly.
+        explicit operator bool() const;
 
-		// Returns the weapon attack increase when using this bullet.
-		int16_t get_watk() const;
-		// Returns the bullet animation.
-		const Animation& get_animation() const;
-		// Returns the general item data.
-		const ItemData& get_itemdata() const;
+        // Returns the weapon attack increase when using this bullet.
+        int16_t get_watk() const;
+        // Returns the bullet animation.
+        const Animation& get_animation() const;
+        // Returns the general item data.
+        const ItemData& get_itemdata() const;
 
-	private:
-		// Allow the cache to use the constructor.
-		friend Cache<BulletData>;
-		// Load a bullet from the game files.
-		BulletData(int32_t id);
+    private:
+        // Allow the cache to use the constructor.
+        friend Cache<BulletData>;
+        // Load a bullet from the game files.
+        BulletData(int32_t id);
 
-		const ItemData& itemdata;
+        const ItemData& itemdata;
 
-		Animation bullet;
-		int16_t watk;
-	};
+        Animation bullet;
+        int16_t watk;
+    };
 }

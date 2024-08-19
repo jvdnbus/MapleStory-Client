@@ -21,40 +21,33 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	BulletData::BulletData(int32_t itemid) : itemdata(ItemData::get(itemid))
-	{
-		std::string prefix = "0" + std::to_string(itemid / 10000);
-		std::string strid = "0" + std::to_string(itemid);
-		nl::node src = src = nl::nx::Item["Consume"][prefix + ".img"][strid];
+namespace ms {
+    BulletData::BulletData(int32_t itemid) : itemdata(ItemData::get(itemid)) {
+        std::string prefix = "0" + std::to_string(itemid / 10000);
+        std::string strid = "0" + std::to_string(itemid);
+        nl::node src = src = nl::nx::Item["Consume"][prefix + ".img"][strid];
 
-		bullet = src["bullet"];
-		watk = src["info"]["incPAD"];
-	}
+        bullet = src["bullet"];
+        watk = src["info"]["incPAD"];
+    }
 
-	bool BulletData::is_valid() const
-	{
-		return itemdata.is_valid();
-	}
+    bool BulletData::is_valid() const {
+        return itemdata.is_valid();
+    }
 
-	BulletData::operator bool() const
-	{
-		return is_valid();
-	}
+    BulletData::operator bool() const {
+        return is_valid();
+    }
 
-	int16_t BulletData::get_watk() const
-	{
-		return watk;
-	}
+    int16_t BulletData::get_watk() const {
+        return watk;
+    }
 
-	const Animation& BulletData::get_animation() const
-	{
-		return bullet;
-	}
+    const Animation& BulletData::get_animation() const {
+        return bullet;
+    }
 
-	const ItemData& BulletData::get_itemdata() const
-	{
-		return itemdata;
-	}
+    const ItemData& BulletData::get_itemdata() const {
+        return itemdata;
+    }
 }

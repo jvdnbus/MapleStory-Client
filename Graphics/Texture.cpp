@@ -23,97 +23,82 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	Texture::Texture(nl::node src)
-	{
-		if (src.data_type() == nl::node::type::bitmap)
-		{
-			origin = src["origin"];
+namespace ms {
+    Texture::Texture(nl::node src) {
+        if (src.data_type() == nl::node::type::bitmap) {
+            origin = src["origin"];
 
-			if (src.root() == nl::nx::Map001)
-			{
-				const std::string& _outlink = src["_outlink"];
+            if (src.root() == nl::nx::Map001) {
+                const std::string& _outlink = src["_outlink"];
 
-				if (!_outlink.empty())
-				{
-					size_t first = _outlink.find_first_of('/');
+                if (!_outlink.empty()) {
+                    size_t first = _outlink.find_first_of('/');
 
-					if (first != std::string::npos)
-					{
-						const std::string& first_part = _outlink.substr(0, first);
+                    if (first != std::string::npos) {
+                        const std::string& first_part = _outlink.substr(0, first);
 
-						if (first_part == "Map")
-						{
-							const std::string& path = _outlink.substr(first + 1);
-							nl::node foundOutlink = nl::nx::Map.resolve(path);
+                        if (first_part == "Map") {
+                            const std::string& path = _outlink.substr(first + 1);
+                            nl::node foundOutlink = nl::nx::Map.resolve(path);
 
-							if (foundOutlink)
-								src = foundOutlink;
-						}
-					}
-				}
-			}
+                            if (foundOutlink)
+                                src = foundOutlink;
+                        }
+                    }
+                }
+            }
 
-			bitmap = src;
-			dimensions = Point<int16_t>(bitmap.width(), bitmap.height());
+            bitmap = src;
+            dimensions = Point<int16_t>(bitmap.width(), bitmap.height());
 
-			GraphicsGL::get().addbitmap(bitmap);
-		}
-	}
+            GraphicsGL::get().addbitmap(bitmap);
+        }
+    }
 
-	void Texture::draw(const DrawArgument& args) const
-	{
-		draw(args, Range<int16_t>(0, 0));
-	}
+    void Texture::draw(const DrawArgument& args) const {
+        draw(args, Range<int16_t>(0, 0));
+    }
 
-	void Texture::draw(const DrawArgument& args, const Range<int16_t>& vertical) const
-	{
-		draw(args, vertical, Range<int16_t>(0, 0));
-	}
+    void Texture::draw(const DrawArgument& args, const Range<int16_t>& vertical) const {
+        draw(args, vertical, Range<int16_t>(0, 0));
+    }
 
-	void Texture::draw(const DrawArgument& args, const Range<int16_t>& vertical, const Range<int16_t>& horizontal) const
-	{
-		if (!is_valid())
-			return;
+    void Texture::draw(const DrawArgument& args, const Range<int16_t>& vertical,
+                       const Range<int16_t>& horizontal) const {
+        if (!is_valid())
+            return;
 
-		GraphicsGL::get().draw(
-			bitmap,
-			args.get_rectangle(origin, dimensions),
-			vertical,
-			horizontal,
-			args.get_color(),
-			args.get_angle()
-		);
-	}
+        GraphicsGL::get().draw(
+            bitmap,
+            args.get_rectangle(origin, dimensions),
+            vertical,
+            horizontal,
+            args.get_color(),
+            args.get_angle()
+        );
+    }
 
-	void Texture::shift(Point<int16_t> amount)
-	{
-		origin -= amount;
-	}
+    void Texture::shift(Point<int16_t> amount) {
+        origin -= amount;
+    }
 
-	bool Texture::is_valid() const
-	{
-		return bitmap.id() > 0;
-	}
+    bool Texture::is_valid() const {
+        return bitmap.id() > 0;
+    }
 
-	int16_t Texture::width() const
-	{
-		return dimensions.x();
-	}
+    int16_t Texture::width() const {
+        return dimensions.x();
+    }
 
-	int16_t Texture::height() const
-	{
-		return dimensions.y();
-	}
+    int16_t Texture::height() const {
+        return dimensions.y();
+    }
 
-	Point<int16_t> Texture::get_origin() const
-	{
-		return origin;
-	}
+    Point<int16_t> Texture::get_origin() const {
+        return origin;
+    }
 
-	Point<int16_t> Texture::get_dimensions() const
-	{
-		return dimensions;
-	}
+    Point<int16_t> Texture::get_dimensions() const {
+        return dimensions;
+    }
 }

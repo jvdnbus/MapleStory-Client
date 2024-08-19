@@ -23,41 +23,38 @@
 
 #include "../../Graphics/Text.h"
 
-namespace ms
-{
-	class UITermsOfService : public UIElement
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::TOS;
-		static constexpr bool FOCUSED = true;
-		static constexpr bool TOGGLED = false;
+namespace ms {
+    class UITermsOfService : public UIElement {
+    public:
+        static constexpr Type TYPE = TOS;
+        static constexpr bool FOCUSED = true;
+        static constexpr bool TOGGLED = false;
 
-		UITermsOfService(std::function<void()> okhandler);
+        UITermsOfService(std::function<void()> okhandler);
 
-		void draw(float inter) const override;
+        void draw(float inter) const override;
 
-		Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
+        Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-	protected:
-		Button::State button_pressed(uint16_t buttonid) override;
+    protected:
+        Button::State button_pressed(uint16_t buttonid) override;
 
-	private:
-		void update_accept(uint16_t offset);
+    private:
+        void update_accept(uint16_t offset);
 
-		enum Buttons : uint16_t
-		{
-			OK,
-			CANCEL
-		};
+        enum Buttons : uint16_t {
+            OK,
+            CANCEL
+        };
 
-		Text text;
-		Slider slider;
-		std::function<void()> okhandler;
-		uint16_t offset;
-		int16_t unit_rows;
-		int16_t max_rows;
-		nl::node EULA;
-	};
+        Text text;
+        Slider slider;
+        std::function<void()> okhandler;
+        uint16_t offset;
+        int16_t unit_rows;
+        int16_t max_rows;
+        nl::node EULA;
+    };
 }

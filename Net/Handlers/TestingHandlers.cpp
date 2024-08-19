@@ -22,34 +22,30 @@
 
 #include "../../IO/UITypes/UILoginNotice.h"
 
-namespace ms
-{
-	void CheckSpwResultHandler::handle(InPacket& recv) const
-	{
-		int reason = recv.read_byte();
+namespace ms {
+    void CheckSpwResultHandler::handle(InPacket& recv) {
+        int reason = recv.read_byte();
 
-		if (reason == 0)
-			UI::get().emplace<UILoginNotice>(UILoginNotice::Message::INCORRECT_PIC);
-		else
-			LOG(LOG_NETWORK, "[CheckSpwResultHandler]: Unknown reason: [" << reason << "]");
+        if (reason == 0)
+            UI::get().emplace<UILoginNotice>(UILoginNotice::Message::INCORRECT_PIC);
+        else
+            LOG(LOG_NETWORK, "[CheckSpwResultHandler]: Unknown reason: [" << reason << "]");
 
-		UI::get().enable();
-	}
+        UI::get().enable();
+    }
 
-	void FieldEffectHandler::handle(InPacket& recv) const
-	{
-		int rand = recv.read_byte();
+    void FieldEffectHandler::handle(InPacket& recv) {
+        int rand = recv.read_byte();
 
-		// Effect
-		if (rand == 3)
-		{
-			std::string path = recv.read_string();
+        // Effect
+        if (rand == 3) {
+            std::string path = recv.read_string();
 
-			Stage::get().add_effect(path);
+            Stage::get().add_effect(path);
 
-			return;
-		}
+            return;
+        }
 
-		LOG(LOG_NETWORK, "[FieldEffectHandler]: Unknown value: [" << rand << "]");
-	}
+        LOG(LOG_NETWORK, "[FieldEffectHandler]: Unknown value: [" << rand << "]");
+    }
 }

@@ -24,52 +24,49 @@
 
 #include "../../Character/QuestLog.h"
 
-namespace ms
-{
-	class UIQuestLog : public UIDragElement<PosQUEST>
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::QUESTLOG;
-		static constexpr bool FOCUSED = false;
-		static constexpr bool TOGGLED = true;
+namespace ms {
+    class UIQuestLog : public UIDragElement<PosQUEST> {
+    public:
+        static constexpr Type TYPE = QUESTLOG;
+        static constexpr bool FOCUSED = false;
+        static constexpr bool TOGGLED = true;
 
-		UIQuestLog(const QuestLog& questLog);
+        UIQuestLog(const QuestLog& questLog);
 
-		void draw(float inter) const override;
-		void update() override;
+        void draw(float inter) const override;
+        void update() override;
 
-		void send_key(int32_t keycode, bool pressed, bool escape) override;
-		Cursor::State send_cursor(bool clicking, Point<int16_t> cursorpos) override;
+        void send_key(int32_t keycode, bool pressed, bool escape) override;
+        Cursor::State send_cursor(bool clicking, Point<int16_t> cursorpos) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-	protected:
-		Button::State button_pressed(uint16_t buttonid) override;
+    protected:
+        Button::State button_pressed(uint16_t buttonid) override;
 
-	private:
-		void change_tab(uint16_t tabid);
+    private:
+        void change_tab(uint16_t tabid);
 
-		Point<int16_t> get_search_pos();
-		Point<int16_t> get_search_dim();
+        Point<int16_t> get_search_pos();
+        Point<int16_t> get_search_dim();
 
-		enum Buttons : uint16_t
-		{
-			TAB0,
-			TAB1,
-			TAB2,
-			CLOSE,
-			SEARCH,
-			ALL_LEVEL,
-			MY_LOCATION
-		};
+        enum Buttons : uint16_t {
+            TAB0,
+            TAB1,
+            TAB2,
+            CLOSE,
+            SEARCH,
+            ALL_LEVEL,
+            MY_LOCATION
+        };
 
-		const QuestLog& questlog;
+        const QuestLog& questlog;
 
-		uint16_t tab;
-		std::vector<Sprite> notice_sprites;
-		Textfield search;
-		Text placeholder;
-		Slider slider;
-		Texture search_area;
-	};
+        uint16_t tab;
+        std::vector<Sprite> notice_sprites;
+        Textfield search;
+        Text placeholder;
+        Slider slider;
+        Texture search_area;
+    };
 }

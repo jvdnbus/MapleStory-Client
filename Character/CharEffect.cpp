@@ -17,14 +17,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "CharEffect.h"
 
-namespace ms
-{
-	const EnumMap<CharEffect::Id, const char*> CharEffect::PATHS =
-	{
-		"LevelUp",
-		"JobChanged",
-		"Enchant/Success",
-		"Enchant/Failure",
-		"MonsterBook/cardGet"
-	};
+namespace ms {
+    const EnumMap<CharEffect::Id, const char*> CharEffect::PATHS =
+    {
+        "LevelUp",
+        "JobChanged",
+        "Enchant/Success",
+        "Enchant/Failure",
+        "MonsterBook/cardGet"
+    };
 }

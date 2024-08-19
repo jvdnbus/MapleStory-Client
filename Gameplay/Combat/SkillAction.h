@@ -21,59 +21,54 @@
 
 #include "../../Character/Char.h"
 
-namespace ms
-{
-	class SkillAction
-	{
-	public:
-		virtual ~SkillAction() {}
+namespace ms {
+    class SkillAction {
+    public:
+        virtual ~SkillAction() {
+        }
 
-		virtual void apply(Char& target, Attack::Type atype) const = 0;
-	};
+        virtual void apply(Char& target, Attack::Type atype) const = 0;
+    };
 
-	class NoAction : public SkillAction
-	{
-	public:
-		void apply(Char&, Attack::Type) const override {}
-	};
+    class NoAction : public SkillAction {
+    public:
+        void apply(Char&, Attack::Type) const override {
+        }
+    };
 
-	class RegularAction : public SkillAction
-	{
-	public:
-		void apply(Char& target, Attack::Type atype) const override;
-	};
+    class RegularAction : public SkillAction {
+    public:
+        void apply(Char& target, Attack::Type atype) const override;
+    };
 
-	class SingleAction : public SkillAction
-	{
-	public:
-		SingleAction(nl::node src);
+    class SingleAction : public SkillAction {
+    public:
+        SingleAction(nl::node src);
 
-		void apply(Char& target, Attack::Type atype) const override;
+        void apply(Char& target, Attack::Type atype) const override;
 
-	private:
-		std::string action;
-	};
+    private:
+        std::string action;
+    };
 
-	class TwoHandedAction : public SkillAction
-	{
-	public:
-		TwoHandedAction(nl::node src);
+    class TwoHandedAction : public SkillAction {
+    public:
+        TwoHandedAction(nl::node src);
 
-		void apply(Char& target, Attack::Type atype) const override;
+        void apply(Char& target, Attack::Type atype) const override;
 
-	private:
-		BoolPair<std::string> actions;
-	};
+    private:
+        BoolPair<std::string> actions;
+    };
 
-	class ByLevelAction : public SkillAction
-	{
-	public:
-		ByLevelAction(nl::node src, int32_t skillid);
+    class ByLevelAction : public SkillAction {
+    public:
+        ByLevelAction(nl::node src, int32_t skillid);
 
-		void apply(Char& target, Attack::Type atype) const override;
+        void apply(Char& target, Attack::Type atype) const override;
 
-	private:
-		std::map<int32_t, std::string> actions;
-		int32_t skillid;
-	};
+    private:
+        std::map<int32_t, std::string> actions;
+        int32_t skillid;
+    };
 }

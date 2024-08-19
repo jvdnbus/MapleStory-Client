@@ -19,47 +19,59 @@
 
 #include "Icon.h"
 
-namespace ms
-{
-	class StatefulIcon : public Icon
-	{
-	public:
-		enum State : uint8_t
-		{
-			NORMAL,
-			DISABLED,
-			MOUSEOVER,
-			LENGTH
-		};
+namespace ms {
+    class StatefulIcon : public Icon {
+    public:
+        enum State : uint8_t {
+            NORMAL,
+            DISABLED,
+            MOUSEOVER,
+            LENGTH
+        };
 
-		class Type : public Icon::Type
-		{
-		public:
-			virtual ~Type() {}
+        class Type : public Icon::Type {
+        public:
+            ~Type() override {
+            }
 
-			virtual void set_state(State state) = 0;
-		};
+            virtual void set_state(State state) = 0;
+        };
 
-		class NullType : public Type
-		{
-			void drop_on_stage() const override {}
-			void drop_on_equips(EquipSlot::Id) const override {}
-			bool drop_on_items(InventoryType::Id, EquipSlot::Id, int16_t, bool) const override { return true; }
-			void drop_on_bindings(Point<int16_t>, bool) const override {}
-			void set_count(int16_t) override {}
-			void set_state(State) override {}
-			Icon::IconType get_type() override { return IconType::NONE; }
-		};
+        class NullType : public Type {
+            void drop_on_stage() const override {
+            }
 
-		StatefulIcon() : StatefulIcon(std::make_unique<NullType>(), Texture(), Texture(), Texture()) {};
-		StatefulIcon(std::unique_ptr<Type> type, Texture normal_tx, Texture disabled_tx, Texture mouseover_tx);
+            void drop_on_equips(EquipSlot::Id) const override {
+            }
 
-		Texture get_texture() const;
+            bool drop_on_items(InventoryType::Id, EquipSlot::Id, int16_t, bool) const override {
+                return true;
+            }
 
-		void set_state(State state);
+            void drop_on_bindings(Point<int16_t>, bool) const override {
+            }
 
-	private:
-		State state;
-		EnumMap<State, Texture> textures;
-	};
+            void set_count(int16_t) override {
+            }
+
+            void set_state(State) override {
+            }
+
+            IconType get_type() override {
+                return NONE;
+            }
+        };
+
+        StatefulIcon() : StatefulIcon(std::make_unique<NullType>(), Texture(), Texture(), Texture()) {
+        };
+        StatefulIcon(std::unique_ptr<Type> type, Texture normal_tx, Texture disabled_tx, Texture mouseover_tx);
+
+        Texture get_texture() const;
+
+        void set_state(State state);
+
+    private:
+        State state;
+        EnumMap<State, Texture> textures;
+    };
 }

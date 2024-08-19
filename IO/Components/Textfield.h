@@ -24,65 +24,63 @@
 
 #include <functional>
 
-namespace ms
-{
-	class Textfield
-	{
-	public:
-		enum State
-		{
-			NORMAL,
-			DISABLED,
-			FOCUSED
-		};
+namespace ms {
+    class Textfield {
+    public:
+        enum State {
+            NORMAL,
+            DISABLED,
+            FOCUSED
+        };
 
-		Textfield();
-		Textfield(Text::Font font, Text::Alignment alignment, Color::Name text_color, Rectangle<int16_t> bounds, size_t limit, int16_t marker_height = 12);
+        Textfield();
+        Textfield(Text::Font font, Text::Alignment alignment, Color::Name text_color, Rectangle<int16_t> bounds,
+                  size_t limit, int16_t marker_height = 12);
 
-		void draw(Point<int16_t> position) const;
-		void draw(Point<int16_t> position, Point<int16_t> marker_adjust) const;
-		void update();
-		void update(Point<int16_t> position, Point<int16_t> dimensions);
-		void send_key(KeyType::Id type, int32_t action, bool pressed);
-		void add_string(const std::string& str);
+        void draw(Point<int16_t> position) const;
+        void draw(Point<int16_t> position, Point<int16_t> marker_adjust) const;
+        void update();
+        void update(Point<int16_t> position, Point<int16_t> dimensions);
+        void send_key(KeyType::Id type, int32_t action, bool pressed);
+        void add_string(const std::string& str);
 
-		void set_state(State state);
-		void change_text(const std::string& text);
-		void set_cryptchar(int8_t character);
-		void set_limit(size_t limit);
+        void set_state(State state);
+        void change_text(const std::string& text);
+        void set_cryptchar(int8_t character);
+        void set_limit(size_t limit);
 
-		void set_enter_callback(std::function<void(std::string)> onreturn);
-		void set_key_callback(KeyAction::Id key, std::function<void(void)> action);
-		void set_text_callback(std::function<void(void)> action);
+        void set_enter_callback(std::function<void(std::string)> onreturn);
+        void set_key_callback(KeyAction::Id key, std::function<void(void)> action);
+        void set_text_callback(std::function<void(void)> action);
 
-		Cursor::State send_cursor(Point<int16_t> cursorpos, bool clicked);
+        Cursor::State send_cursor(Point<int16_t> cursorpos, bool clicked);
 
-		bool empty() const;
-		State get_state() const;
-		const std::string& get_text() const;
-		bool can_copy_paste() const;
+        bool empty() const;
+        State get_state() const;
+        const std::string& get_text() const;
+        bool can_copy_paste() const;
 
-	private:
-		void modifytext(const std::string& t);
-		bool belowlimit() const;
+    private:
+        void modifytext(const std::string& t);
+        bool belowlimit() const;
 
-		Text textlabel;
-		std::string text;
-		ColorLine marker;
-		bool showmarker;
-		uint16_t elapsed;
-		size_t markerpos;
-		Rectangle<int16_t> bounds;
-		size_t limit;
-		int8_t crypt;
-		State state;
+        Text textlabel;
+        std::string text;
+        ColorLine marker;
+        bool showmarker;
+        uint16_t elapsed;
+        size_t markerpos;
+        Rectangle<int16_t> bounds;
+        size_t limit;
+        int8_t crypt;
+        State state;
 
-		std::function<void(std::string)> onreturn;
-		std::map<int32_t, std::function<void(void)>> callbacks;
-		std::function<void(void)> ontext;
+        std::function<void(std::string)> onreturn;
+        std::map<int32_t, std::function<void(void)>> callbacks;
+        std::function<void(void)> ontext;
 
 #if LOG_LEVEL >= LOG_UI
 		ColorBox boundsoutline;
 #endif
-	};
+    };
 }

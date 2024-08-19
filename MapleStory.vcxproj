@@ -576,6 +576,7 @@ copy /y /d "$(ProjectDir)includes\NoLifeNx\nlnx\includes\lz4_v1_8_2_win$(Platfor
     <ClInclude Include="Net\Packets\AttackAndSkillPackets.h" />
     <ClInclude Include="Net\Packets\CharCreationPackets.h" />
     <ClInclude Include="Net\Packets\CommonPackets.h" />
+    <ClInclude Include="Net\Packets\CustomOutPacket.h" />
     <ClInclude Include="Net\Packets\GameplayPackets.h" />
     <ClInclude Include="Net\Packets\InventoryPackets.h" />
     <ClInclude Include="Net\Packets\LoginPackets.h" />

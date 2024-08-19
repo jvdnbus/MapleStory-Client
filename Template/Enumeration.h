@@ -20,44 +20,38 @@
 #include <type_traits>
 #include <array>
 
-namespace ms
-{
-	template <typename E, E LENGTH = E::LENGTH>
-	// Makes contiguous enums iterable.
-	class Enumeration
-	{
-	public:
-		using underlying_t = typename std::array<E, LENGTH>;
+namespace ms {
+    template <typename E, E LENGTH = E::LENGTH>
+    // Makes contiguous enums iterable.
+    class Enumeration {
+    public:
+        using underlying_t = std::array<E, LENGTH>;
 
-		template <std::size_t...VS>
-		constexpr Enumeration(std::index_sequence<VS...>) : values{ { static_cast<E>(VS)... } } {}
+        template <std::size_t... VS>
+        constexpr Enumeration(std::index_sequence<VS...>) : values{{static_cast<E>(VS)...}} {
+        }
 
-		constexpr Enumeration() : Enumeration(std::make_index_sequence<LENGTH>{})
-		{
-			static_assert(std::is_enum<E>::value, "Template parameter E for Enumeration must be an enum.");
-		}
+        constexpr Enumeration() : Enumeration(std::make_index_sequence<LENGTH>{}) {
+            static_assert(std::is_enum<E>::value, "Template parameter E for Enumeration must be an enum.");
+        }
 
-		auto begin() const
-		{
-			return values.begin();
-		}
+        auto begin() const {
+            return values.begin();
+        }
 
-		auto end() const
-		{
-			return values.end();
-		}
+        auto end() const {
+            return values.end();
+        }
 
-		auto cbegin() const
-		{
-			return values.cbegin();
-		}
+        auto cbegin() const {
+            return values.cbegin();
+        }
 
-		auto cend() const
-		{
-			return values.cend();
-		}
+        auto cend() const {
+            return values.cend();
+        }
 
-	private:
-		underlying_t values;
-	};
+    private:
+        underlying_t values;
+    };
 }

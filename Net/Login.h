@@ -22,57 +22,51 @@
 #include <map>
 #include <vector>
 
-namespace ms
-{
-	struct Account
-	{
-		int32_t accid;
-		int8_t female;
-		bool admin;
-		std::string name;
-		bool muted;
-		bool pin;
-		int8_t pic;
-	};
+namespace ms {
+    struct Account {
+        int32_t accid;
+        int8_t female;
+        bool admin;
+        std::string name;
+        bool muted;
+        bool pin;
+        int8_t pic;
+    };
 
-	struct World
-	{
-		std::string name;
-		std::string event_message;
-		std::vector<int32_t> channel_capacities;
-		uint8_t channel_count;
-		uint8_t flag;
-		int8_t id;
-	};
+    struct World {
+        std::string name;
+        std::string event_message;
+        std::vector<int32_t> channel_capacities;
+        uint8_t channel_count;
+        uint8_t flag;
+        int8_t id;
+    };
 
-	struct StatsEntry
-	{
-		std::string name;
-		bool female;
-		std::vector<int64_t> petids;
-		EnumMap<MapleStat::Id, uint16_t> stats;
-		int64_t exp;
-		int32_t mapid;
-		uint8_t portal;
-		std::pair<int32_t, int8_t> rank;
-		std::pair<int32_t, int8_t> jobrank;
-	};
+    struct StatsEntry {
+        std::string name;
+        bool female;
+        std::vector<int64_t> petids;
+        EnumMap<MapleStat::Id, uint16_t> stats;
+        int64_t exp;
+        int32_t mapid;
+        uint8_t portal;
+        std::pair<int32_t, int8_t> rank;
+        std::pair<int32_t, int8_t> jobrank;
+    };
 
-	struct LookEntry
-	{
-		bool female;
-		uint8_t skin;
-		int32_t faceid;
-		int32_t hairid;
-		std::map<int8_t, int32_t> equips;
-		std::map<int8_t, int32_t> maskedequips;
-		std::vector<int32_t> petids;
-	};
+    struct LookEntry {
+        bool female;
+        uint8_t skin;
+        int32_t faceid;
+        int32_t hairid;
+        std::map<int8_t, int32_t> equips;
+        std::map<int8_t, int32_t> maskedequips;
+        std::vector<int32_t> petids;
+    };
 
-	struct CharEntry
-	{
-		StatsEntry stats;
-		LookEntry look;
-		int32_t id;
-	};
+    struct CharEntry {
+        StatsEntry stats;
+        LookEntry look;
+        int32_t id;
+    };
 }

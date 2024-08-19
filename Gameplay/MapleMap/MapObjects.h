@@ -25,46 +25,44 @@
 #include <memory>
 #include <unordered_set>
 
-namespace ms
-{
-	// A collection of generic MapObjects
-	class MapObjects
-	{
-	public:
-		// Draw all MapObjects that are on the specified layer
-		void draw(Layer::Id layer, double viewx, double viewy, float alpha) const;
-		// Update all MapObjects of this type
-		// Also updates layers (E.g. drawing order)
-		void update(const Physics& physics);
+namespace ms {
+    // A collection of generic MapObjects
+    class MapObjects {
+    public:
+        // Draw all MapObjects that are on the specified layer
+        void draw(Layer::Id layer, double viewx, double viewy, float alpha) const;
+        // Update all MapObjects of this type
+        // Also updates layers (E.g. drawing order)
+        void update(const Physics& physics);
 
-		// Adds a MapObjects of this type
-		void add(std::unique_ptr<MapObject> mapobject);
-		// Removes the MapObjects with the given oid
-		void remove(int32_t oid);
-		// Removes all MapObjects of this type
-		void clear();
+        // Adds a MapObjects of this type
+        void add(std::unique_ptr<MapObject> mapobject);
+        // Removes the MapObjects with the given oid
+        void remove(int32_t oid);
+        // Removes all MapObjects of this type
+        void clear();
 
-		// Check if a map object with the specified id exists on the map
-		bool contains(int32_t oid) const;
-		// Obtains a pointer to the MapObject with the given oid
-		Optional<MapObject> get(int32_t oid);
-		// Obtains a constant pointer to the MapObject with the given oid
-		Optional<const MapObject> get(int32_t oid) const;
+        // Check if a map object with the specified id exists on the map
+        bool contains(int32_t oid) const;
+        // Obtains a pointer to the MapObject with the given oid
+        Optional<MapObject> get(int32_t oid);
+        // Obtains a constant pointer to the MapObject with the given oid
+        Optional<const MapObject> get(int32_t oid) const;
 
-		using underlying_t = typename std::unordered_map<int32_t, std::unique_ptr<MapObject>>;
-		// Return a begin iterator
-		underlying_t::iterator begin();
-		// Return an end iterator
-		underlying_t::iterator end();
-		// Return a begin iterator
-		underlying_t::const_iterator begin() const;
-		// Return an end iterator
-		underlying_t::const_iterator end() const;
-		// Return the size of the iterator
-		underlying_t::size_type size() const;
+        using underlying_t = std::unordered_map<int32_t, std::unique_ptr<MapObject>>;
+        // Return a begin iterator
+        underlying_t::iterator begin();
+        // Return an end iterator
+        underlying_t::iterator end();
+        // Return a begin iterator
+        underlying_t::const_iterator begin() const;
+        // Return an end iterator
+        underlying_t::const_iterator end() const;
+        // Return the size of the iterator
+        underlying_t::size_type size() const;
 
-	private:
-		std::unordered_map<int32_t, std::unique_ptr<MapObject>> objects;
-		std::array<std::unordered_set<int32_t>, Layer::Id::LENGTH> layers;
-	};
+    private:
+        std::unordered_map<int32_t, std::unique_ptr<MapObject>> objects;
+        std::array<std::unordered_set<int32_t>, Layer::Id::LENGTH> layers;
+    };
 }

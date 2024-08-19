@@ -23,46 +23,43 @@
 
 #include <deque>
 
-namespace ms
-{
-	class StatusInfo
-	{
-	public:
-		StatusInfo(const std::string& str, Color::Name color);
+namespace ms {
+    class StatusInfo {
+    public:
+        StatusInfo(const std::string& str, Color::Name color);
 
-		void draw(Point<int16_t> position, float alpha) const;
-		bool update();
+        void draw(Point<int16_t> position, float alpha) const;
+        bool update();
 
-	private:
-		Text text;
-		Text shadow;
-		Linear<float> opacity;
+    private:
+        Text text;
+        Text shadow;
+        Linear<float> opacity;
 
-		// 8 seconds
-		static constexpr int64_t FADE_DURATION = 8'000;
-	};
+        // 8 seconds
+        static constexpr int64_t FADE_DURATION = 8'000;
+    };
 
 
-	class UIStatusMessenger : public UIElement
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::STATUSMESSENGER;
-		static constexpr bool FOCUSED = false;
-		static constexpr bool TOGGLED = false;
+    class UIStatusMessenger : public UIElement {
+    public:
+        static constexpr Type TYPE = STATUSMESSENGER;
+        static constexpr bool FOCUSED = false;
+        static constexpr bool TOGGLED = false;
 
-		UIStatusMessenger();
+        UIStatusMessenger();
 
-		void draw(float alpha) const override;
-		void update() override;
-		void update_screen(int16_t new_width, int16_t new_height) override;
+        void draw(float alpha) const override;
+        void update() override;
+        void update_screen(int16_t new_width, int16_t new_height) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-		void show_status(Color::Name color, const std::string& message);
+        void show_status(Color::Name color, const std::string& message);
 
-	private:
-		static constexpr size_t MAX_MESSAGES = 6;
+    private:
+        static constexpr size_t MAX_MESSAGES = 6;
 
-		std::deque<StatusInfo> statusinfos;
-	};
+        std::deque<StatusInfo> statusinfos;
+    };
 }

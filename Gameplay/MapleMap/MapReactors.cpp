@@ -17,55 +17,46 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "MapReactors.h"
 
-namespace ms
-{
-	void MapReactors::draw(Layer::Id layer, double viewx, double viewy, float alpha) const
-	{
-		reactors.draw(layer, viewx, viewy, alpha);
-	}
+namespace ms {
+    void MapReactors::draw(Layer::Id layer, double viewx, double viewy, float alpha) const {
+        reactors.draw(layer, viewx, viewy, alpha);
+    }
 
-	// Spawns all reactors to map with proper footholds
-	void MapReactors::update(const Physics& physics)
-	{
-		for (; !spawns.empty(); spawns.pop())
-		{
-			const ReactorSpawn& spawn = spawns.front();
+    // Spawns all reactors to map with proper footholds
+    void MapReactors::update(const Physics& physics) {
+        for (; !spawns.empty(); spawns.pop()) {
+            const ReactorSpawn& spawn = spawns.front();
 
-			int32_t oid = spawn.get_oid();
+            int32_t oid = spawn.get_oid();
 
-			if (auto reactor = reactors.get(oid))
-				reactor->makeactive();
-			else
-				reactors.add(spawn.instantiate(physics));
-		}
+            if (auto reactor = reactors.get(oid))
+                reactor->makeactive();
+            else
+                reactors.add(spawn.instantiate(physics));
+        }
 
-		reactors.update(physics);
-	}
+        reactors.update(physics);
+    }
 
-	void MapReactors::trigger(int32_t oid, int8_t state)
-	{
-		if (Optional<Reactor> reactor = reactors.get(oid))
-			reactor->set_state(state);
-	}
+    void MapReactors::trigger(int32_t oid, int8_t state) {
+        if (Optional<Reactor> reactor = reactors.get(oid))
+            reactor->set_state(state);
+    }
 
-	void MapReactors::spawn(ReactorSpawn&& spawn)
-	{
-		spawns.emplace(std::move(spawn));
-	}
+    void MapReactors::spawn(ReactorSpawn&& spawn) {
+        spawns.emplace(std::move(spawn));
+    }
 
-	void MapReactors::remove(int32_t oid, int8_t state, Point<int16_t> position)
-	{
-		if (Optional<Reactor> reactor = reactors.get(oid))
-			reactor->destroy(state, position);
-	}
+    void MapReactors::remove(int32_t oid, int8_t state, Point<int16_t> position) {
+        if (Optional<Reactor> reactor = reactors.get(oid))
+            reactor->destroy(state, position);
+    }
 
-	void MapReactors::clear()
-	{
-		reactors.clear();
-	}
+    void MapReactors::clear() {
+        reactors.clear();
+    }
 
-	MapObjects* MapReactors::get_reactors()
-	{
-		return &reactors;
-	}
+    MapObjects* MapReactors::get_reactors() {
+        return &reactors;
+    }
 }

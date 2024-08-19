@@ -19,25 +19,23 @@
 
 #include "../../Graphics/Animation.h"
 
-namespace ms
-{
-	// Represents a map decoration (object) on a map
-	class Obj
-	{
-	public:
-		Obj(nl::node source);
+namespace ms {
+    // Represents a map decoration (object) on a map
+    class Obj {
+    public:
+        Obj(nl::node source);
 
-		// Update animation
-		void update();
-		// Draw the object at the specified position
-		void draw(Point<int16_t> viewpos, float inter) const;
-		// Return the depth of the object
-		uint8_t getz() const;
+        // Update animation
+        void update();
+        // Draw the object at the specified position
+        void draw(Point<int16_t> viewpos, float inter) const;
+        // Return the depth of the object
+        uint8_t getz() const;
 
-	private:
-		Animation animation;
-		Point<int16_t> pos;
-		uint8_t z;
-		bool flip;
-	};
+    private:
+        Animation animation;
+        Point<int16_t> pos;
+        uint8_t z;
+        bool flip;
+    };
 }

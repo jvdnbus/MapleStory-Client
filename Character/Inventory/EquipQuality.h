@@ -21,20 +21,17 @@
 
 #include "../../Template/EnumMap.h"
 
-namespace ms
-{
-	namespace EquipQuality
-	{
-		enum Id
-		{
-			GREY,
-			WHITE,
-			ORANGE,
-			BLUE,
-			VIOLET,
-			GOLD
-		};
+namespace ms {
+    namespace EquipQuality {
+        enum Id {
+            GREY,
+            WHITE,
+            ORANGE,
+            BLUE,
+            VIOLET,
+            GOLD
+        };
 
-		Id check_quality(int32_t item_id, bool scrolled, const EnumMap<EquipStat::Id, uint16_t>& stats);
-	}
+        Id check_quality(int32_t item_id, bool scrolled, const EnumMap<EquipStat::Id, uint16_t>& stats);
+    }
 }

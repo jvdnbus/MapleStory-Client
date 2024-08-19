@@ -25,93 +25,79 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	Icon::Icon() : Icon(std::make_unique<NullType>(), {}, -1) {}
+namespace ms {
+    Icon::Icon() : Icon(std::make_unique<NullType>(), {}, -1) {
+    }
 
-	Icon::Icon(std::unique_ptr<Type> type, Texture t, int16_t c) : type(std::move(type)), texture(t), count(c)
-	{
-		texture.shift(Point<int16_t>(0, 32));
+    Icon::Icon(std::unique_ptr<Type> type, Texture t, int16_t c) : type(std::move(type)), count(c), texture(t) {
+        texture.shift(Point<int16_t>(0, 32));
 
-		showcount = count > -1;
-		dragged = false;
-	}
+        showcount = count > -1;
+        dragged = false;
+    }
 
-	void Icon::draw(Point<int16_t> position) const
-	{
-		float opacity = dragged ? 0.5f : 1.0f;
-		texture.draw(DrawArgument(position, opacity));
+    void Icon::draw(Point<int16_t> position) const {
+        float opacity = dragged ? 0.5f : 1.0f;
+        texture.draw(DrawArgument(position, opacity));
 
-		if (showcount)
-		{
-			static const Charset countset = Charset(nl::nx::UI["Basic.img"]["ItemNo"], Charset::Alignment::LEFT);
-			countset.draw(std::to_string(count), position + Point<int16_t>(0, 20));
-		}
-	}
+        if (showcount) {
+            static const auto countset = Charset(nl::nx::UI["Basic.img"]["ItemNo"], Charset::Alignment::LEFT);
+            countset.draw(std::to_string(count), position + Point<int16_t>(0, 20));
+        }
+    }
 
-	void Icon::dragdraw(Point<int16_t> cursorpos) const
-	{
-		if (dragged)
-			texture.draw(DrawArgument(cursorpos - cursoroffset, 0.5f));
-	}
+    void Icon::dragdraw(Point<int16_t> cursorpos) const {
+        if (dragged)
+            texture.draw(DrawArgument(cursorpos - cursoroffset, 0.5f));
+    }
 
-	void Icon::drop_on_stage() const
-	{
-		type->drop_on_stage();
-	}
+    void Icon::drop_on_stage() const {
+        type->drop_on_stage();
+    }
 
-	void Icon::drop_on_equips(EquipSlot::Id eqslot) const
-	{
-		type->drop_on_equips(eqslot);
-	}
+    void Icon::drop_on_equips(EquipSlot::Id eqslot) const {
+        type->drop_on_equips(eqslot);
+    }
 
-	bool Icon::drop_on_items(InventoryType::Id tab, EquipSlot::Id eqslot, int16_t slot, bool equip) const
-	{
-		bool remove_icon = type->drop_on_items(tab, eqslot, slot, equip);
+    bool Icon::drop_on_items(InventoryType::Id tab, EquipSlot::Id eqslot, int16_t slot, bool equip) const {
+        bool remove_icon = type->drop_on_items(tab, eqslot, slot, equip);
 
-		if (remove_icon)
-			Sound(Sound::Name::DRAGEND).play();
+        if (remove_icon)
+            Sound(Sound::Name::DRAGEND).play();
 
-		return remove_icon;
-	}
+        return remove_icon;
+    }
 
-	void Icon::drop_on_bindings(Point<int16_t> cursorposition, bool remove) const
-	{
-		type->drop_on_bindings(cursorposition, remove);
-	}
+    void Icon::drop_on_bindings(Point<int16_t> cursorposition, bool remove) const {
+        type->drop_on_bindings(cursorposition, remove);
+    }
 
-	void Icon::start_drag(Point<int16_t> offset)
-	{
-		cursoroffset = offset;
-		dragged = true;
+    void Icon::start_drag(Point<int16_t> offset) {
+        cursoroffset = offset;
+        dragged = true;
 
-		Sound(Sound::Name::DRAGSTART).play();
-	}
+        Sound(Sound::Name::DRAGSTART).play();
+    }
 
-	void Icon::reset()
-	{
-		dragged = false;
-	}
+    void Icon::reset() {
+        dragged = false;
+    }
 
-	void Icon::set_count(int16_t c)
-	{
-		count = c;
+    void Icon::set_count(int16_t c) {
+        count = c;
 
-		type->set_count(count);
-	}
+        type->set_count(count);
+    }
 
-	Icon::IconType Icon::get_type()
-	{
-		return type->get_type();
-	}
+    Icon::IconType Icon::get_type() {
+        return type->get_type();
+    }
 
-	int16_t Icon::get_count() const
-	{
-		return count;
-	}
+    int16_t Icon::get_count() const {
+        return count;
+    }
 
-	bool Icon::get_drag()
-	{
-		return dragged;
-	}
+    bool Icon::get_drag() {
+        return dragged;
+    }
 }

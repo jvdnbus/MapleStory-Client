@@ -19,32 +19,29 @@
 
 #include "../UIElement.h"
 
-namespace ms
-{
-	class UILoginWait : public UIElement
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::LOGINWAIT;
-		static constexpr bool FOCUSED = true;
-		static constexpr bool TOGGLED = false;
+namespace ms {
+    class UILoginWait : public UIElement {
+    public:
+        static constexpr Type TYPE = LOGINWAIT;
+        static constexpr bool FOCUSED = true;
+        static constexpr bool TOGGLED = false;
 
-		UILoginWait();
-		UILoginWait(std::function<void()> okhandler);
+        UILoginWait();
+        UILoginWait(std::function<void()> okhandler);
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-		void close();
-		std::function<void()> get_handler();
+        void close();
+        std::function<void()> get_handler();
 
-	protected:
-		Button::State button_pressed(uint16_t id) override;
+    protected:
+        Button::State button_pressed(uint16_t id) override;
 
-	private:
-		enum Buttons : uint16_t
-		{
-			BtCancel
-		};
+    private:
+        enum Buttons : uint16_t {
+            BtCancel
+        };
 
-		std::function<void()> okhandler;
-	};
+        std::function<void()> okhandler;
+    };
 }

@@ -21,53 +21,46 @@
 
 #include <cstdint>
 
-namespace ms
-{
-	namespace Constants
-	{
-		// Timestep, i.e., the granularity in which the game advances.
-		constexpr uint16_t TIMESTEP = 8;
+namespace ms {
+    namespace Constants {
+        // Timestep, i.e., the granularity in which the game advances.
+        constexpr uint16_t TIMESTEP = 8;
 
-		class Constants : public Singleton<Constants>
-		{
-		public:
-			Constants()
-			{
-				VIEWWIDTH = 1024;
-				VIEWHEIGHT = 768;
-			};
+        class Constants : public Singleton<Constants> {
+        public:
+            Constants() {
+                VIEWWIDTH = 1024;
+                VIEWHEIGHT = 768;
+            };
 
-			~Constants() {}
+            ~Constants() override {
+            }
 
-			// Get the window and screen width
-			int16_t get_viewwidth()
-			{
-				return VIEWWIDTH;
-			}
+            // Get the window and screen width
+            int16_t get_viewwidth() {
+                return VIEWWIDTH;
+            }
 
-			// Set the window and screen width
-			void set_viewwidth(int16_t width)
-			{
-				VIEWWIDTH = width;
-			}
+            // Set the window and screen width
+            void set_viewwidth(int16_t width) {
+                VIEWWIDTH = width;
+            }
 
-			// Get the window and screen height
-			int16_t get_viewheight()
-			{
-				return VIEWHEIGHT;
-			}
+            // Get the window and screen height
+            int16_t get_viewheight() {
+                return VIEWHEIGHT;
+            }
 
-			// Set the window and screen height
-			void set_viewheight(int16_t height)
-			{
-				VIEWHEIGHT = height;
-			}
+            // Set the window and screen height
+            void set_viewheight(int16_t height) {
+                VIEWHEIGHT = height;
+            }
 
-		private:
-			// Window and screen width
-			int16_t VIEWWIDTH;
-			// Window and screen height
-			int16_t VIEWHEIGHT;
-		};
-	}
+        private:
+            // Window and screen width
+            int16_t VIEWWIDTH;
+            // Window and screen height
+            int16_t VIEWHEIGHT;
+        };
+    }
 }

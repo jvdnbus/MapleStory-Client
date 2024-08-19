@@ -20,6 +20,7 @@
 #include "Helpers/LoginParser.h"
 
 #include "../Packets/LoginPackets.h"
+#include "../Packets/CustomOutPacket.h"
 
 #include "../../IO/UI.h"
 
@@ -31,279 +32,240 @@
 #include "../../IO/UITypes/UITermsOfService.h"
 #include "../../IO/UITypes/UIWorldSelect.h"
 
-namespace ms
-{
-	void LoginResultHandler::handle(InPacket& recv) const
-	{
-		auto loginwait = UI::get().get_element<UILoginWait>();
+namespace ms {
+    void LoginResultHandler::handle(InPacket& recv) {
+        auto loginwait = UI::get().get_element<UILoginWait>();
 
-		if (loginwait && loginwait->is_active())
-		{
-			// Remove previous UIs
-			UI::get().remove(UIElement::Type::LOGINNOTICE);
-			UI::get().remove(UIElement::Type::LOGINWAIT);
-			UI::get().remove(UIElement::Type::TOS);
-			UI::get().remove(UIElement::Type::GENDER);
+        if (loginwait && loginwait->is_active()) {
+            // Remove previous UIs
+            UI::get().remove(UIElement::Type::LOGINNOTICE);
+            UI::get().remove(UIElement::Type::LOGINWAIT);
+            UI::get().remove(UIElement::Type::TOS);
+            UI::get().remove(UIElement::Type::GENDER);
 
-			std::function<void()> okhandler = loginwait->get_handler();
+            std::function<void()> okhandler = loginwait->get_handler();
 
-			// The packet should contain a 'reason' integer which can signify various things
-			if (int32_t reason = recv.read_int())
-			{
-				// Login unsuccessful
-				// The LoginNotice displayed will contain the specific information
-				switch (reason)
-				{
-					case 2:
-					{
-						UI::get().emplace<UILoginNotice>(UILoginNotice::Message::BLOCKED_ID, okhandler);
-						break;
-					}
-					case 5:
-					{
-						UI::get().emplace<UILoginNotice>(UILoginNotice::Message::NOT_REGISTERED, okhandler);
-						break;
-					}
-					case 7:
-					{
-						UI::get().emplace<UILoginNotice>(UILoginNotice::Message::ALREADY_LOGGED_IN, okhandler);
-						break;
-					}
-					case 13:
-					{
-						UI::get().emplace<UILoginNotice>(UILoginNotice::Message::UNABLE_TO_LOGIN_WITH_IP, okhandler);
-						break;
-					}
-					case 23:
-					{
-						UI::get().emplace<UITermsOfService>(okhandler);
-						break;
-					}
-					default:
-					{
-						// Other reasons
-						if (reason > 0)
-						{
-							auto reasonbyte = static_cast<int8_t>(reason - 1);
+            // The packet should contain a 'reason' integer which can signify various things
+            if (int32_t reason = recv.read_int()) {
+                // Login unsuccessful
+                // The LoginNotice displayed will contain the specific information
+                switch (reason) {
+                case 2: {
+                    UI::get().emplace<UILoginNotice>(UILoginNotice::Message::BLOCKED_ID, okhandler);
+                    break;
+                }
+                case 5: {
+                    UI::get().emplace<UILoginNotice>(UILoginNotice::Message::NOT_REGISTERED, okhandler);
+                    break;
+                }
+                case 7: {
+                    UI::get().emplace<UILoginNotice>(UILoginNotice::Message::ALREADY_LOGGED_IN, okhandler);
+                    break;
+                }
+                case 13: {
+                    UI::get().emplace<UILoginNotice>(UILoginNotice::Message::UNABLE_TO_LOGIN_WITH_IP, okhandler);
+                    break;
+                }
+                case 23: {
+                    UI::get().emplace<UITermsOfService>(okhandler);
+                    break;
+                }
+                default: {
+                    // Other reasons
+                    if (reason > 0) {
+                        auto reasonbyte = static_cast<int8_t>(reason - 1);
 
-							UI::get().emplace<UILoginNotice>(reasonbyte, okhandler);
-						}
+                        UI::get().emplace<UILoginNotice>(reasonbyte, okhandler);
+                    }
 
-						break;
-					}
-				}
-			}
-			else
-			{
-				// Login successful
-				// The packet contains information on the account, so we initialize the account with it.
-				Account account = LoginParser::parse_account(recv);
+                    break;
+                }
+                }
+            } else {
+                // Login successful
+                // The packet contains information on the account, so we initialize the account with it.
+                Account account = LoginParser::parse_account(recv);
 
-				Configuration::get().set_admin(account.admin);
+                Configuration::get().set_admin(account.admin);
 
-				if (account.female == 10)
-				{
-					UI::get().emplace<UIGender>(okhandler);
-				}
-				else
-				{
-					// Save the "Login ID" if the box for it on the login screen is checked
-					if (Setting<SaveLogin>::get().load())
-						Setting<DefaultAccount>::get().save(account.name);
+                if (account.female == 10) {
+                    UI::get().emplace<UIGender>(okhandler);
+                } else {
+                    // Save the "Login ID" if the box for it on the login screen is checked
+                    if (Setting<SaveLogin>::get().load())
+                        Setting<DefaultAccount>::get().save(account.name);
 
-					// Request the list of worlds and channels online
-					ServerRequestPacket().dispatch();
-				}
-			}
-		}
-	}
+                    // Let server know we're on a custom client
+                    CustomClientPacket().dispatch();
 
-	void ServerStatusHandler::handle(InPacket& recv) const
-	{
-		// Possible values for status:
-		// 0 - Normal
-		// 1 - Highly populated
-		// 2 - Full
-		recv.read_short(); // status
+                    // Request the list of worlds and channels online
+                    ServerRequestPacket().dispatch();
+                }
+            }
+        }
+    }
 
-		// TODO: I believe it shows a warning message if it's 1 and blocks enter into the world if it's 2. Need to find those messages.
-	}
+    void ServerStatusHandler::handle(InPacket& recv) {
+        // Possible values for status:
+        // 0 - Normal
+        // 1 - Highly populated
+        // 2 - Full
+        recv.read_short(); // status
 
-	void SelectCharacterHandler::handle(InPacket& recv) const
-	{
-		std::function<void()> okhandler = []() {};
+        // TODO: I believe it shows a warning message if it's 1 and blocks enter into the world if it's 2. Need to find those messages.
+    }
 
-		// The packet should contain a 'reason' integer which can signify various things
-		if (int16_t reason = recv.read_short())
-		{
-			// Select character unsuccessful
-			// The LoginNotice displayed will contain the specific information
-			switch (reason)
-			{
-				case 2:
-				{
-					UI::get().emplace<UILoginNotice>(UILoginNotice::Message::BLOCKED_ID, okhandler);
-					break;
-				}
-				case 5:
-				{
-					UI::get().emplace<UILoginNotice>(UILoginNotice::Message::NOT_REGISTERED, okhandler);
-					break;
-				}
-				case 7:
-				{
-					UI::get().emplace<UILoginNotice>(UILoginNotice::Message::ALREADY_LOGGED_IN, okhandler);
-					break;
-				}
-				case 13:
-				{
-					UI::get().emplace<UILoginNotice>(UILoginNotice::Message::UNABLE_TO_LOGIN_WITH_IP, okhandler);
-					break;
-				}
-				case 23:
-				{
-					UI::get().emplace<UITermsOfService>(okhandler);
-					break;
-				}
-				default:
-				{
-					// Other reasons
-					if (reason > 0)
-					{
-						auto reasonbyte = static_cast<int8_t>(reason - 1);
+    void SelectCharacterHandler::handle(InPacket& recv) {
+        std::function<void()> okhandler = []() {
+        };
 
-						UI::get().emplace<UILoginNotice>(reasonbyte, okhandler);
-					}
+        // The packet should contain a 'reason' integer which can signify various things
+        if (int16_t reason = recv.read_short()) {
+            // Select character unsuccessful
+            // The LoginNotice displayed will contain the specific information
+            switch (reason) {
+            case 2: {
+                UI::get().emplace<UILoginNotice>(UILoginNotice::Message::BLOCKED_ID, okhandler);
+                break;
+            }
+            case 5: {
+                UI::get().emplace<UILoginNotice>(UILoginNotice::Message::NOT_REGISTERED, okhandler);
+                break;
+            }
+            case 7: {
+                UI::get().emplace<UILoginNotice>(UILoginNotice::Message::ALREADY_LOGGED_IN, okhandler);
+                break;
+            }
+            case 13: {
+                UI::get().emplace<UILoginNotice>(UILoginNotice::Message::UNABLE_TO_LOGIN_WITH_IP, okhandler);
+                break;
+            }
+            case 23: {
+                UI::get().emplace<UITermsOfService>(okhandler);
+                break;
+            }
+            default: {
+                // Other reasons
+                if (reason > 0) {
+                    auto reasonbyte = static_cast<int8_t>(reason - 1);
 
-					break;
-				}
-			}
-		}
-	}
+                    UI::get().emplace<UILoginNotice>(reasonbyte, okhandler);
+                }
 
-	void ServerlistHandler::handle(InPacket& recv) const
-	{
-		auto worldselect = UI::get().get_element<UIWorldSelect>();
+                break;
+            }
+            }
+        }
+    }
 
-		if (!worldselect)
-			worldselect = UI::get().emplace<UIWorldSelect>();
+    void ServerlistHandler::handle(InPacket& recv) {
+        auto worldselect = UI::get().get_element<UIWorldSelect>();
 
-		// Parse all worlds
-		while (recv.available())
-		{
-			World world = LoginParser::parse_world(recv);
+        if (!worldselect)
+            worldselect = UI::get().emplace<UIWorldSelect>();
 
-			if (world.id != -1)
-			{
-				worldselect->add_world(world);
-			}
-			else
-			{
-				// Remove previous UIs
-				UI::get().remove(UIElement::Type::LOGIN);
+        // Parse all worlds
+        while (recv.available()) {
+            World world = LoginParser::parse_world(recv);
 
-				// Add the world selection screen to the UI
-				worldselect->draw_world();
+            if (world.id != -1) {
+                worldselect->add_world(world);
+            } else {
+                // Remove previous UIs
+                UI::get().remove(UIElement::Type::LOGIN);
 
-				// End of packet
-				return;
-			}
-		}
-	}
+                // Add the world selection screen to the UI
+                worldselect->draw_world();
 
-	void CharlistHandler::handle(InPacket& recv) const
-	{
-		auto loginwait = UI::get().get_element<UILoginWait>();
+                // End of packet
+                return;
+            }
+        }
+    }
 
-		if (loginwait && loginwait->is_active())
-		{
-			uint8_t channel_id = recv.read_byte();
+    void CharlistHandler::handle(InPacket& recv) {
+        auto loginwait = UI::get().get_element<UILoginWait>();
 
-			// Parse all characters
-			std::vector<CharEntry> characters;
-			int8_t charcount = recv.read_byte();
+        if (loginwait && loginwait->is_active()) {
+            uint8_t channel_id = recv.read_byte();
 
-			for (uint8_t i = 0; i < charcount; ++i)
-				characters.emplace_back(LoginParser::parse_charentry(recv));
+            // Parse all characters
+            std::vector<CharEntry> characters;
+            int8_t charcount = recv.read_byte();
 
-			int8_t pic = recv.read_byte();
-			int32_t slots = recv.read_int();
+            for (uint8_t i = 0; i < charcount; ++i)
+                characters.emplace_back(LoginParser::parse_charentry(recv));
 
-			// Remove previous UIs
-			UI::get().remove(UIElement::Type::LOGINNOTICE);
-			UI::get().remove(UIElement::Type::LOGINWAIT);
+            int8_t pic = recv.read_byte();
+            int32_t slots = recv.read_int();
 
-			// Remove the world selection screen
-			if (auto worldselect = UI::get().get_element<UIWorldSelect>())
-				worldselect->remove_selected();
+            // Remove previous UIs
+            UI::get().remove(UIElement::Type::LOGINNOTICE);
+            UI::get().remove(UIElement::Type::LOGINWAIT);
 
-			// Add the character selection screen
-			UI::get().emplace<UICharSelect>(characters, charcount, slots, pic);
-		}
-	}
+            // Remove the world selection screen
+            if (auto worldselect = UI::get().get_element<UIWorldSelect>())
+                worldselect->remove_selected();
 
-	void ServerIPHandler::handle(InPacket& recv) const
-	{
-		recv.skip_byte();
+            // Add the character selection screen
+            UI::get().emplace<UICharSelect>(characters, charcount, slots, pic);
+        }
+    }
 
-		LoginParser::parse_login(recv);
+    void ServerIPHandler::handle(InPacket& recv) {
+        recv.skip_byte();
 
-		int32_t cid = recv.read_int();
-		PlayerLoginPacket(cid).dispatch();
-	}
+        LoginParser::parse_login(recv);
 
-	void CharnameResponseHandler::handle(InPacket& recv) const
-	{
-		// Read the name and if it is already in use
-		std::string name = recv.read_string();
-		bool used = recv.read_bool();
+        int32_t cid = recv.read_int();
+        PlayerLoginPacket(cid).dispatch();
+    }
 
-		// Notify the character creation screen
-		if (auto raceselect = UI::get().get_element<UIRaceSelect>())
-			raceselect->send_naming_result(used);
-	}
+    void CharnameResponseHandler::handle(InPacket& recv) {
+        // Read the name and if it is already in use
+        std::string name = recv.read_string();
+        bool used = recv.read_bool();
 
-	void AddNewCharEntryHandler::handle(InPacket& recv) const
-	{
-		recv.skip(1);
+        // Notify the character creation screen
+        if (auto raceselect = UI::get().get_element<UIRaceSelect>())
+            raceselect->send_naming_result(used);
+    }
 
-		// Parse info on the new character
-		CharEntry character = LoginParser::parse_charentry(recv);
+    void AddNewCharEntryHandler::handle(InPacket& recv) {
+        recv.skip(1);
 
-		// Read the updated character selection
-		if (auto charselect = UI::get().get_element<UICharSelect>())
-			charselect->add_character(std::move(character));
-	}
+        // Parse info on the new character
+        CharEntry character = LoginParser::parse_charentry(recv);
 
-	void DeleteCharResponseHandler::handle(InPacket& recv) const
-	{
-		// Read the character id and if deletion was successful (PIC was correct)
-		int32_t cid = recv.read_int();
-		uint8_t state = recv.read_byte();
+        // Read the updated character selection
+        if (auto charselect = UI::get().get_element<UICharSelect>())
+            charselect->add_character(std::move(character));
+    }
 
-		// Extract information from the state byte
-		if (state)
-		{
-			UILoginNotice::Message message;
+    void DeleteCharResponseHandler::handle(InPacket& recv) {
+        // Read the character id and if deletion was successful (PIC was correct)
+        int32_t cid = recv.read_int();
+        uint8_t state = recv.read_byte();
 
-			switch (state)
-			{
-				case 10:
-					message = UILoginNotice::Message::BIRTHDAY_INCORRECT;
-					break;
-				case 20:
-					message = UILoginNotice::Message::INCORRECT_PIC;
-					break;
-				default:
-					message = UILoginNotice::Message::UNKNOWN_ERROR;
-			}
+        // Extract information from the state byte
+        if (state) {
+            UILoginNotice::Message message;
 
-			UI::get().emplace<UILoginNotice>(message);
-		}
-		else
-		{
-			if (auto charselect = UI::get().get_element<UICharSelect>())
-				charselect->remove_character(cid);
-		}
-	}
+            switch (state) {
+            case 10:
+                message = UILoginNotice::Message::BIRTHDAY_INCORRECT;
+                break;
+            case 20:
+                message = UILoginNotice::Message::INCORRECT_PIC;
+                break;
+            default:
+                message = UILoginNotice::Message::UNKNOWN_ERROR;
+            }
+
+            UI::get().emplace<UILoginNotice>(message);
+        } else {
+            if (auto charselect = UI::get().get_element<UICharSelect>())
+                charselect->remove_character(cid);
+        }
+    }
 }

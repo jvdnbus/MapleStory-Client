@@ -17,56 +17,48 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "ScrollingNotice.h"
 
-namespace ms
-{
-	ScrollingNotice::ScrollingNotice()
-	{
-		width = 800;
-		background = ColorBox(width, 23, Color::Name::BLACK, 0.535f);
-		notice = Text(Text::Font::A12M, Text::Alignment::LEFT, Color::Name::YELLOW);
+namespace ms {
+    ScrollingNotice::ScrollingNotice() {
+        width = 800;
+        background = ColorBox(width, 23, Color::Name::BLACK, 0.535f);
+        notice = Text(Text::Font::A12M, Text::Alignment::LEFT, Color::Name::YELLOW);
 
-		xpos.set(0.0);
-		active = false;
-	}
+        xpos.set(0.0);
+        active = false;
+    }
 
-	void ScrollingNotice::setnotice(std::string n)
-	{
-		notice.change_text(n);
-		xpos.set(static_cast<double>(width));
-		active = n.size() > 0;
-	}
+    void ScrollingNotice::setnotice(std::string n) {
+        notice.change_text(n);
+        xpos.set(width);
+        active = n.size() > 0;
+    }
 
-	void ScrollingNotice::draw(float alpha) const
-	{
-		if (active)
-		{
-			int16_t interx = static_cast<int16_t>(std::round(xpos.get(alpha)));
-			auto position = Point<int16_t>(interx, -1);
+    void ScrollingNotice::draw(float alpha) const {
+        if (active) {
+            int16_t interx = static_cast<int16_t>(std::round(xpos.get(alpha)));
+            auto position = Point<int16_t>(interx, -1);
 
-			background.draw(Point<int16_t>(0, 0));
-			notice.draw(position);
-		}
-	}
+            background.draw(Point<int16_t>(0, 0));
+            notice.draw(position);
+        }
+    }
 
-	void ScrollingNotice::update()
-	{
-		if (active)
-		{
-			int16_t new_width = Constants::Constants::get().get_viewwidth();
+    void ScrollingNotice::update() {
+        if (active) {
+            int16_t new_width = Constants::Constants::get().get_viewwidth();
 
-			if (new_width != width)
-			{
-				width = new_width;
-				background.setwidth(width);
-				xpos.set(static_cast<double>(width));
-			}
+            if (new_width != width) {
+                width = new_width;
+                background.setwidth(width);
+                xpos.set(width);
+            }
 
-			xpos -= 0.5;
+            xpos -= 0.5;
 
-			auto xmin = static_cast<double>(-notice.width());
+            auto xmin = static_cast<double>(-notice.width());
 
-			if (xpos.last() < xmin)
-				xpos.set(static_cast<double>(width));
-		}
-	}
+            if (xpos.last() < xmin)
+                xpos.set(width);
+        }
+    }
 }

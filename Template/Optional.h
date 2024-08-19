@@ -20,41 +20,44 @@
 #include <functional>
 #include <type_traits>
 
-namespace ms
-{
-	template <typename T>
-	class Optional
-	{
-	public:
-		template <typename R, typename = std::enable_if_t<std::is_base_of<R, T>::value || std::is_base_of<T, R>::value>>
-		constexpr Optional(R* r_val) : val(static_cast<T*>(r_val)) {}
+namespace ms {
+    template <typename T>
+    class Optional {
+    public:
+        template <typename R, typename = std::enable_if_t<std::is_base_of<R, T>::value || std::is_base_of<T, R>::value>>
+        constexpr Optional(R* r_val) : val(static_cast<T*>(r_val)) {
+        }
 
-		template <typename R, typename = std::enable_if_t<std::is_base_of<R, T>::value || std::is_base_of<T, R>::value>>constexpr Optional(Optional<R> r_opt) : Optional(r_opt.get()) {}
-		constexpr Optional(T* p) : val(p) {}
-		constexpr Optional(T& p) : val(&p) {}
-		constexpr Optional() : val(nullptr) {}
+        template <typename R, typename = std::enable_if_t<std::is_base_of<R, T>::value || std::is_base_of<T, R>::value>>
+        constexpr Optional(Optional<R> r_opt) : Optional(r_opt.get()) {
+        }
 
-		explicit operator bool() const
-		{
-			return val != nullptr;
-		}
+        constexpr Optional(T* p) : val(p) {
+        }
 
-		T* get() const
-		{
-			return val;
-		}
+        constexpr Optional(T& p) : val(&p) {
+        }
 
-		T* operator ->() const
-		{
-			return val;
-		}
+        constexpr Optional() : val(nullptr) {
+        }
 
-		T& operator *() const
-		{
-			return *val;
-		}
+        explicit operator bool() const {
+            return val != nullptr;
+        }
 
-	private:
-		T* val;
-	};
+        T* get() const {
+            return val;
+        }
+
+        T* operator ->() const {
+            return val;
+        }
+
+        T& operator *() const {
+            return *val;
+        }
+
+    private:
+        T* val;
+    };
 }

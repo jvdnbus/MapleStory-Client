@@ -19,10 +19,8 @@
 
 #include "../PacketHandler.h"
 
-namespace ms
-{
-	class PingHandler : public PacketHandler
-	{
-		void handle(InPacket&) const override;
-	};
+namespace ms {
+    class PingHandler : public PacketHandler {
+        void handle(InPacket&) override;
+    };
 }

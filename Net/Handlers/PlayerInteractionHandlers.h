@@ -19,11 +19,9 @@
 
 #include "../PacketHandler.h"
 
-namespace ms
-{
-	// Handler for a packet which contains character info
-	class CharInfoHandler : public PacketHandler
-	{
-		void handle(InPacket& recv) const override;
-	};
+namespace ms {
+    // Handler for a packet which contains character info
+    class CharInfoHandler : public PacketHandler {
+        void handle(InPacket& recv) override;
+    };
 }

@@ -21,44 +21,41 @@
 
 #include "../Components/MapleComboBox.h"
 
-namespace ms
-{
-	class UIOptionMenu : public UIDragElement<PosOPTIONMENU>
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::OPTIONMENU;
-		static constexpr bool FOCUSED = true;
-		static constexpr bool TOGGLED = false;
+namespace ms {
+    class UIOptionMenu : public UIDragElement<PosOPTIONMENU> {
+    public:
+        static constexpr Type TYPE = OPTIONMENU;
+        static constexpr bool FOCUSED = true;
+        static constexpr bool TOGGLED = false;
 
-		UIOptionMenu();
+        UIOptionMenu();
 
-		void draw(float inter) const override;
+        void draw(float inter) const override;
 
-		Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
-		void send_key(int32_t keycode, bool pressed, bool escape) override;
+        Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
+        void send_key(int32_t keycode, bool pressed, bool escape) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-	protected:
-		Button::State button_pressed(uint16_t buttonid) override;
+    protected:
+        Button::State button_pressed(uint16_t buttonid) override;
 
-	private:
-		void change_tab(uint16_t tabid);
+    private:
+        void change_tab(uint16_t tabid);
 
-		enum Buttons : uint16_t
-		{
-			TAB0,
-			TAB1,
-			TAB2,
-			TAB3,
-			TAB4,
-			CANCEL,
-			OK,
-			UIRESET,
-			SELECT_RES
-		};
+        enum Buttons : uint16_t {
+            TAB0,
+            TAB1,
+            TAB2,
+            TAB3,
+            TAB4,
+            CANCEL,
+            OK,
+            UIRESET,
+            SELECT_RES
+        };
 
-		uint16_t selected_tab;
-		Texture tab_background[Buttons::CANCEL];
-	};
+        uint16_t selected_tab;
+        Texture tab_background[CANCEL];
+    };
 }

@@ -24,107 +24,90 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	BuffIcon::BuffIcon(int32_t buff, int32_t dur) : cover(IconCover::BUFF, dur - FLASH_TIME)
-	{
-		buffid = buff;
-		duration = dur;
-		opacity.set(1.0f);
-		opcstep = -0.05f;
+namespace ms {
+    BuffIcon::BuffIcon(int32_t buff, int32_t dur) : cover(IconCover::BUFF, dur - FLASH_TIME) {
+        buffid = buff;
+        duration = dur;
+        opacity.set(1.0f);
+        opcstep = -0.05f;
 
-		if (buffid >= 0)
-		{
-			std::string strid = string_format::extend_id(buffid, 7);
-			nl::node src = nl::nx::Skill[strid.substr(0, 3) + ".img"]["skill"][strid];
-			icon = src["icon"];
-		}
-		else
-		{
-			icon = ItemData::get(-buffid).get_icon(true);
-		}
-	}
+        if (buffid >= 0) {
+            std::string strid = string_format::extend_id(buffid, 7);
+            nl::node src = nl::nx::Skill[strid.substr(0, 3) + ".img"]["skill"][strid];
+            icon = src["icon"];
+        } else {
+            icon = ItemData::get(-buffid).get_icon(true);
+        }
+    }
 
-	void BuffIcon::draw(Point<int16_t> position, float alpha) const
-	{
-		icon.draw(DrawArgument(position, opacity.get(alpha)));
-		cover.draw(position + Point<int16_t>(1, -31), alpha);
-	}
+    void BuffIcon::draw(Point<int16_t> position, float alpha) const {
+        icon.draw(DrawArgument(position, opacity.get(alpha)));
+        cover.draw(position + Point<int16_t>(1, -31), alpha);
+    }
 
-	bool BuffIcon::update()
-	{
-		if (duration <= FLASH_TIME)
-		{
-			opacity += opcstep;
+    bool BuffIcon::update() {
+        if (duration <= FLASH_TIME) {
+            opacity += opcstep;
 
-			bool fadedout = opcstep < 0.0f && opacity.last() <= 0.0f;
-			bool fadedin = opcstep > 0.0f && opacity.last() >= 1.0f;
+            bool fadedout = opcstep < 0.0f && opacity.last() <= 0.0f;
+            bool fadedin = opcstep > 0.0f && opacity.last() >= 1.0f;
 
-			if (fadedout || fadedin)
-				opcstep = -opcstep;
-		}
+            if (fadedout || fadedin)
+                opcstep = -opcstep;
+        }
 
-		cover.update();
+        cover.update();
 
-		duration -= Constants::TIMESTEP;
+        duration -= Constants::TIMESTEP;
 
-		return duration < Constants::TIMESTEP;
-	}
+        return duration < Constants::TIMESTEP;
+    }
 
-	UIBuffList::UIBuffList()
-	{
-		int16_t height = Constants::Constants::get().get_viewheight();
-		int16_t width = Constants::Constants::get().get_viewwidth();
+    UIBuffList::UIBuffList() {
+        int16_t height = Constants::Constants::get().get_viewheight();
+        int16_t width = Constants::Constants::get().get_viewwidth();
 
-		update_screen(width, height);
-	}
+        update_screen(width, height);
+    }
 
-	void UIBuffList::draw(float alpha) const
-	{
-		Point<int16_t> icpos = position;
+    void UIBuffList::draw(float alpha) const {
+        Point<int16_t> icpos = position;
 
-		for (auto& icon : icons)
-		{
-			icon.second.draw(icpos, alpha);
-			icpos.shift_x(-32);
-		}
-	}
+        for (auto& icon : icons) {
+            icon.second.draw(icpos, alpha);
+            icpos.shift_x(-32);
+        }
+    }
 
-	void UIBuffList::update()
-	{
-		for (auto iter = icons.begin(); iter != icons.end();)
-		{
-			bool expired = iter->second.update();
+    void UIBuffList::update() {
+        for (auto iter = icons.begin(); iter != icons.end();) {
+            bool expired = iter->second.update();
 
-			if (expired)
-				iter = icons.erase(iter);
-			else
-				iter++;
-		}
-	}
+            if (expired)
+                iter = icons.erase(iter);
+            else
+                ++iter;
+        }
+    }
 
-	void UIBuffList::update_screen(int16_t new_width, int16_t)
-	{
-		position = Point<int16_t>(new_width - 35, 55);
-		dimension = Point<int16_t>(position.x(), 32);
-	}
+    void UIBuffList::update_screen(int16_t new_width, int16_t) {
+        position = Point<int16_t>(new_width - 35, 55);
+        dimension = Point<int16_t>(position.x(), 32);
+    }
 
-	Cursor::State UIBuffList::send_cursor(bool pressed, Point<int16_t> cursorposition)
-	{
-		return UIElement::send_cursor(pressed, cursorposition);
-	}
+    Cursor::State UIBuffList::send_cursor(bool pressed, Point<int16_t> cursorposition) {
+        return UIElement::send_cursor(pressed, cursorposition);
+    }
 
-	UIElement::Type UIBuffList::get_type() const
-	{
-		return TYPE;
-	}
+    UIElement::Type UIBuffList::get_type() const {
+        return TYPE;
+    }
 
-	void UIBuffList::add_buff(int32_t buffid, int32_t duration)
-	{
-		icons.emplace(
-			std::piecewise_construct,
-			std::forward_as_tuple(buffid),
-			std::forward_as_tuple(buffid, duration)
-		);
-	}
+    void UIBuffList::add_buff(int32_t buffid, int32_t duration) {
+        icons.emplace(
+            std::piecewise_construct,
+            std::forward_as_tuple(buffid),
+            std::forward_as_tuple(buffid, duration)
+        );
+    }
 }

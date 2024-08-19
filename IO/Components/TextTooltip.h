@@ -22,21 +22,19 @@
 
 #include "../../Graphics/Text.h"
 
-namespace ms
-{
-	class TextTooltip : public Tooltip
-	{
-	public:
-		TextTooltip();
+namespace ms {
+    class TextTooltip : public Tooltip {
+    public:
+        TextTooltip();
 
-		void draw(Point<int16_t> position) const override;
+        void draw(Point<int16_t> position) const override;
 
-		bool set_text(std::string text, uint16_t maxwidth = 340, bool formatted = true, int16_t line_adj = 2);
+        bool set_text(std::string text, uint16_t maxwidth = 340, bool formatted = true, int16_t line_adj = 2);
 
-	private:
-		MapleFrame frame;
-		Texture cover;
-		std::string text;
-		Text text_label;
-	};
+    private:
+        MapleFrame frame;
+        Texture cover;
+        std::string text;
+        Text text_label;
+    };
 }

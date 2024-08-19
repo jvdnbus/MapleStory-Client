@@ -17,40 +17,36 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "EquipStat.h"
 
-namespace ms
-{
-	namespace EquipStat
-	{
-		Id by_id(size_t id)
-		{
-			return static_cast<Id>(id);
-		}
+namespace ms {
+    namespace EquipStat {
+        Id by_id(size_t id) {
+            return static_cast<Id>(id);
+        }
 
-		int32_t value_of(Id value)
-		{
-			return value;
-		}
+        int32_t value_of(Id value) {
+            return value;
+        }
 
-		const char* names[Id::LENGTH] =
-		{
-			"STR",
-			"DEX",
-			"INT",
-			"LUK",
-			"MaxHP",
-			"MaxMP",
-			"Attack Power",
-			"Magic Attack",
-			"Defense",
+        const char* names[LENGTH] =
+        {
+            "STR",
+            "DEX",
+            "INT",
+            "LUK",
+            "MaxHP",
+            "MaxMP",
+            "Attack Power",
+            "Magic Attack",
+            "Defense",
 
-			// TODO: Does current GMS use these anymore?
-			"MAGIC DEFENSE",
-			"ACCURACY",
-			"AVOID",
-			"HANDS",
+            // TODO: Does current GMS use these anymore?
+            "MAGIC DEFENSE",
+            "ACCURACY",
+            "AVOID",
+            "HANDS",
 
-			"Speed",
-			"Jump"
-		};
-	}
+            "Speed",
+            "Jump"
+        };
+    }
 }

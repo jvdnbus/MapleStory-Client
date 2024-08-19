@@ -21,79 +21,74 @@
 
 #include "../Components/Charset.h"
 
-namespace ms
-{
-	class UIChat : public UIDragElement<PosMAPLECHAT>
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::CHAT;
-		static constexpr bool FOCUSED = false;
-		static constexpr bool TOGGLED = true;
+namespace ms {
+    class UIChat : public UIDragElement<PosMAPLECHAT> {
+    public:
+        static constexpr Type TYPE = CHAT;
+        static constexpr bool FOCUSED = false;
+        static constexpr bool TOGGLED = true;
 
-		UIChat();
+        UIChat();
 
-		void draw(float inter) const override;
+        void draw(float inter) const override;
 
-		void send_key(int32_t keycode, bool pressed, bool escape) override;
+        void send_key(int32_t keycode, bool pressed, bool escape) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-	protected:
-		Button::State button_pressed(uint16_t buttonid) override;
+    protected:
+        Button::State button_pressed(uint16_t buttonid) override;
 
-	private:
-		void close();
+    private:
+        void close();
 
-		enum Buttons : uint16_t
-		{
-			CLOSE,
-			CHAT_DUO,
-			CHAT_FRIEND,
-			CHAT_RANDOM
-		};
+        enum Buttons : uint16_t {
+            CLOSE,
+            CHAT_DUO,
+            CHAT_FRIEND,
+            CHAT_RANDOM
+        };
 
-		bool show_weekly;
-		Point<int16_t> rank_shift;
-		Point<int16_t> name_shift;
-		Point<int16_t> origin_left;
-		Point<int16_t> origin_right;
-		Charset charset;
-		Text name_left;
-		Text name_right;
-	};
+        bool show_weekly;
+        Point<int16_t> rank_shift;
+        Point<int16_t> name_shift;
+        Point<int16_t> origin_left;
+        Point<int16_t> origin_right;
+        Charset charset;
+        Text name_left;
+        Text name_right;
+    };
 
-	class UIRank : public UIDragElement<PosMAPLECHAT>
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::CHATRANK;
-		static constexpr bool FOCUSED = false;
-		static constexpr bool TOGGLED = true;
+    class UIRank : public UIDragElement<PosMAPLECHAT> {
+    public:
+        static constexpr Type TYPE = CHATRANK;
+        static constexpr bool FOCUSED = false;
+        static constexpr bool TOGGLED = true;
 
-		UIRank();
+        UIRank();
 
-		void draw(float inter) const override;
+        void draw(float inter) const override;
 
-		void send_key(int32_t keycode, bool pressed, bool escape) override;
+        void send_key(int32_t keycode, bool pressed, bool escape) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-	protected:
-		Button::State button_pressed(uint16_t buttonid) override;
+    protected:
+        Button::State button_pressed(uint16_t buttonid) override;
 
-	private:
-		void close();
+    private:
+        void close();
 
-		enum Buttons : uint16_t
-		{
-			CLOSE
-		};
+        enum Buttons : uint16_t {
+            CLOSE
+        };
 
-		Point<int16_t> rank_shift;
-		Point<int16_t> name_shift;
-		Point<int16_t> origin_left;
-		Point<int16_t> origin_right;
-		Charset charset;
-		Text name_left;
-		Text name_right;
-	};
+        Point<int16_t> rank_shift;
+        Point<int16_t> name_shift;
+        Point<int16_t> origin_left;
+        Point<int16_t> origin_right;
+        Charset charset;
+        Text name_left;
+        Text name_right;
+    };
 }

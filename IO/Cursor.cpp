@@ -23,73 +23,62 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	Cursor::Cursor()
-	{
-		state = Cursor::State::IDLE;
-		hide_counter = 0;
-	}
+namespace ms {
+    Cursor::Cursor() {
+        state = IDLE;
+        hide_counter = 0;
+    }
 
-	void Cursor::init()
-	{
-		nl::node src = nl::nx::UI["Basic.img"]["Cursor"];
+    void Cursor::init() {
+        nl::node src = nl::nx::UI["Basic.img"]["Cursor"];
 
-		for (auto iter : animations)
-			iter.second = src[iter.first];
-	}
+        for (auto iter : animations)
+            iter.second = src[iter.first];
+    }
 
-	void Cursor::draw(float alpha) const
-	{
-		constexpr int64_t HIDE_AFTER = HIDE_TIME / Constants::TIMESTEP;
+    void Cursor::draw(float alpha) const {
+        constexpr int64_t HIDE_AFTER = HIDE_TIME / Constants::TIMESTEP;
 
-		if (hide_counter < HIDE_AFTER)
-			animations[state].draw(position, alpha);
-	}
+        if (hide_counter < HIDE_AFTER)
+            animations[state].draw(position, alpha);
+    }
 
-	void Cursor::update()
-	{
-		animations[state].update();
+    void Cursor::update() {
+        animations[state].update();
 
-		switch (state)
-		{
-		case Cursor::State::CANCLICK:
-		case Cursor::State::CANCLICK2:
-		case Cursor::State::CANGRAB:
-		case Cursor::State::CLICKING:
-		case Cursor::State::GRABBING:
-			hide_counter = 0;
-			break;
-		default:
-			hide_counter++;
-			break;
-		}
-	}
+        switch (state) {
+        case CANCLICK:
+        case CANCLICK2:
+        case CANGRAB:
+        case CLICKING:
+        case GRABBING:
+            hide_counter = 0;
+            break;
+        default:
+            hide_counter++;
+            break;
+        }
+    }
 
-	void Cursor::set_state(State s)
-	{
-		if (state != s)
-		{
-			state = s;
+    void Cursor::set_state(State s) {
+        if (state != s) {
+            state = s;
 
-			animations[state].reset();
-			hide_counter = 0;
-		}
-	}
+            animations[state].reset();
+            hide_counter = 0;
+        }
+    }
 
-	void Cursor::set_position(Point<int16_t> cursor_position)
-	{
-		position = cursor_position;
-		hide_counter = 0;
-	}
+    void Cursor::set_position(Point<int16_t> cursor_position) {
+        position = cursor_position;
+        hide_counter = 0;
+    }
 
-	Cursor::State Cursor::get_state() const
-	{
-		return state;
-	}
+    Cursor::State Cursor::get_state() const {
+        return state;
+    }
 
-	Point<int16_t> Cursor::get_position() const
-	{
-		return position;
-	}
+    Point<int16_t> Cursor::get_position() const {
+        return position;
+    }
 }

@@ -26,78 +26,76 @@
 
 #include "../../Character/Inventory/Equip.h"
 
-namespace ms
-{
-	class EquipTooltip : public Tooltip
-	{
-	public:
-		EquipTooltip();
+namespace ms {
+    class EquipTooltip : public Tooltip {
+    public:
+        EquipTooltip();
 
-		void set_equip(Tooltip::Parent parent, int16_t invpos);
-		void draw(Point<int16_t> position) const override;
-		void draw_preview(Point<int16_t> position) const;
+        void set_equip(Parent parent, int16_t invpos);
+        void draw(Point<int16_t> position) const override;
+        void draw_preview(Point<int16_t> position) const;
 
-	private:
-		int16_t invpos;
-		int16_t invpos_preview;
-		int16_t height;
-		int16_t height_preview;
-		bool hasdesc;
-		bool hasdesc_preview;
-		bool hasslots;
-		bool hasslots_preview;
-		bool is_weapon;
-		bool is_weapon_preview;
-		EnumMap<MapleStat::Id, std::string> reqstatstrings;
-		EnumMap<MapleStat::Id, std::string> reqstatstrings_preview;
-		Texture itemicon;
-		Texture itemicon_preview;
+    private:
+        int16_t invpos;
+        int16_t invpos_preview;
+        int16_t height;
+        int16_t height_preview;
+        bool hasdesc;
+        bool hasdesc_preview;
+        bool hasslots;
+        bool hasslots_preview;
+        bool is_weapon;
+        bool is_weapon_preview;
+        EnumMap<MapleStat::Id, std::string> reqstatstrings;
+        EnumMap<MapleStat::Id, std::string> reqstatstrings_preview;
+        Texture itemicon;
+        Texture itemicon_preview;
 
-		Text name;
-		Text name_preview;
-		Text desc;
-		Text desc_preview;
-		Text potflag;
-		Text potflag_preview;
-		Text category;
-		Text category_preview;
-		Text wepspeed;
-		Text wepspeed_preview;
-		Text slots;
-		Text slots_preview;
-		Text hammers;
-		Text hammers_preview;
-		Text atkinc;
-		Text atkinc_preview;
-		EnumMap<EquipStat::Id, Text> statlabels;
-		EnumMap<EquipStat::Id, Text> statlabels_preview;
+        Text name;
+        Text name_preview;
+        Text desc;
+        Text desc_preview;
+        Text potflag;
+        Text potflag_preview;
+        Text category;
+        Text category_preview;
+        Text wepspeed;
+        Text wepspeed_preview;
+        Text slots;
+        Text slots_preview;
+        Text hammers;
+        Text hammers_preview;
+        Text atkinc;
+        Text atkinc_preview;
+        EnumMap<EquipStat::Id, Text> statlabels;
+        EnumMap<EquipStat::Id, Text> statlabels_preview;
 
-		Texture top;
-		Texture mid;
-		Texture line;
-		Texture bot;
-		Texture base;
+        Texture top;
+        Texture mid;
+        Texture line;
+        Texture bot;
+        Texture base;
 
-		EnumMap<Equip::Potential, Texture> potential;
-		Equip::Potential prank;
-		Equip::Potential prank_preview;
+        EnumMap<Equip::Potential, Texture> potential;
+        Equip::Potential prank;
+        Equip::Potential prank_preview;
 
-		Texture cover;
-		Texture itemcover;
-		BoolPair<Texture> type;
+        Texture cover;
+        Texture itemcover;
+        BoolPair<Texture> type;
 
-		std::vector<MapleStat::Id> requirements;
-		EnumMap<MapleStat::Id, BoolPair<Texture>> reqstattextures;
-		EnumMap<MapleStat::Id, bool> canequip;
-		EnumMap<MapleStat::Id, bool> canequip_preview;
-		EnumMap<MapleStat::Id, Point<int16_t>> reqstatpositions;
-		BoolPair<Charset> reqset;
-		BoolPair<Charset> lvset;
-		BoolPair<Charset> atkincset;
+        std::vector<MapleStat::Id> requirements;
+        EnumMap<MapleStat::Id, BoolPair<Texture>> reqstattextures;
+        EnumMap<MapleStat::Id, bool> canequip;
+        EnumMap<MapleStat::Id, bool> canequip_preview;
+        EnumMap<MapleStat::Id, Point<int16_t>> reqstatpositions;
+        BoolPair<Charset> reqset;
+        BoolPair<Charset> lvset;
+        BoolPair<Charset> atkincset;
 
-		Texture jobsback;
-		BoolPair<std::map<uint8_t, Texture>> jobs;
-		std::vector<uint8_t> okjobs;
-		std::vector<uint8_t> okjobs_preview;
-	};
+        Texture jobsback;
+        BoolPair<std::map<uint8_t, Texture>> jobs;
+        std::vector<uint8_t> okjobs;
+        std::vector<uint8_t> okjobs_preview;
+    };
 }

@@ -19,119 +19,101 @@
 
 #include "../Audio/Audio.h"
 
-namespace ms
-{
-	UIElement::UIElement(Point<int16_t> p, Point<int16_t> d, bool a) : position(p), dimension(d), active(a) {}
-	UIElement::UIElement(Point<int16_t> p, Point<int16_t> d) : UIElement(p, d, true) {}
-	UIElement::UIElement() : UIElement(Point<int16_t>(), Point<int16_t>()) {}
+namespace ms {
+    UIElement::UIElement(Point<int16_t> p, Point<int16_t> d, bool a) : position(p), dimension(d), active(a) {
+    }
 
-	void UIElement::draw(float alpha) const
-	{
-		draw_sprites(alpha);
-		draw_buttons(alpha);
-	}
+    UIElement::UIElement(Point<int16_t> p, Point<int16_t> d) : UIElement(p, d, true) {
+    }
 
-	void UIElement::draw_sprites(float alpha) const
-	{
-		for (const Sprite& sprite : sprites)
-			sprite.draw(position, alpha);
-	}
+    UIElement::UIElement() : UIElement(Point<int16_t>(), Point<int16_t>()) {
+    }
 
-	void UIElement::draw_buttons(float) const
-	{
-		for (auto& iter : buttons)
-			if (const Button* button = iter.second.get())
-				button->draw(position);
-	}
+    void UIElement::draw(float alpha) const {
+        draw_sprites(alpha);
+        draw_buttons(alpha);
+    }
 
-	void UIElement::update()
-	{
-		for (auto& sprite : sprites)
-			sprite.update();
+    void UIElement::draw_sprites(float alpha) const {
+        for (const Sprite& sprite : sprites)
+            sprite.draw(position, alpha);
+    }
 
-		for (auto& iter : buttons)
-			if (Button* button = iter.second.get())
-				button->update();
-	}
+    void UIElement::draw_buttons(float) const {
+        for (auto& iter : buttons)
+            if (const Button* button = iter.second.get())
+                button->draw(position);
+    }
 
-	void UIElement::makeactive()
-	{
-		active = true;
-	}
+    void UIElement::update() {
+        for (auto& sprite : sprites)
+            sprite.update();
 
-	void UIElement::deactivate()
-	{
-		active = false;
-	}
+        for (auto& iter : buttons)
+            if (Button* button = iter.second.get())
+                button->update();
+    }
 
-	bool UIElement::is_active() const
-	{
-		return active;
-	}
+    void UIElement::makeactive() {
+        active = true;
+    }
 
-	void UIElement::toggle_active()
-	{
-		if (active)
-			deactivate();
-		else
-			makeactive();
-	}
+    void UIElement::deactivate() {
+        active = false;
+    }
 
-	bool UIElement::is_in_range(Point<int16_t> cursor_position) const
-	{
-		auto bounds = Rectangle<int16_t>(position, position + dimension);
+    bool UIElement::is_active() const {
+        return active;
+    }
 
-		return bounds.contains(cursor_position);
-	}
+    void UIElement::toggle_active() {
+        if (active)
+            deactivate();
+        else
+            makeactive();
+    }
 
-	void UIElement::remove_cursor()
-	{
-		for (auto& btit : buttons)
-		{
-			auto button = btit.second.get();
+    bool UIElement::is_in_range(Point<int16_t> cursor_position) const {
+        auto bounds = Rectangle<int16_t>(position, position + dimension);
 
-			if (button->get_state() == Button::State::MOUSEOVER)
-				button->set_state(Button::State::NORMAL);
-		}
-	}
+        return bounds.contains(cursor_position);
+    }
 
-	Cursor::State UIElement::send_cursor(bool clicked, Point<int16_t> cursor_position)
-	{
-		Cursor::State ret = clicked ? Cursor::State::CLICKING : Cursor::State::IDLE;
+    void UIElement::remove_cursor() {
+        for (auto& btit : buttons) {
+            auto button = btit.second.get();
 
-		for (auto& btit : buttons)
-		{
-			if (btit.second->is_active() && btit.second->bounds(position).contains(cursor_position))
-			{
-				if (btit.second->get_state() == Button::State::NORMAL)
-				{
-					Sound(Sound::Name::BUTTONOVER).play();
+            if (button->get_state() == Button::State::MOUSEOVER)
+                button->set_state(Button::State::NORMAL);
+        }
+    }
 
-					btit.second->set_state(Button::State::MOUSEOVER);
-					ret = Cursor::State::CANCLICK;
-				}
-				else if (btit.second->get_state() == Button::State::MOUSEOVER)
-				{
-					if (clicked)
-					{
-						Sound(Sound::Name::BUTTONCLICK).play();
+    Cursor::State UIElement::send_cursor(bool clicked, Point<int16_t> cursor_position) {
+        Cursor::State ret = clicked ? Cursor::State::CLICKING : Cursor::State::IDLE;
 
-						btit.second->set_state(button_pressed(btit.first));
+        for (auto& btit : buttons) {
+            if (btit.second->is_active() && btit.second->bounds(position).contains(cursor_position)) {
+                if (btit.second->get_state() == Button::State::NORMAL) {
+                    Sound(Sound::Name::BUTTONOVER).play();
 
-						ret = Cursor::State::IDLE;
-					}
-					else
-					{
-						ret = Cursor::State::CANCLICK;
-					}
-				}
-			}
-			else if (btit.second->get_state() == Button::State::MOUSEOVER)
-			{
-				btit.second->set_state(Button::State::NORMAL);
-			}
-		}
+                    btit.second->set_state(Button::State::MOUSEOVER);
+                    ret = Cursor::State::CANCLICK;
+                } else if (btit.second->get_state() == Button::State::MOUSEOVER) {
+                    if (clicked) {
+                        Sound(Sound::Name::BUTTONCLICK).play();
 
-		return ret;
-	}
+                        btit.second->set_state(button_pressed(btit.first));
+
+                        ret = Cursor::State::IDLE;
+                    } else {
+                        ret = Cursor::State::CANCLICK;
+                    }
+                }
+            } else if (btit.second->get_state() == Button::State::MOUSEOVER) {
+                btit.second->set_state(Button::State::NORMAL);
+            }
+        }
+
+        return ret;
+    }
 }

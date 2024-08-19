@@ -19,15 +19,13 @@
 
 #include "../PacketHandler.h"
 
-namespace ms
-{
-	// Handler for entering the Cash Shop
-	class SetCashShopHandler : public PacketHandler
-	{
-	public:
-		void handle(InPacket& recv) const override;
+namespace ms {
+    // Handler for entering the Cash Shop
+    class SetCashShopHandler : public PacketHandler {
+    public:
+        void handle(InPacket& recv) override;
 
-	private:
-		void transition() const;
-	};
+    private:
+        void transition() const;
+    };
 }

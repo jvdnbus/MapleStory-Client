@@ -19,106 +19,89 @@
 
 #include "../Constants.h"
 
-namespace ms
-{
-	OtherChar::OtherChar(int32_t charid, const CharLook& look, uint16_t level, int16_t job, const std::string& name, int8_t stance, Point<int16_t> position) : Char(charid, look, name), level(level), job(job)
-	{
-		set_position(position);
+namespace ms {
+    OtherChar::OtherChar(int32_t charid, const CharLook& look, uint16_t level, int16_t job, const std::string& name,
+                         int8_t stance, Point<int16_t> position) : Char(charid, look, name), level(level), job(job) {
+        set_position(position);
 
-		lastmove.xpos = position.x();
-		lastmove.ypos = position.y();
-		lastmove.newstate = stance;
-		timer = 0;
+        lastmove.xpos = position.x();
+        lastmove.ypos = position.y();
+        lastmove.newstate = stance;
+        timer = 0;
 
-		attackspeed = 6;
-		attacking = false;
-	}
+        attackspeed = 6;
+        attacking = false;
+    }
 
-	int8_t OtherChar::update(const Physics& physics)
-	{
-		if (timer > 1)
-		{
-			timer--;
-		}
-		else if (timer == 1)
-		{
-			if (!movements.empty())
-			{
-				lastmove = movements.front();
-				movements.pop();
-			}
-			else
-			{
-				timer = 0;
-			}
-		}
+    int8_t OtherChar::update(const Physics& physics) {
+        if (timer > 1) {
+            timer--;
+        } else if (timer == 1) {
+            if (!movements.empty()) {
+                lastmove = movements.front();
+                movements.pop();
+            } else {
+                timer = 0;
+            }
+        }
 
-		if (!attacking)
-		{
-			uint8_t laststate = lastmove.newstate;
-			set_state(laststate);
-		}
+        if (!attacking) {
+            uint8_t laststate = lastmove.newstate;
+            set_state(laststate);
+        }
 
-		phobj.hspeed = lastmove.xpos - phobj.crnt_x();
-		phobj.vspeed = lastmove.ypos - phobj.crnt_y();
-		phobj.move();
+        phobj.hspeed = lastmove.xpos - phobj.crnt_x();
+        phobj.vspeed = lastmove.ypos - phobj.crnt_y();
+        phobj.move();
 
-		physics.get_fht().update_fh(phobj);
+        physics.get_fht().update_fh(phobj);
 
-		bool aniend = Char::update(physics, get_stancespeed());
+        bool aniend = Char::update(physics, get_stancespeed());
 
-		if (aniend && attacking)
-			attacking = false;
+        if (aniend && attacking)
+            attacking = false;
 
-		return get_layer();
-	}
+        return get_layer();
+    }
 
-	void OtherChar::send_movement(const std::vector<Movement>& newmoves)
-	{
-		movements.push(newmoves.back());
+    void OtherChar::send_movement(const std::vector<Movement>& newmoves) {
+        movements.push(newmoves.back());
 
-		if (timer == 0)
-		{
-			constexpr uint16_t DELAY = 50;
-			timer = DELAY;
-		}
-	}
+        if (timer == 0) {
+            constexpr uint16_t DELAY = 50;
+            timer = DELAY;
+        }
+    }
 
-	void OtherChar::update_skill(int32_t skillid, uint8_t skilllevel)
-	{
-		skilllevels[skillid] = skilllevel;
-	}
+    void OtherChar::update_skill(int32_t skillid, uint8_t skilllevel) {
+        skilllevels[skillid] = skilllevel;
+    }
 
-	void OtherChar::update_speed(uint8_t as)
-	{
-		attackspeed = as;
-	}
+    void OtherChar::update_speed(uint8_t as) {
+        attackspeed = as;
+    }
 
-	void OtherChar::update_look(const LookEntry& newlook)
-	{
-		look = newlook;
+    void OtherChar::update_look(const LookEntry& newlook) {
+        look = newlook;
 
-		uint8_t laststate = lastmove.newstate;
-		set_state(laststate);
-	}
+        uint8_t laststate = lastmove.newstate;
+        set_state(laststate);
+    }
 
-	int8_t OtherChar::get_integer_attackspeed() const
-	{
-		return attackspeed;
-	}
+    int8_t OtherChar::get_integer_attackspeed() const {
+        return attackspeed;
+    }
 
-	uint16_t OtherChar::get_level() const
-	{
-		return level;
-	}
+    uint16_t OtherChar::get_level() const {
+        return level;
+    }
 
-	int32_t OtherChar::get_skilllevel(int32_t skillid) const
-	{
-		auto iter = skilllevels.find(skillid);
+    int32_t OtherChar::get_skilllevel(int32_t skillid) const {
+        auto iter = skilllevels.find(skillid);
 
-		if (iter == skilllevels.end())
-			return 0;
+        if (iter == skilllevels.end())
+            return 0;
 
-		return iter->second;
-	}
+        return iter->second;
+    }
 }

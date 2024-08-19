@@ -26,234 +26,204 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	Sound::Sound(Name name)
-	{
-		id = soundids[name];
-	}
+namespace ms {
+    Sound::Sound(Name name) {
+        id = soundids[name];
+    }
 
-	Sound::Sound(int32_t itemid)
-	{
-		auto fitemid = format_id(itemid);
+    Sound::Sound(int32_t itemid) {
+        auto fitemid = format_id(itemid);
 
-		if (itemids.find(fitemid) != itemids.end())
-		{
-			id = itemids.at(fitemid);
-		}
-		else
-		{
-			auto pid = (10000 * (itemid / 10000));
-			auto fpid = format_id(pid);
+        if (itemids.find(fitemid) != itemids.end()) {
+            id = itemids.at(fitemid);
+        } else {
+            auto pid = (10000 * (itemid / 10000));
+            auto fpid = format_id(pid);
 
-			if (itemids.find(fpid) != itemids.end())
-				id = itemids.at(fpid);
-			else
-				id = itemids.at("02000000");
-		}
-	}
+            if (itemids.find(fpid) != itemids.end())
+                id = itemids.at(fpid);
+            else
+                id = itemids.at("02000000");
+        }
+    }
 
-	Sound::Sound(nl::node src)
-	{
-		id = add_sound(src);
-	}
+    Sound::Sound(nl::node src) {
+        id = add_sound(src);
+    }
 
-	Sound::Sound()
-	{
-		id = 0;
-	}
+    Sound::Sound() {
+        id = 0;
+    }
 
-	void Sound::play() const
-	{
-		if (id > 0)
-			play(id);
-	}
+    void Sound::play() const {
+        if (id > 0)
+            play(id);
+    }
 
-	Error Sound::init()
-	{
-		if (!BASS_Init(-1, 44100, 0, nullptr, 0))
-			return Error::Code::AUDIO;
+    Error Sound::init() {
+        if (!BASS_Init(-1, 44100, 0, nullptr, nullptr))
+            return Error::Code::AUDIO;
 
-		nl::node uisrc = nl::nx::Sound["UI.img"];
+        nl::node uisrc = nl::nx::Sound["UI.img"];
 
-		add_sound(Sound::Name::BUTTONCLICK, uisrc["BtMouseClick"]);
-		add_sound(Sound::Name::BUTTONOVER, uisrc["BtMouseOver"]);
-		add_sound(Sound::Name::CHARSELECT, uisrc["CharSelect"]);
-		add_sound(Sound::Name::DLGNOTICE, uisrc["DlgNotice"]);
-		add_sound(Sound::Name::MENUDOWN, uisrc["MenuDown"]);
-		add_sound(Sound::Name::MENUUP, uisrc["MenuUp"]);
-		add_sound(Sound::Name::RACESELECT, uisrc["RaceSelect"]);
-		add_sound(Sound::Name::SCROLLUP, uisrc["ScrollUp"]);
-		add_sound(Sound::Name::SELECTMAP, uisrc["SelectMap"]);
-		add_sound(Sound::Name::TAB, uisrc["Tab"]);
-		add_sound(Sound::Name::WORLDSELECT, uisrc["WorldSelect"]);
-		add_sound(Sound::Name::DRAGSTART, uisrc["DragStart"]);
-		add_sound(Sound::Name::DRAGEND, uisrc["DragEnd"]);
-		add_sound(Sound::Name::WORLDMAPOPEN, uisrc["WorldmapOpen"]);
-		add_sound(Sound::Name::WORLDMAPCLOSE, uisrc["WorldmapClose"]);
+        add_sound(BUTTONCLICK, uisrc["BtMouseClick"]);
+        add_sound(BUTTONOVER, uisrc["BtMouseOver"]);
+        add_sound(CHARSELECT, uisrc["CharSelect"]);
+        add_sound(DLGNOTICE, uisrc["DlgNotice"]);
+        add_sound(MENUDOWN, uisrc["MenuDown"]);
+        add_sound(MENUUP, uisrc["MenuUp"]);
+        add_sound(RACESELECT, uisrc["RaceSelect"]);
+        add_sound(SCROLLUP, uisrc["ScrollUp"]);
+        add_sound(SELECTMAP, uisrc["SelectMap"]);
+        add_sound(TAB, uisrc["Tab"]);
+        add_sound(WORLDSELECT, uisrc["WorldSelect"]);
+        add_sound(DRAGSTART, uisrc["DragStart"]);
+        add_sound(DRAGEND, uisrc["DragEnd"]);
+        add_sound(WORLDMAPOPEN, uisrc["WorldmapOpen"]);
+        add_sound(WORLDMAPCLOSE, uisrc["WorldmapClose"]);
 
-		nl::node gamesrc = nl::nx::Sound["Game.img"];
+        nl::node gamesrc = nl::nx::Sound["Game.img"];
 
-		add_sound(Sound::Name::GAMESTART, gamesrc["GameIn"]);
-		add_sound(Sound::Name::JUMP, gamesrc["Jump"]);
-		add_sound(Sound::Name::DROP, gamesrc["DropItem"]);
-		add_sound(Sound::Name::PICKUP, gamesrc["PickUpItem"]);
-		add_sound(Sound::Name::PORTAL, gamesrc["Portal"]);
-		add_sound(Sound::Name::LEVELUP, gamesrc["LevelUp"]);
-		add_sound(Sound::Name::TOMBSTONE, gamesrc["Tombstone"]);
+        add_sound(GAMESTART, gamesrc["GameIn"]);
+        add_sound(JUMP, gamesrc["Jump"]);
+        add_sound(DROP, gamesrc["DropItem"]);
+        add_sound(PICKUP, gamesrc["PickUpItem"]);
+        add_sound(PORTAL, gamesrc["Portal"]);
+        add_sound(LEVELUP, gamesrc["LevelUp"]);
+        add_sound(TOMBSTONE, gamesrc["Tombstone"]);
 
-		nl::node itemsrc = nl::nx::Sound["Item.img"];
+        nl::node itemsrc = nl::nx::Sound["Item.img"];
 
-		for (auto node : itemsrc)
-			add_sound(node.name(), node["Use"]);
+        for (auto node : itemsrc)
+            add_sound(node.name(), node["Use"]);
 
-		uint8_t volume = Setting<SFXVolume>::get().load();
+        uint8_t volume = Setting<SFXVolume>::get().load();
 
-		if (!set_sfxvolume(volume))
-			return Error::Code::AUDIO;
+        if (!set_sfxvolume(volume))
+            return Error::Code::AUDIO;
 
-		return Error::Code::NONE;
-	}
+        return Error::Code::NONE;
+    }
 
-	void Sound::close()
-	{
-		BASS_Free();
-	}
+    void Sound::close() {
+        BASS_Free();
+    }
 
-	bool Sound::set_sfxvolume(uint8_t vol)
-	{
-		return BASS_SetConfig(BASS_CONFIG_GVOL_SAMPLE, vol * 100) == TRUE;
-	}
+    bool Sound::set_sfxvolume(uint8_t vol) {
+        return BASS_SetConfig(BASS_CONFIG_GVOL_SAMPLE, vol * 100) == TRUE;
+    }
 
-	void Sound::play(size_t id)
-	{
-		if (!samples.count(id))
-			return;
+    void Sound::play(size_t id) {
+        if (!samples.count(id))
+            return;
 
-		HCHANNEL channel = BASS_SampleGetChannel((HSAMPLE)samples.at(id), false);
-		BASS_ChannelPlay(channel, true);
-	}
+        HCHANNEL channel = BASS_SampleGetChannel(static_cast<HSAMPLE>(samples.at(id)), false);
+        BASS_ChannelPlay(channel, true);
+    }
 
-	size_t Sound::add_sound(nl::node src)
-	{
-		nl::audio ad = src;
+    size_t Sound::add_sound(nl::node src) {
+        nl::audio ad = src;
 
-		auto data = reinterpret_cast<const void*>(ad.data());
+        auto data = ad.data();
 
-		if (data)
-		{
-			size_t id = ad.id();
+        if (data) {
+            size_t id = ad.id();
 
-			if (samples.find(id) != samples.end())
-				return 0;
+            if (samples.find(id) != samples.end())
+                return 0;
 
-			samples[id] = BASS_SampleLoad(true, data, 82, (DWORD)ad.length(), 4, BASS_SAMPLE_OVER_POS);
+            samples[id] = BASS_SampleLoad(true, data, 82, ad.length(), 4, BASS_SAMPLE_OVER_POS);
 
-			return id;
-		}
-		else
-		{
-			return 0;
-		}
-	}
+            return id;
+        }
+        return 0;
+    }
 
-	void Sound::add_sound(Name name, nl::node src)
-	{
-		size_t id = add_sound(src);
+    void Sound::add_sound(Name name, nl::node src) {
+        size_t id = add_sound(src);
 
-		if (id)
-			soundids[name] = id;
-	}
+        if (id)
+            soundids[name] = id;
+    }
 
-	void Sound::add_sound(std::string itemid, nl::node src)
-	{
-		size_t id = add_sound(src);
+    void Sound::add_sound(std::string itemid, nl::node src) {
+        size_t id = add_sound(src);
 
-		if (id)
-			itemids[itemid] = id;
-	}
+        if (id)
+            itemids[itemid] = id;
+    }
 
-	std::string Sound::format_id(int32_t itemid)
-	{
-		std::string strid = std::to_string(itemid);
-		strid.insert(0, 8 - strid.size(), '0');
+    std::string Sound::format_id(int32_t itemid) {
+        std::string strid = std::to_string(itemid);
+        strid.insert(0, 8 - strid.size(), '0');
 
-		return strid;
-	}
+        return strid;
+    }
 
-	std::unordered_map<size_t, uint64_t> Sound::samples;
-	EnumMap<Sound::Name, size_t> Sound::soundids;
-	std::unordered_map<std::string, size_t> Sound::itemids;
+    std::unordered_map<size_t, uint64_t> Sound::samples;
+    EnumMap<Sound::Name, size_t> Sound::soundids;
+    std::unordered_map<std::string, size_t> Sound::itemids;
 
-	Music::Music(std::string p)
-	{
-		path = p;
-	}
+    Music::Music(std::string p) {
+        path = p;
+    }
 
-	void Music::play() const
-	{
-		static HSTREAM stream = 0;
-		static std::string bgmpath = "";
+    void Music::play() const {
+        static HSTREAM stream = 0;
+        static std::string bgmpath = "";
 
-		if (path == bgmpath)
-			return;
+        if (path == bgmpath)
+            return;
 
-		nl::audio ad = nl::nx::Sound002.resolve(path);
-		auto data = reinterpret_cast<const void*>(ad.data());
+        nl::audio ad = nl::nx::Sound002.resolve(path);
+        auto data = ad.data();
 
-		if (data)
-		{
-			if (stream)
-			{
-				BASS_ChannelStop(stream);
-				BASS_StreamFree(stream);
-			}
+        if (data) {
+            if (stream) {
+                BASS_ChannelStop(stream);
+                BASS_StreamFree(stream);
+            }
 
-			stream = BASS_StreamCreateFile(true, data, 82, ad.length(), BASS_SAMPLE_FLOAT | BASS_SAMPLE_LOOP);
-			BASS_ChannelPlay(stream, true);
+            stream = BASS_StreamCreateFile(true, data, 82, ad.length(), BASS_SAMPLE_FLOAT | BASS_SAMPLE_LOOP);
+            BASS_ChannelPlay(stream, true);
 
-			bgmpath = path;
-		}
-	}
+            bgmpath = path;
+        }
+    }
 
-	void Music::play_once() const
-	{
-		static HSTREAM stream = 0;
-		static std::string bgmpath = "";
+    void Music::play_once() const {
+        static HSTREAM stream = 0;
+        static std::string bgmpath = "";
 
-		if (path == bgmpath)
-			return;
+        if (path == bgmpath)
+            return;
 
-		nl::audio ad = nl::nx::Sound002.resolve(path);
-		auto data = reinterpret_cast<const void*>(ad.data());
+        nl::audio ad = nl::nx::Sound002.resolve(path);
+        auto data = ad.data();
 
-		if (data)
-		{
-			if (stream)
-			{
-				BASS_ChannelStop(stream);
-				BASS_StreamFree(stream);
-			}
+        if (data) {
+            if (stream) {
+                BASS_ChannelStop(stream);
+                BASS_StreamFree(stream);
+            }
 
-			stream = BASS_StreamCreateFile(true, data, 82, ad.length(), BASS_SAMPLE_FLOAT);
-			BASS_ChannelPlay(stream, true);
+            stream = BASS_StreamCreateFile(true, data, 82, ad.length(), BASS_SAMPLE_FLOAT);
+            BASS_ChannelPlay(stream, true);
 
-			bgmpath = path;
-		}
-	}
+            bgmpath = path;
+        }
+    }
 
-	Error Music::init()
-	{
-		uint8_t volume = Setting<BGMVolume>::get().load();
+    Error Music::init() {
+        uint8_t volume = Setting<BGMVolume>::get().load();
 
-		if (!set_bgmvolume(volume))
-			return Error::Code::AUDIO;
+        if (!set_bgmvolume(volume))
+            return Error::Code::AUDIO;
 
-		return Error::Code::NONE;
-	}
+        return Error::Code::NONE;
+    }
 
-	bool Music::set_bgmvolume(uint8_t vol)
-	{
-		return BASS_SetConfig(BASS_CONFIG_GVOL_STREAM, vol * 100) == TRUE;
-	}
+    bool Music::set_bgmvolume(uint8_t vol) {
+        return BASS_SetConfig(BASS_CONFIG_GVOL_STREAM, vol * 100) == TRUE;
+    }
 }

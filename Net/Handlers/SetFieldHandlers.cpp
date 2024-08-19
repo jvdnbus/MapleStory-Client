@@ -30,107 +30,101 @@
 
 #include "../../IO/UITypes/UICharSelect.h"
 
-namespace ms
-{
-	void SetFieldHandler::transition(int32_t mapid, uint8_t portalid) const
-	{
-		float fadestep = 0.025f;
+namespace ms {
+    void SetFieldHandler::transition(int32_t mapid, uint8_t portalid) const {
+        float fadestep = 0.025f;
 
-		Window::get().fadeout(
-			fadestep,
-			[mapid, portalid]()
-			{
-				GraphicsGL::get().clear();
+        Window::get().fadeout(
+            fadestep,
+            [mapid, portalid]() {
+                GraphicsGL::get().clear();
 
-				Stage::get().load(mapid, portalid);
+                Stage::get().load(mapid, portalid);
 
-				UI::get().enable();
-				Timer::get().start();
-				GraphicsGL::get().unlock();
+                UI::get().enable();
+                Timer::get().start();
+                GraphicsGL::get().unlock();
 
-				Stage::get().transfer_player();
-			});
+                Stage::get().transfer_player();
+            });
 
-		GraphicsGL::get().lock();
-		Stage::get().clear();
-		Timer::get().start();
-	}
+        GraphicsGL::get().lock();
+        Stage::get().clear();
+        Timer::get().start();
+    }
 
-	void SetFieldHandler::handle(InPacket& recv) const
-	{
-		Constants::Constants::get().set_viewwidth(Setting<Width>::get().load());
-		Constants::Constants::get().set_viewheight(Setting<Height>::get().load());
+    void SetFieldHandler::handle(InPacket& recv) {
+        Constants::Constants::get().set_viewwidth(Setting<Width>::get().load());
+        Constants::Constants::get().set_viewheight(Setting<Height>::get().load());
 
-		int32_t channel = recv.read_int();
-		int8_t mode1 = recv.read_byte();
-		int8_t mode2 = recv.read_byte();
+        int32_t channel = recv.read_int();
+        int8_t mode1 = recv.read_byte();
+        int8_t mode2 = recv.read_byte();
 
-		if (mode1 == 0 && mode2 == 0)
-			change_map(recv, channel);
-		else
-			set_field(recv);
-	}
+        if (mode1 == 0 && mode2 == 0)
+            change_map(recv, channel);
+        else
+            set_field(recv);
+    }
 
-	void SetFieldHandler::change_map(InPacket& recv, int32_t) const
-	{
-		recv.skip(3);
+    void SetFieldHandler::change_map(InPacket& recv, int32_t) const {
+        recv.skip(3);
 
-		int32_t mapid = recv.read_int();
-		int8_t portalid = recv.read_byte();
+        int32_t mapid = recv.read_int();
+        int8_t portalid = recv.read_byte();
 
-		transition(mapid, portalid);
-	}
+        transition(mapid, portalid);
+    }
 
-	void SetFieldHandler::set_field(InPacket& recv) const
-	{
-		recv.skip(23);
+    void SetFieldHandler::set_field(InPacket& recv) const {
+        recv.skip(23);
 
-		int32_t cid = recv.read_int();
-		auto charselect = UI::get().get_element<UICharSelect>();
+        int32_t cid = recv.read_int();
+        auto charselect = UI::get().get_element<UICharSelect>();
 
-		if (!charselect)
-			return;
+        if (!charselect)
+            return;
 
-		const CharEntry& playerentry = charselect->get_character(cid);
+        const CharEntry& playerentry = charselect->get_character(cid);
 
-		if (playerentry.id != cid)
-			return;
+        if (playerentry.id != cid)
+            return;
 
-		Stage::get().loadplayer(playerentry);
+        Stage::get().loadplayer(playerentry);
 
-		LoginParser::parse_stats(recv);
+        LoginParser::parse_stats(recv);
 
-		Player& player = Stage::get().get_player();
+        Player& player = Stage::get().get_player();
 
-		recv.read_byte(); // 'buddycap'
+        recv.read_byte(); // 'buddycap'
 
-		if (recv.read_bool())
-			recv.read_string(); // 'linkedname'
+        if (recv.read_bool())
+            recv.read_string(); // 'linkedname'
 
-		CharacterParser::parse_inventory(recv, player.get_inventory());
-		CharacterParser::parse_skillbook(recv, player.get_skills());
-		CharacterParser::parse_cooldowns(recv, player);
-		CharacterParser::parse_questlog(recv, player.get_quests());
-		CharacterParser::parse_minigame(recv);
-		CharacterParser::parse_ring1(recv);
-		CharacterParser::parse_ring2(recv);
-		CharacterParser::parse_ring3(recv);
-		CharacterParser::parse_teleportrock(recv, player.get_teleportrock());
-		CharacterParser::parse_monsterbook(recv, player.get_monsterbook());
-		CharacterParser::parse_nyinfo(recv);
-		CharacterParser::parse_areainfo(recv);
+        CharacterParser::parse_inventory(recv, player.get_inventory());
+        CharacterParser::parse_skillbook(recv, player.get_skills());
+        CharacterParser::parse_cooldowns(recv, player);
+        CharacterParser::parse_questlog(recv, player.get_quests());
+        CharacterParser::parse_minigame(recv);
+        CharacterParser::parse_ring1(recv);
+        CharacterParser::parse_ring2(recv);
+        CharacterParser::parse_ring3(recv);
+        CharacterParser::parse_teleportrock(recv, player.get_teleportrock());
+        CharacterParser::parse_monsterbook(recv, player.get_monsterbook());
+        CharacterParser::parse_nyinfo(recv);
+        CharacterParser::parse_areainfo(recv);
 
-		player.recalc_stats(true);
+        player.recalc_stats(true);
 
-		PlayerUpdatePacket().dispatch();
+        PlayerUpdatePacket().dispatch();
 
-		uint8_t portalid = player.get_stats().get_portal();
-		int32_t mapid = player.get_stats().get_mapid();
+        uint8_t portalid = player.get_stats().get_portal();
+        int32_t mapid = player.get_stats().get_mapid();
 
-		transition(mapid, portalid);
+        transition(mapid, portalid);
 
-		Sound(Sound::Name::GAMESTART).play();
+        Sound(Sound::Name::GAMESTART).play();
 
-		UI::get().change_state(UI::State::GAME);
-	}
+        UI::get().change_state(UI::State::GAME);
+    }
 }

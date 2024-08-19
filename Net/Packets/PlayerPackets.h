@@ -23,50 +23,43 @@
 
 #include "../../IO/UITypes/UIKeyConfig.h"
 
-namespace ms
-{
-	// Requests a stat increase by spending AP
-	// Opcode: SPEND_AP(87)
-	class SpendApPacket : public OutPacket
-	{
-	public:
-		SpendApPacket(MapleStat::Id stat) : OutPacket(OutPacket::Opcode::SPEND_AP)
-		{
-			write_time();
-			write_int(MapleStat::codes[stat]);
-		}
-	};
+namespace ms {
+    // Requests a stat increase by spending AP
+    // Opcode: SPEND_AP(87)
+    class SpendApPacket : public OutPacket {
+    public:
+        SpendApPacket(MapleStat::Id stat) : OutPacket(SPEND_AP) {
+            write_time();
+            write_int(MapleStat::codes[stat]);
+        }
+    };
 
-	// Requests a skill level increase by spending SP
-	// Opcode: SPEND_SP(90)
-	class SpendSpPacket : public OutPacket
-	{
-	public:
-		SpendSpPacket(int32_t skill_id) : OutPacket(OutPacket::Opcode::SPEND_SP)
-		{
-			write_time();
-			write_int(skill_id);
-		}
-	};
+    // Requests a skill level increase by spending SP
+    // Opcode: SPEND_SP(90)
+    class SpendSpPacket : public OutPacket {
+    public:
+        SpendSpPacket(int32_t skill_id) : OutPacket(SPEND_SP) {
+            write_time();
+            write_int(skill_id);
+        }
+    };
 
-	// Requests the server to change key mappings
-	// Opcode: CHANGE_KEYMAP(135)
-	class ChangeKeyMapPacket : public OutPacket
-	{
-	public:
-		ChangeKeyMapPacket(std::vector<std::tuple<KeyConfig::Key, KeyType::Id, int32_t>> updated_actions) : OutPacket(OutPacket::Opcode::CHANGE_KEYMAP)
-		{
-			write_int(0); // mode
-			write_int(updated_actions.size()); // Number of key changes
+    // Requests the server to change key mappings
+    // Opcode: CHANGE_KEYMAP(135)
+    class ChangeKeyMapPacket : public OutPacket {
+    public:
+        ChangeKeyMapPacket(std::vector<std::tuple<KeyConfig::Key, KeyType::Id, int32_t>> updated_actions) : OutPacket(
+            CHANGE_KEYMAP) {
+            write_int(0); // mode
+            write_int(updated_actions.size()); // Number of key changes
 
-			for (size_t i = 0; i < updated_actions.size(); i++)
-			{
-				auto keymap = updated_actions[i];
+            for (size_t i = 0; i < updated_actions.size(); i++) {
+                auto keymap = updated_actions[i];
 
-				write_int(std::get<0>(keymap));		// key
-				write_byte(std::get<1>(keymap));	// type
-				write_int(std::get<2>(keymap));		// action
-			}
-		}
-	};
+                write_int(std::get<0>(keymap)); // key
+                write_byte(std::get<1>(keymap)); // type
+                write_int(std::get<2>(keymap)); // action
+            }
+        }
+    };
 }

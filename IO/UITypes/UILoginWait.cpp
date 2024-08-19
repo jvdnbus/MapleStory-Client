@@ -25,46 +25,42 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	UILoginWait::UILoginWait() : UILoginWait([]() {}) {}
+namespace ms {
+    UILoginWait::UILoginWait() : UILoginWait([]() {
+    }) {
+    }
 
-	UILoginWait::UILoginWait(std::function<void()> okhandler) : okhandler(okhandler)
-	{
-		nl::node Loading = nl::nx::UI["Login.img"]["Notice"]["Loading"];
-		nl::node backgrnd = Loading["backgrnd"];
+    UILoginWait::UILoginWait(std::function<void()> okhandler) : okhandler(okhandler) {
+        nl::node Loading = nl::nx::UI["Login.img"]["Notice"]["Loading"];
+        nl::node backgrnd = Loading["backgrnd"];
 
-		sprites.emplace_back(backgrnd, Point<int16_t>(112, 84));
-		sprites.emplace_back(Loading["circle"], Point<int16_t>(239, 154));
+        sprites.emplace_back(backgrnd, Point<int16_t>(112, 84));
+        sprites.emplace_back(Loading["circle"], Point<int16_t>(239, 154));
 
-		buttons[Buttons::BtCancel] = std::make_unique<MapleButton>(Loading["BtCancel"], Point<int16_t>(110, 80));
+        buttons[BtCancel] = std::make_unique<MapleButton>(Loading["BtCancel"], Point<int16_t>(110, 80));
 
-		position = Point<int16_t>(276, 229);
-		dimension = Texture(backgrnd).get_dimensions();
-	}
+        position = Point<int16_t>(276, 229);
+        dimension = Texture(backgrnd).get_dimensions();
+    }
 
-	UIElement::Type UILoginWait::get_type() const
-	{
-		return TYPE;
-	}
+    UIElement::Type UILoginWait::get_type() const {
+        return TYPE;
+    }
 
-	void UILoginWait::close()
-	{
-		deactivate();
-		okhandler();
-	}
+    void UILoginWait::close() {
+        deactivate();
+        okhandler();
+    }
 
-	std::function<void()> UILoginWait::get_handler()
-	{
-		return okhandler;
-	}
+    std::function<void()> UILoginWait::get_handler() {
+        return okhandler;
+    }
 
-	Button::State UILoginWait::button_pressed(uint16_t id)
-	{
-		Session::get().reconnect();
+    Button::State UILoginWait::button_pressed(uint16_t id) {
+        Session::get().reconnect();
 
-		close();
+        close();
 
-		return Button::State::NORMAL;
-	}
+        return Button::State::NORMAL;
+    }
 }

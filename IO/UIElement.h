@@ -22,94 +22,108 @@
 
 #include "../Graphics/Sprite.h"
 
-namespace ms
-{
-	// Base class for all types of user interfaces on screen.
-	class UIElement
-	{
-	public:
-		using UPtr = std::unique_ptr<UIElement>;
+namespace ms {
+    // Base class for all types of user interfaces on screen.
+    class UIElement {
+    public:
+        using UPtr = std::unique_ptr<UIElement>;
 
-		enum Type
-		{
-			NONE,
-			START,
-			LOGIN,
-			TOS,
-			GENDER,
-			WORLDSELECT,
-			REGION,
-			CHARSELECT,
-			LOGINWAIT,
-			RACESELECT,
-			CLASSCREATION,
-			SOFTKEYBOARD,
-			LOGINNOTICE,
-			LOGINNOTICE_CONFIRM,
-			STATUSMESSENGER,
-			STATUSBAR,
-			CHATBAR,
-			BUFFLIST,
-			NOTICE,
-			NPCTALK,
-			SHOP,
-			STATSINFO,
-			ITEMINVENTORY,
-			EQUIPINVENTORY,
-			SKILLBOOK,
-			QUESTLOG,
-			WORLDMAP,
-			USERLIST,
-			MINIMAP,
-			CHANNEL,
-			CHAT,
-			CHATRANK,
-			JOYPAD,
-			EVENT,
-			KEYCONFIG,
-			OPTIONMENU,
-			QUIT,
-			CHARINFO,
-			CASHSHOP,
-			NUM_TYPES
-		};
+        enum Type {
+            NONE,
+            START,
+            LOGIN,
+            TOS,
+            GENDER,
+            WORLDSELECT,
+            REGION,
+            CHARSELECT,
+            LOGINWAIT,
+            RACESELECT,
+            CLASSCREATION,
+            SOFTKEYBOARD,
+            LOGINNOTICE,
+            LOGINNOTICE_CONFIRM,
+            STATUSMESSENGER,
+            STATUSBAR,
+            CHATBAR,
+            BUFFLIST,
+            NOTICE,
+            NPCTALK,
+            SHOP,
+            STATSINFO,
+            ITEMINVENTORY,
+            EQUIPINVENTORY,
+            SKILLBOOK,
+            QUESTLOG,
+            WORLDMAP,
+            USERLIST,
+            MINIMAP,
+            CHANNEL,
+            CHAT,
+            CHATRANK,
+            JOYPAD,
+            EVENT,
+            KEYCONFIG,
+            OPTIONMENU,
+            QUIT,
+            CHARINFO,
+            CASHSHOP,
+            NUM_TYPES
+        };
 
-		virtual ~UIElement() {}
+        virtual ~UIElement() {
+        }
 
-		virtual void draw(float inter) const;
-		virtual void update();
-		virtual void update_screen(int16_t new_width, int16_t new_height) {}
+        virtual void draw(float inter) const;
+        virtual void update();
 
-		void makeactive();
-		void deactivate();
-		bool is_active() const;
+        virtual void update_screen(int16_t new_width, int16_t new_height) {
+        }
 
-		virtual void toggle_active();
-		virtual Button::State button_pressed(uint16_t buttonid) { return Button::State::DISABLED; }
-		virtual bool send_icon(const Icon& icon, Point<int16_t> cursor_position) { return true; }
+        void makeactive();
+        void deactivate();
+        bool is_active() const;
 
-		virtual void doubleclick(Point<int16_t> cursorpos) {}
-		virtual void rightclick(Point<int16_t> cursorpos) {}
-		virtual bool is_in_range(Point<int16_t> cursor_position) const;
-		virtual void remove_cursor();
-		virtual Cursor::State send_cursor(bool clicked, Point<int16_t> cursor_position);
-		virtual void send_scroll(double yoffset) {}
-		virtual void send_key(int32_t keycode, bool pressed, bool escape) {}
+        virtual void toggle_active();
 
-		virtual UIElement::Type get_type() const = 0;
+        virtual Button::State button_pressed(uint16_t buttonid) {
+            return Button::State::DISABLED;
+        }
 
-	protected:
-		UIElement(Point<int16_t> position, Point<int16_t> dimension, bool active);
-		UIElement(Point<int16_t> position, Point<int16_t> dimension);
-		UIElement();
+        virtual bool send_icon(const Icon& icon, Point<int16_t> cursor_position) {
+            return true;
+        }
 
-		void draw_sprites(float alpha) const;
-		void draw_buttons(float alpha) const;
+        virtual void doubleclick(Point<int16_t> cursorpos) {
+        }
 
-		std::map<uint16_t, std::unique_ptr<Button>> buttons;
-		std::vector<Sprite> sprites;
-		Point<int16_t> position;
-		Point<int16_t> dimension;
-		bool active;
-	};
+        virtual void rightclick(Point<int16_t> cursorpos) {
+        }
+
+        virtual bool is_in_range(Point<int16_t> cursor_position) const;
+        virtual void remove_cursor();
+        virtual Cursor::State send_cursor(bool clicked, Point<int16_t> cursor_position);
+
+        virtual void send_scroll(double yoffset) {
+        }
+
+        virtual void send_key(int32_t keycode, bool pressed, bool escape) {
+        }
+
+        virtual Type get_type() const = 0;
+
+    protected:
+        UIElement(Point<int16_t> position, Point<int16_t> dimension, bool active);
+        UIElement(Point<int16_t> position, Point<int16_t> dimension);
+        UIElement();
+
+        void draw_sprites(float alpha) const;
+        void draw_buttons(float alpha) const;
+
+        std::map<uint16_t, std::unique_ptr<Button>> buttons;
+        std::vector<Sprite> sprites;
+        Point<int16_t> position;
+        Point<int16_t> dimension;
+        bool active;
+    };
 }

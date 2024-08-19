@@ -20,56 +20,51 @@
 #include "../../Character/SkillId.h"
 #include "../../Gameplay/Stage.h"
 
-namespace ms
-{
-	AttackHandler::AttackHandler(Attack::Type t)
-	{
-		type = t;
-	}
+namespace ms {
+    AttackHandler::AttackHandler(Attack::Type t) {
+        type = t;
+    }
 
-	void AttackHandler::handle(InPacket& recv) const
-	{
-		int32_t cid = recv.read_int();
-		uint8_t count = recv.read_byte();
+    void AttackHandler::handle(InPacket& recv) {
+        int32_t cid = recv.read_int();
+        uint8_t count = recv.read_byte();
 
-		recv.skip(1);
+        recv.skip(1);
 
-		AttackResult attack;
-		attack.type = type;
-		attack.attacker = cid;
+        AttackResult attack;
+        attack.type = type;
+        attack.attacker = cid;
 
-		attack.level = recv.read_byte();
-		attack.skill = (attack.level > 0) ? recv.read_int() : 0;
+        attack.level = recv.read_byte();
+        attack.skill = (attack.level > 0) ? recv.read_int() : 0;
 
-		attack.display = recv.read_byte();
-		attack.toleft = recv.read_bool();
-		attack.stance = recv.read_byte();
-		attack.speed = recv.read_byte();
+        attack.display = recv.read_byte();
+        attack.toleft = recv.read_bool();
+        attack.stance = recv.read_byte();
+        attack.speed = recv.read_byte();
 
-		recv.skip(1);
+        recv.skip(1);
 
-		attack.bullet = recv.read_int();
+        attack.bullet = recv.read_int();
 
-		attack.mobcount = (count >> 4) & 0xF;
-		attack.hitcount = count & 0xF;
+        attack.mobcount = (count >> 4) & 0xF;
+        attack.hitcount = count & 0xF;
 
-		for (uint8_t i = 0; i < attack.mobcount; i++)
-		{
-			int32_t oid = recv.read_int();
+        for (uint8_t i = 0; i < attack.mobcount; i++) {
+            int32_t oid = recv.read_int();
 
-			recv.skip(1);
+            recv.skip(1);
 
-			uint8_t length = (attack.skill == SkillId::Id::MESO_EXPLOSION) ? recv.read_byte() : attack.hitcount;
+            uint8_t length = (attack.skill == SkillId::Id::MESO_EXPLOSION) ? recv.read_byte() : attack.hitcount;
 
-			for (uint8_t j = 0; j < length; j++)
-			{
-				int32_t damage = recv.read_int();
-				bool critical = false; // TODO: ?
-				auto singledamage = std::make_pair(damage, critical);
-				attack.damagelines[oid].push_back(singledamage);
-			}
-		}
+            for (uint8_t j = 0; j < length; j++) {
+                int32_t damage = recv.read_int();
+                bool critical = false; // TODO: ?
+                auto singledamage = std::make_pair(damage, critical);
+                attack.damagelines[oid].push_back(singledamage);
+            }
+        }
 
-		Stage::get().get_combat().push_attack(attack);
-	}
+        Stage::get().get_combat().push_attack(attack);
+    }
 }

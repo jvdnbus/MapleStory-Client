@@ -19,38 +19,32 @@
 
 #include "../Util/Lerp.h"
 
-namespace ms
-{
-	const float* Color::data() const
-	{
-		return rgba.data();
-	}
+namespace ms {
+    const float* Color::data() const {
+        return rgba.data();
+    }
 
-	Color::underlying_t::const_iterator Color::begin() const
-	{
-		return rgba.begin();
-	}
+    Color::underlying_t::const_iterator Color::begin() const {
+        return rgba.begin();
+    }
 
-	Color::underlying_t::const_iterator Color::end() const
-	{
-		return rgba.end();
-	}
+    Color::underlying_t::const_iterator Color::end() const {
+        return rgba.end();
+    }
 
-	Color Color::blend(const Color& other, float alpha) const
-	{
-		underlying_t blended;
+    Color Color::blend(const Color& other, float alpha) const {
+        underlying_t blended;
 
-		std::transform(
-			begin(),
-			end(),
-			other.begin(),
-			blended.begin(),
-			[alpha](float first, float second)
-			{
-				return lerp(first, second, alpha);
-			}
-		);
+        std::transform(
+            begin(),
+            end(),
+            other.begin(),
+            blended.begin(),
+            [alpha](float first, float second) {
+                return lerp(first, second, alpha);
+            }
+        );
 
-		return blended;
-	}
+        return blended;
+    }
 }

@@ -21,133 +21,119 @@
 
 #include "../../Configuration.h"
 
-namespace ms
-{
-	// Opcode: LOGIN(1)
-	class LoginPacket : public OutPacket
-	{
-	public:
-		// Request to be logged-in to an account
-		LoginPacket(const std::string& acc, const std::string& pass) : OutPacket(OutPacket::Opcode::LOGIN)
-		{
-			std::string volumeSerialNumber = Configuration::get().get_vol_serial_num();
+namespace ms {
+    // Opcode: LOGIN(1)
+    class LoginPacket : public OutPacket {
+    public:
+        // Request to be logged-in to an account
+        LoginPacket(const std::string& acc, const std::string& pass) : OutPacket(LOGIN) {
+            std::string volumeSerialNumber = Configuration::get().get_vol_serial_num();
 
-			std::string part1 = volumeSerialNumber.substr(0, 2);
-			std::string part2 = volumeSerialNumber.substr(2, 2);
-			std::string part3 = volumeSerialNumber.substr(4, 2);
-			std::string part4 = volumeSerialNumber.substr(6, 2);
+            std::string part1 = volumeSerialNumber.substr(0, 2);
+            std::string part2 = volumeSerialNumber.substr(2, 2);
+            std::string part3 = volumeSerialNumber.substr(4, 2);
+            std::string part4 = volumeSerialNumber.substr(6, 2);
 
-			const int32_t h = hex_to_dec(part4);
-			const int32_t w = hex_to_dec(part3);
-			const int32_t i = hex_to_dec(part2);
-			const int32_t d = hex_to_dec(part1);
+            const int32_t h = hex_to_dec(part4);
+            const int32_t w = hex_to_dec(part3);
+            const int32_t i = hex_to_dec(part2);
+            const int32_t d = hex_to_dec(part1);
 
-			write_string(acc);
-			write_string(pass);
+            write_string(acc);
+            write_string(pass);
 
-			skip(6);
+            skip(6);
 
-			write_byte(h);
-			write_byte(w);
-			write_byte(i);
-			write_byte(d);
-		}
-	};
+            write_byte(h);
+            write_byte(w);
+            write_byte(i);
+            write_byte(d);
+        }
+    };
 
-	// Opcode: LOGIN_EMAIL(3)
-	class LoginEmailPacket : public OutPacket
-	{
-	public:
-		// Request to be logged-in to an account
-		LoginEmailPacket(const std::string& email, const std::string& pass) : OutPacket(OutPacket::Opcode::LOGIN_EMAIL)
-		{
-			std::string volumeSerialNumber = Configuration::get().get_vol_serial_num();
+    // Opcode: LOGIN_EMAIL(3)
+    class LoginEmailPacket : public OutPacket {
+    public:
+        // Request to be logged-in to an account
+        LoginEmailPacket(const std::string& email, const std::string& pass) : OutPacket(LOGIN_EMAIL) {
+            std::string volumeSerialNumber = Configuration::get().get_vol_serial_num();
 
-			std::string part1 = volumeSerialNumber.substr(0, 2);
-			std::string part2 = volumeSerialNumber.substr(2, 2);
-			std::string part3 = volumeSerialNumber.substr(4, 2);
-			std::string part4 = volumeSerialNumber.substr(6, 2);
+            std::string part1 = volumeSerialNumber.substr(0, 2);
+            std::string part2 = volumeSerialNumber.substr(2, 2);
+            std::string part3 = volumeSerialNumber.substr(4, 2);
+            std::string part4 = volumeSerialNumber.substr(6, 2);
 
-			const int32_t h = hex_to_dec(part4);
-			const int32_t w = hex_to_dec(part3);
-			const int32_t i = hex_to_dec(part2);
-			const int32_t d = hex_to_dec(part1);
+            const int32_t h = hex_to_dec(part4);
+            const int32_t w = hex_to_dec(part3);
+            const int32_t i = hex_to_dec(part2);
+            const int32_t d = hex_to_dec(part1);
 
-			write_string(email);
-			write_string(pass);
+            write_string(email);
+            write_string(pass);
 
-			skip(6);
+            skip(6);
 
-			write_byte(h);
-			write_byte(w);
-			write_byte(i);
-			write_byte(d);
-		}
-	};
+            write_byte(h);
+            write_byte(w);
+            write_byte(i);
+            write_byte(d);
+        }
+    };
 
-	// Opcode: CHARLIST_REQUEST(5)
-	class CharlistRequestPacket : public OutPacket
-	{
-	public:
-		// Requests the list of characters on a world
-		CharlistRequestPacket(uint8_t world, uint8_t channel) : OutPacket(OutPacket::Opcode::CHARLIST_REQUEST)
-		{
-			write_byte(0);
-			write_byte(world);
-			write_byte(channel);
-		}
-	};
+    // Opcode: CHARLIST_REQUEST(5)
+    class CharlistRequestPacket : public OutPacket {
+    public:
+        // Requests the list of characters on a world
+        CharlistRequestPacket(uint8_t world, uint8_t channel) : OutPacket(CHARLIST_REQUEST) {
+            write_byte(0);
+            write_byte(world);
+            write_byte(channel);
+        }
+    };
 
-	// Opcode: SERVERSTATUS_REQUEST(6)
-	class ServerStatusRequestPacket : public OutPacket
-	{
-	public:
-		// Requests the status of the server
-		ServerStatusRequestPacket(int16_t world) : OutPacket(OutPacket::Opcode::SERVERSTATUS_REQUEST)
-		{
-			write_short(world);
-		}
-	};
+    // Opcode: SERVERSTATUS_REQUEST(6)
+    class ServerStatusRequestPacket : public OutPacket {
+    public:
+        // Requests the status of the server
+        ServerStatusRequestPacket(int16_t world) : OutPacket(SERVERSTATUS_REQUEST) {
+            write_short(world);
+        }
+    };
 
-	// Opcode: ACCEPT_TOS(7)
-	class TOSPacket : public OutPacket
-	{
-	public:
-		// Accept the Terms of Service
-		TOSPacket() : OutPacket(OutPacket::Opcode::ACCEPT_TOS)
-		{
-			write_byte(1);
-		}
-	};
+    // Opcode: ACCEPT_TOS(7)
+    class TOSPacket : public OutPacket {
+    public:
+        // Accept the Terms of Service
+        TOSPacket() : OutPacket(ACCEPT_TOS) {
+            write_byte(1);
+        }
+    };
 
-	// Opcode: SET_GENDER(8)
-	class GenderPacket : public OutPacket
-	{
-	public:
-		// Send user selected Gender
-		GenderPacket(const bool female) : OutPacket(OutPacket::Opcode::SET_GENDER)
-		{
-			write_byte(1);
-			write_byte(female);
-		}
-	};
+    // Opcode: SET_GENDER(8)
+    class GenderPacket : public OutPacket {
+    public:
+        // Send user selected Gender
+        GenderPacket(const bool female) : OutPacket(SET_GENDER) {
+            write_byte(1);
+            write_byte(female);
+        }
+    };
 
-	// Opcode: SERVERLIST_REQUEST(11)
-	class ServerRequestPacket : public OutPacket
-	{
-	public:
-		// Requests the list of worlds and channels
-		ServerRequestPacket() : OutPacket(OutPacket::Opcode::SERVERLIST_REQUEST) {}
-	};
+    // Opcode: SERVERLIST_REQUEST(11)
+    class ServerRequestPacket : public OutPacket {
+    public:
+        // Requests the list of worlds and channels
+        ServerRequestPacket() : OutPacket(SERVERLIST_REQUEST) {
+        }
+    };
 
-	// Opcode: PLAYER_LOGIN(20)
-	class PlayerLoginPacket : public OutPacket
-	{
-	public:
-		// Requests being logged-in to a channel server with the specified character
-		PlayerLoginPacket(int32_t cid) : OutPacket(OutPacket::Opcode::PLAYER_LOGIN)
-		{
-			write_int(cid);
-		}
-	};
+    // Opcode: PLAYER_LOGIN(20)
+    class PlayerLoginPacket : public OutPacket {
+    public:
+        // Requests being logged-in to a channel server with the specified character
+        PlayerLoginPacket(int32_t cid) : OutPacket(PLAYER_LOGIN) {
+            write_int(cid);
+            write_byte(1); // Custom client flag
+        }
+    };
 }

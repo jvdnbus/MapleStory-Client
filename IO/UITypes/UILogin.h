@@ -24,61 +24,58 @@
 #include "../../Graphics/Geometry.h"
 #include "../../Template/BoolPair.h"
 
-namespace ms
-{
-	class UILogin : public UIElement
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::LOGIN;
-		static constexpr bool FOCUSED = false;
-		static constexpr bool TOGGLED = false;
+namespace ms {
+    class UILogin : public UIElement {
+    public:
+        static constexpr Type TYPE = LOGIN;
+        static constexpr bool FOCUSED = false;
+        static constexpr bool TOGGLED = false;
 
-		UILogin();
+        UILogin();
 
-		void draw(float alpha) const override;
-		void update() override;
+        void draw(float alpha) const override;
+        void update() override;
 
-		Cursor::State send_cursor(bool clicked, Point<int16_t> cursor_pos) override;
+        Cursor::State send_cursor(bool clicked, Point<int16_t> cursor_pos) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-	protected:
-		Button::State button_pressed(uint16_t id) override;
+    protected:
+        Button::State button_pressed(uint16_t id) override;
 
-	private:
-		static constexpr int16_t TEXTFIELD_LIMIT = 12;
+    private:
+        static constexpr int16_t TEXTFIELD_LIMIT = 12;
 
-		void login();
-		void open_url(uint16_t id);
+        void login();
+        void open_url(uint16_t id);
 
-		enum Buttons
-		{
-			BtLogin,
-			BtNew,
-			BtHomePage,
-			BtPasswdLost,
-			BtEmailLost,
-			BtEmailSave,
-			BtQuit,
-			BtMapleID,
-			BtNexonID,
-			NUM_BUTTONS
-		};
+        enum Buttons {
+            BtLogin,
+            BtNew,
+            BtHomePage,
+            BtPasswdLost,
+            BtEmailLost,
+            BtEmailSave,
+            BtQuit,
+            BtMapleID,
+            BtNexonID,
+            NUM_BUTTONS
+        };
 
-		Text version;
-		Point<int16_t> version_pos;
-		Textfield account;
-		Point<int16_t> account_src_dim;
-		BoolPair<Texture> account_bg;
-		Textfield password;
-		Point<int16_t> password_src_dim;
-		Texture password_bg;
-		BoolPair<Texture> check;
-		Texture capslock;
-		ColorBox background;
-		Point<int16_t> title_pos;
+        Text version;
+        Point<int16_t> version_pos;
+        Textfield account;
+        Point<int16_t> account_src_dim;
+        BoolPair<Texture> account_bg;
+        Textfield password;
+        Point<int16_t> password_src_dim;
+        Texture password_bg;
+        BoolPair<Texture> check;
+        Texture capslock;
+        ColorBox background;
+        Point<int16_t> title_pos;
 
-		bool saveid;
-		bool nexon;
-	};
+        bool saveid;
+        bool nexon;
+    };
 }

@@ -19,17 +19,15 @@
 
 #include <vector>
 
-namespace ms
-{
-	// Saved locations for the 'teleport rock' and 'VIP teleport rock' cash items
-	class TeleportRock
-	{
-	public:
-		void addlocation(int32_t);
-		void addviplocation(int32_t);
+namespace ms {
+    // Saved locations for the 'teleport rock' and 'VIP teleport rock' cash items
+    class TeleportRock {
+    public:
+        void addlocation(int32_t);
+        void addviplocation(int32_t);
 
-	private:
-		std::vector<int32_t> locations;
-		std::vector<int32_t> viplocations;
-	};
+    private:
+        std::vector<int32_t> locations;
+        std::vector<int32_t> viplocations;
+    };
 }

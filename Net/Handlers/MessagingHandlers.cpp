@@ -21,323 +21,266 @@
 #include "../../Gameplay/Stage.h"
 #include "../../IO/UI.h"
 
-#include "../../IO/UITypes/UIChatBar.h"
 #include "../../IO/UITypes/UIStatusMessenger.h"
 
-namespace ms
-{
-	// Modes:
-	// 0 - Item(0) or Meso(1) 
-	// 3 - Exp gain
-	// 4 - Fame
-	// 5 - Mesos
-	// 6 - Guild points
-	void ShowStatusInfoHandler::handle(InPacket& recv) const
-	{
-		int8_t mode = recv.read_byte();
+namespace ms {
+    // Modes:
+    // 0 - Item(0) or Meso(1) 
+    // 3 - Exp gain
+    // 4 - Fame
+    // 5 - Mesos
+    // 6 - Guild points
+    void ShowStatusInfoHandler::handle(InPacket& recv) {
+        int8_t mode = recv.read_byte();
 
-		if (mode == 0)
-		{
-			int8_t mode2 = recv.read_byte();
+        if (mode == 0) {
+            int8_t mode2 = recv.read_byte();
 
-			if (mode2 == -1)
-			{
-				show_status(Color::Name::WHITE, "You can't get anymore items.");
-			}
-			else if (mode2 == 0)
-			{
-				int32_t itemid = recv.read_int();
-				int32_t qty = recv.read_int();
+            if (mode2 == -1) {
+                show_status(Color::Name::WHITE, "You can't get anymore items.");
+            } else if (mode2 == 0) {
+                int32_t itemid = recv.read_int();
+                int32_t qty = recv.read_int();
 
-				const ItemData& idata = ItemData::get(itemid);
+                const ItemData& idata = ItemData::get(itemid);
 
-				if (!idata.is_valid())
-					return;
+                if (!idata.is_valid())
+                    return;
 
-				std::string name = idata.get_name();
+                std::string name = idata.get_name();
 
-				if (name.length() > 21)
-				{
-					name.substr(0, 21);
-					name += "..";
-				}
+                if (name.length() > 21) {
+                    name.substr(0, 21);
+                    name += "..";
+                }
 
-				InventoryType::Id type = InventoryType::by_item_id(itemid);
+                InventoryType::Id type = InventoryType::by_item_id(itemid);
 
-				std::string tab = "";
+                std::string tab = "";
 
-				switch (type)
-				{
-					case InventoryType::Id::EQUIP:
-						tab = "Eqp";
-						break;
-					case InventoryType::Id::USE:
-						tab = "Use";
-						break;
-					case InventoryType::Id::SETUP:
-						tab = "Setup";
-						break;
-					case InventoryType::Id::ETC:
-						tab = "Etc";
-						break;
-					case InventoryType::Id::CASH:
-						tab = "Cash";
-						break;
-					default:
-						tab = "UNKNOWN";
-						break;
-				}
+                switch (type) {
+                case InventoryType::Id::EQUIP:
+                    tab = "Eqp";
+                    break;
+                case InventoryType::Id::USE:
+                    tab = "Use";
+                    break;
+                case InventoryType::Id::SETUP:
+                    tab = "Setup";
+                    break;
+                case InventoryType::Id::ETC:
+                    tab = "Etc";
+                    break;
+                case InventoryType::Id::CASH:
+                    tab = "Cash";
+                    break;
+                default:
+                    tab = "UNKNOWN";
+                    break;
+                }
 
-				// TODO: show_status(Color::Name::WHITE, "You have lost items in the " + tab + " tab (" + name + " " + std::to_string(qty) + ")");
+                // TODO: show_status(Color::Name::WHITE, "You have lost items in the " + tab + " tab (" + name + " " + std::to_string(qty) + ")");
 
-				if (qty < 0)
-					show_status(Color::Name::WHITE, "You have lost an item in the " + tab + " tab (" + name + ")");
-				else if (qty == 1)
-					show_status(Color::Name::WHITE, "You have gained an item in the " + tab + " tab (" + name + ")");
-				else
-					show_status(Color::Name::WHITE, "You have gained items in the " + tab + " tab (" + name + " " + std::to_string(qty) + ")");
-			}
-			else if (mode2 == 1)
-			{
-				recv.skip(1);
+                if (qty < 0)
+                    show_status(Color::Name::WHITE, "You have lost an item in the " + tab + " tab (" + name + ")");
+                else if (qty == 1)
+                    show_status(Color::Name::WHITE, "You have gained an item in the " + tab + " tab (" + name + ")");
+                else
+                    show_status(Color::Name::WHITE,
+                                "You have gained items in the " + tab + " tab (" + name + " " + std::to_string(qty) + ")");
+            } else if (mode2 == 1) {
+                recv.skip(1);
 
-				int32_t gain = recv.read_int();
-				std::string sign = (gain < 0) ? "-" : "+";
+                int32_t gain = recv.read_int();
+                std::string sign = (gain < 0) ? "-" : "+";
 
-				show_status(Color::Name::WHITE, "You have gained mesos (" + sign + std::to_string(gain) + ")");
-			}
-			else
-			{
-				show_status(Color::Name::RED, "Mode: 0, Mode 2: " + std::to_string(mode2) + " is not handled.");
-			}
-		}
-		else if (mode == 3)
-		{
-			bool white = recv.read_bool();
-			int32_t gain = recv.read_int();
-			bool inchat = recv.read_bool();
-			int32_t bonus1 = recv.read_int();
+                show_status(Color::Name::WHITE, "You have gained mesos (" + sign + std::to_string(gain) + ")");
+            } else {
+                show_status(Color::Name::RED, "Mode: 0, Mode 2: " + std::to_string(mode2) + " is not handled.");
+            }
+        } else if (mode == 3) {
+            bool white = recv.read_bool();
+            int32_t gain = recv.read_int();
+            bool inchat = recv.read_bool();
+            int32_t bonus1 = recv.read_int();
 
-			recv.read_short();
-			recv.read_int();	// bonus 2
-			recv.read_bool();	// 'event or party'
-			recv.read_int();	// bonus 3
-			recv.read_int();	// bonus 4
-			recv.read_int();	// bonus 5
+            recv.read_short();
+            recv.read_int(); // bonus 2
+            recv.read_bool(); // 'event or party'
+            recv.read_int(); // bonus 3
+            recv.read_int(); // bonus 4
+            recv.read_int(); // bonus 5
 
-			std::string message = "You have gained experience (+" + std::to_string(gain) + ")";
+            std::string message = "You have gained experience (+" + std::to_string(gain) + ")";
 
-			if (inchat)
-			{
-				show_status(Color::Name::RED, "Mode: 3, inchat is not handled.");
-			}
-			else
-			{
-				show_status(white ? Color::Name::WHITE : Color::Name::YELLOW, message);
+            if (inchat) {
+                show_status(Color::Name::RED, "Mode: 3, inchat is not handled.");
+            } else {
+                show_status(white ? Color::Name::WHITE : Color::Name::YELLOW, message);
 
-				if (bonus1 > 0)
-					show_status(Color::Name::YELLOW, "+ Bonus EXP (+" + std::to_string(bonus1) + ")");
-			}
-		}
-		else if (mode == 4)
-		{
-			int32_t gain = recv.read_int();
-			std::string sign = (gain < 0) ? "-" : "+";
+                if (bonus1 > 0)
+                    show_status(Color::Name::YELLOW, "+ Bonus EXP (+" + std::to_string(bonus1) + ")");
+            }
+        } else if (mode == 4) {
+            int32_t gain = recv.read_int();
+            std::string sign = (gain < 0) ? "-" : "+";
 
-			// TODO: Lose fame?
-			show_status(Color::Name::WHITE, "You have gained fame. (" + sign + std::to_string(gain) + ")");
-		}
-		else
-		{
-			show_status(Color::Name::RED, "Mode: " + std::to_string(mode) + " is not handled.");
-		}
-	}
+            // TODO: Lose fame?
+            show_status(Color::Name::WHITE, "You have gained fame. (" + sign + std::to_string(gain) + ")");
+        } else {
+            show_status(Color::Name::RED, "Mode: " + std::to_string(mode) + " is not handled.");
+        }
+    }
 
-	void ShowStatusInfoHandler::show_status(Color::Name color, const std::string& message) const
-	{
-		if (auto messenger = UI::get().get_element<UIStatusMessenger>())
-			messenger->show_status(color, message);
-	}
+    void ShowStatusInfoHandler::show_status(Color::Name color, const std::string& message) const {
+        if (auto messenger = UI::get().get_element<UIStatusMessenger>())
+            messenger->show_status(color, message);
+    }
 
-	void ServerMessageHandler::handle(InPacket& recv) const
-	{
-		int8_t type = recv.read_byte();
-		bool servermessage = recv.inspect_bool();
+    void ServerMessageHandler::handle(InPacket& recv) {
+        int8_t type = recv.read_byte();
+        bool servermessage = recv.inspect_bool();
 
-		if (servermessage)
-			recv.skip_byte();
+        if (servermessage)
+            recv.skip_byte();
 
-		std::string error = "[MessagingHandlers::ServerMessageHandler]: ";
-		const std::string& message = recv.read_string();
+        std::string error = "[MessagingHandlers::ServerMessageHandler]: ";
+        const std::string& message = recv.read_string();
 
-		if (type == 3)
-		{
-			int8_t channel = recv.read_byte();
-			bool megaEar = recv.read_bool();
+        if (type == 3) {
+            int8_t channel = recv.read_byte();
+            bool megaEar = recv.read_bool();
 
 #ifdef _DEBUG
-			const std::string& megatype = megaEar ? "megaEar" : "unknown megatype";
-			error += "Unhandled [" + megatype + "] on channel [" + std::to_string(channel) + "].";
+            const std::string& megatype = megaEar ? "megaEar" : "unknown megatype";
+            error += "Unhandled [" + megatype + "] on channel [" + std::to_string(channel) + "].";
 
-			UI::get().get_element<UIChatBar>()->show_message(error.c_str(), UIChatBar::MessageType::RED);
+            show_message(error.c_str(), UIChatBar::MessageType::RED);
 #endif
-		}
-		else if (type == 4)
-		{
-			UI::get().set_scrollnotice(message);
-		}
-		else if (type == 5)
-		{
-			// TODO: Is this actually white?
-			UI::get().get_element<UIChatBar>()->show_message(message.c_str(), UIChatBar::MessageType::WHITE);
-		}
-		else if (type == 6)
-		{
-			recv.skip_int();
+        } else if (type == 4) {
+            UI::get().set_scrollnotice(message);
+        } else if (type == 5) {
+            // TODO: Is this actually white?
+            show_message(message.c_str(), UIChatBar::MessageType::WHITE);
+        } else if (type == 6) {
+            recv.skip_int();
 
 #ifdef _DEBUG
-			error += "Unhandled type [" + std::to_string(type) + "].";
+            error += "Unhandled type [" + std::to_string(type) + "].";
 
-			UI::get().get_element<UIChatBar>()->show_message(error.c_str(), UIChatBar::MessageType::RED);
+            show_message(error.c_str(), UIChatBar::MessageType::RED);
 #endif
-		}
-		else if (type == 7)
-		{
-			int32_t npc = recv.read_int();
+        } else if (type == 7) {
+            int32_t npc = recv.read_int();
 
 #ifdef _DEBUG
-			error += "Unhandled message for NPC [" + std::to_string(npc) + "].";
+            error += "Unhandled message for NPC [" + std::to_string(npc) + "].";
 
-			UI::get().get_element<UIChatBar>()->show_message(error.c_str(), UIChatBar::MessageType::RED);
+            show_message(error.c_str(), UIChatBar::MessageType::RED);
 #endif
-		}
-		else
-		{
+        } else {
 #ifdef _DEBUG
-			error += "Unhandled type [" + std::to_string(type) + "].";
+            error += "Unhandled type [" + std::to_string(type) + "].";
 
-			UI::get().get_element<UIChatBar>()->show_message(error.c_str(), UIChatBar::MessageType::RED);
+            show_message(error.c_str(), UIChatBar::MessageType::RED);
 #endif
-		}
-	}
+        }
+    }
 
-	void WeekEventMessageHandler::handle(InPacket& recv) const
-	{
-		recv.read_byte(); // TODO: Always 0xFF, Check this!
+    void WeekEventMessageHandler::handle(InPacket& recv) {
+        recv.read_byte(); // TODO: Always 0xFF, Check this!
 
-		std::string message = recv.read_string();
+        std::string message = recv.read_string();
 
-		static const std::string MAPLETIP = "[MapleTip]";
+        static const std::string MAPLETIP = "[MapleTip]";
 
-		if (message.substr(0, MAPLETIP.length()).compare("[MapleTip]"))
-			message = "[Notice] " + message;
+        if (message.substr(0, MAPLETIP.length()).compare("[MapleTip]"))
+            message = "[Notice] " + message;
 
-		UI::get().get_element<UIChatBar>()->show_message(message.c_str(), UIChatBar::MessageType::YELLOW);
-	}
+        show_message(message.c_str(), UIChatBar::MessageType::YELLOW);
+    }
 
-	void ChatReceivedHandler::handle(InPacket& recv) const
-	{
-		int32_t charid = recv.read_int();
+    void ChatReceivedHandler::handle(InPacket& recv) {
+        int32_t charid = recv.read_int();
 
-		recv.read_bool(); // 'gm'
+        recv.read_bool(); // 'gm'
 
-		std::string message = recv.read_string();
-		int8_t type = recv.read_byte();
+        std::string message = recv.read_string();
+        int8_t type = recv.read_byte();
 
-		if (auto character = Stage::get().get_character(charid))
-		{
-			message = character->get_name() + " : " + message;
-			character->speak(message);
-		}
+        if (auto character = Stage::get().get_character(charid)) {
+            message = character->get_name() + " : " + message;
+            character->speak(message);
+        }
 
-		auto linetype = static_cast<UIChatBar::MessageType>(type);
+        auto const line_type = static_cast<UIChatBar::MessageType>(type);
+        show_message(message.c_str(), line_type);
+    }
 
-		if (auto chatbar = UI::get().get_element<UIChatBar>())
-			chatbar->show_message(message.c_str(), linetype);
-	}
+    void ScrollResultHandler::handle(InPacket& recv) {
+        int32_t cid = recv.read_int();
+        bool success = recv.read_bool();
+        bool destroyed = recv.read_bool();
 
-	void ScrollResultHandler::handle(InPacket& recv) const
-	{
-		int32_t cid = recv.read_int();
-		bool success = recv.read_bool();
-		bool destroyed = recv.read_bool();
+        recv.read_short(); // Legendary spirit if 1
 
-		recv.read_short(); // Legendary spirit if 1
+        CharEffect::Id effect;
+        Messages::Type message;
 
-		CharEffect::Id effect;
-		Messages::Type message;
+        if (success) {
+            effect = CharEffect::Id::SCROLL_SUCCESS;
+            message = Messages::Type::SCROLL_SUCCESS;
+        } else {
+            effect = CharEffect::Id::SCROLL_FAILURE;
 
-		if (success)
-		{
-			effect = CharEffect::Id::SCROLL_SUCCESS;
-			message = Messages::Type::SCROLL_SUCCESS;
-		}
-		else
-		{
-			effect = CharEffect::Id::SCROLL_FAILURE;
+            if (destroyed)
+                message = Messages::Type::SCROLL_DESTROYED;
+            else
+                message = Messages::Type::SCROLL_FAILURE;
+        }
 
-			if (destroyed)
-				message = Messages::Type::SCROLL_DESTROYED;
-			else
-				message = Messages::Type::SCROLL_FAILURE;
-		}
+        Stage::get().show_character_effect(cid, effect);
 
-		Stage::get().show_character_effect(cid, effect);
+        if (Stage::get().is_player(cid)) {
+            show_message(Messages::messages[message], UIChatBar::MessageType::RED);
 
-		if (Stage::get().is_player(cid))
-		{
-			if (auto chatbar = UI::get().get_element<UIChatBar>())
-				chatbar->show_message(Messages::messages[message], UIChatBar::MessageType::RED);
+            UI::get().enable();
+        }
+    }
 
-			UI::get().enable();
-		}
-	}
+    void ShowItemGainInChatHandler::handle(InPacket& recv) {
+        int8_t mode1 = recv.read_byte();
 
-	void ShowItemGainInChatHandler::handle(InPacket& recv) const
-	{
-		int8_t mode1 = recv.read_byte();
+        if (mode1 == 3) {
+            int8_t mode2 = recv.read_byte();
 
-		if (mode1 == 3)
-		{
-			int8_t mode2 = recv.read_byte();
+            if (mode2 == 1) { // This is actually 'item gain in chat'
+                int32_t itemid = recv.read_int();
+                int32_t qty = recv.read_int();
 
-			if (mode2 == 1) // This is actually 'item gain in chat'
-			{
-				int32_t itemid = recv.read_int();
-				int32_t qty = recv.read_int();
+                const ItemData& idata = ItemData::get(itemid);
 
-				const ItemData& idata = ItemData::get(itemid);
+                if (!idata.is_valid())
+                    return;
 
-				if (!idata.is_valid())
-					return;
+                std::string name = idata.get_name();
+                std::string sign = (qty < 0) ? "-" : "+";
+                std::string message = "Gained an item: " + name + " (" + sign + std::to_string(qty) + ")";
 
-				std::string name = idata.get_name();
-				std::string sign = (qty < 0) ? "-" : "+";
-				std::string message = "Gained an item: " + name + " (" + sign + std::to_string(qty) + ")";
+                show_message(message.c_str(), UIChatBar::MessageType::BLUE);
+            }
+        } else if (mode1 == 13) { // card effect
+            Stage::get().get_player().show_effect_id(CharEffect::Id::MONSTER_CARD);
+        } else if (mode1 == 18) { // intro effect
+            recv.read_string(); // path
+        } else if (mode1 == 23) { // info
+            recv.read_string(); // path
+            recv.read_int(); // some int
+        } else { // Buff effect
+            int32_t skillid = recv.read_int();
 
-				if (auto chatbar = UI::get().get_element<UIChatBar>())
-					chatbar->show_message(message.c_str(), UIChatBar::MessageType::BLUE);
-			}
-		}
-		else if (mode1 == 13) // card effect
-		{
-			Stage::get().get_player().show_effect_id(CharEffect::Id::MONSTER_CARD);
-		}
-		else if (mode1 == 18) // intro effect
-		{
-			recv.read_string(); // path
-		}
-		else if (mode1 == 23) // info
-		{
-			recv.read_string();	// path
-			recv.read_int();	// some int
-		}
-		else // Buff effect
-		{
-			int32_t skillid = recv.read_int();
-
-			// More bytes, but we don't need them.
-			Stage::get().get_combat().show_player_buff(skillid);
-		}
-	}
+            // More bytes, but we don't need them.
+            Stage::get().get_combat().show_player_buff(skillid);
+        }
+    }
 }

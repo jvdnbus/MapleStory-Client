@@ -17,30 +17,25 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "AreaButton.h"
 
-namespace ms
-{
-	AreaButton::AreaButton(Point<int16_t> pos, Point<int16_t> dim)
-	{
-		position = pos;
-		dimension = dim;
-		state = Button::State::NORMAL;
-		active = true;
-	}
+namespace ms {
+    AreaButton::AreaButton(Point<int16_t> pos, Point<int16_t> dim) {
+        position = pos;
+        dimension = dim;
+        state = NORMAL;
+        active = true;
+    }
 
-	Rectangle<int16_t> AreaButton::bounds(Point<int16_t> parentpos) const
-	{
-		Point<int16_t> absp = position + parentpos;
+    Rectangle<int16_t> AreaButton::bounds(Point<int16_t> parentpos) const {
+        Point<int16_t> absp = position + parentpos;
 
-		return Rectangle<int16_t>(absp, absp + dimension);
-	}
+        return Rectangle<int16_t>(absp, absp + dimension);
+    }
 
-	int16_t AreaButton::width() const
-	{
-		return dimension.x();
-	}
+    int16_t AreaButton::width() const {
+        return dimension.x();
+    }
 
-	Point<int16_t> AreaButton::origin() const
-	{
-		return Point<int16_t>();
-	}
+    Point<int16_t> AreaButton::origin() const {
+        return Point<int16_t>();
+    }
 }

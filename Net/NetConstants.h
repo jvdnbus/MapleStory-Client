@@ -19,10 +19,9 @@
 
 #include <cstdint>
 
-namespace ms
-{
-	const size_t HEADER_LENGTH = 4;
-	const size_t OPCODE_LENGTH = 2;
-	const size_t MIN_PACKET_LENGTH = HEADER_LENGTH + OPCODE_LENGTH;
-	const size_t MAX_PACKET_LENGTH = 131072;
+namespace ms {
+    constexpr size_t HEADER_LENGTH = 4;
+    constexpr size_t OPCODE_LENGTH = 2;
+    constexpr size_t MIN_PACKET_LENGTH = HEADER_LENGTH + OPCODE_LENGTH;
+    constexpr size_t MAX_PACKET_LENGTH = 131072;
 }

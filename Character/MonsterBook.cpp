@@ -17,20 +17,16 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "MonsterBook.h"
 
-namespace ms
-{
-	MonsterBook::MonsterBook()
-	{
-		cover = 0;
-	}
+namespace ms {
+    MonsterBook::MonsterBook() {
+        cover = 0;
+    }
 
-	void MonsterBook::set_cover(int32_t cov)
-	{
-		cover = cov;
-	}
+    void MonsterBook::set_cover(int32_t cov) {
+        cover = cov;
+    }
 
-	void MonsterBook::add_card(int16_t card, int8_t level)
-	{
-		cards[card] = level;
-	}
+    void MonsterBook::add_card(int16_t card, int8_t level) {
+        cards[card] = level;
+    }
 }

@@ -21,35 +21,33 @@
 
 #include "../../Gameplay/Combat/Attack.h"
 
-namespace ms
-{
-	class AttackHandler : public PacketHandler
-	{
-	public:
-		void handle(InPacket& recv) const override;
+namespace ms {
+    class AttackHandler : public PacketHandler {
+    public:
+        void handle(InPacket& recv) override;
 
-	protected:
-		AttackHandler(Attack::Type type);
+    protected:
+        AttackHandler(Attack::Type type);
 
-	private:
-		Attack::Type type;
-	};
+    private:
+        Attack::Type type;
+    };
 
-	class CloseAttackHandler : public AttackHandler
-	{
-	public:
-		CloseAttackHandler() : AttackHandler(Attack::Type::CLOSE) {}
-	};
+    class CloseAttackHandler : public AttackHandler {
+    public:
+        CloseAttackHandler() : AttackHandler(Attack::Type::CLOSE) {
+        }
+    };
 
-	class RangedAttackHandler : public AttackHandler
-	{
-	public:
-		RangedAttackHandler() : AttackHandler(Attack::Type::RANGED) {}
-	};
+    class RangedAttackHandler : public AttackHandler {
+    public:
+        RangedAttackHandler() : AttackHandler(Attack::Type::RANGED) {
+        }
+    };
 
-	class MagicAttackHandler : public AttackHandler
-	{
-	public:
-		MagicAttackHandler() : AttackHandler(Attack::Type::MAGIC) {}
-	};
+    class MagicAttackHandler : public AttackHandler {
+    public:
+        MagicAttackHandler() : AttackHandler(Attack::Type::MAGIC) {
+        }
+    };
 }

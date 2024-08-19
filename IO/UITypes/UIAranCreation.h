@@ -19,11 +19,10 @@
 
 #include "UICommonCreation.h"
 
-namespace ms
-{
-	class UIAranCreation : public UICommonCreation
-	{
-	public:
-		UIAranCreation() : UICommonCreation("2000") {}
-	};
+namespace ms {
+    class UIAranCreation : public UICommonCreation {
+    public:
+        UIAranCreation() : UICommonCreation("2000") {
+        }
+    };
 }

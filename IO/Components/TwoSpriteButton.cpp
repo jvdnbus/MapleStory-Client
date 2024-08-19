@@ -17,62 +17,59 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "TwoSpriteButton.h"
 
-namespace ms
-{
-	TwoSpriteButton::TwoSpriteButton(nl::node nsrc, nl::node ssrc, Point<int16_t> np, Point<int16_t> sp) : textures(ssrc, nsrc), npos(np), spos(sp)
-	{
-		state = Button::State::NORMAL;
-		active = true;
-	}
+namespace ms {
+    TwoSpriteButton::TwoSpriteButton(nl::node nsrc, nl::node ssrc, Point<int16_t> np,
+                                     Point<int16_t> sp) : textures(ssrc, nsrc), npos(np), spos(sp) {
+        state = NORMAL;
+        active = true;
+    }
 
-	TwoSpriteButton::TwoSpriteButton(nl::node nsrc, nl::node ssrc, Point<int16_t> pos) : TwoSpriteButton(nsrc, ssrc, pos, pos) {}
-	TwoSpriteButton::TwoSpriteButton(nl::node nsrc, nl::node ssrc) : TwoSpriteButton(nsrc, ssrc, Point<int16_t>()) {}
-	TwoSpriteButton::TwoSpriteButton() : textures({}, {}) {}
+    TwoSpriteButton::TwoSpriteButton(nl::node nsrc, nl::node ssrc, Point<int16_t> pos) : TwoSpriteButton(
+        nsrc, ssrc, pos, pos) {
+    }
 
-	void TwoSpriteButton::draw(Point<int16_t> parentpos) const
-	{
-		if (active)
-		{
-			bool selected = state == Button::State::MOUSEOVER || state == Button::State::PRESSED;
+    TwoSpriteButton::TwoSpriteButton(nl::node nsrc, nl::node ssrc) : TwoSpriteButton(nsrc, ssrc, Point<int16_t>()) {
+    }
 
-			if (selected)
-				textures[selected].draw(spos + parentpos);
-			else
-				textures[selected].draw(npos + parentpos);
-		}
-	}
+    TwoSpriteButton::TwoSpriteButton() : textures({}, {}) {
+    }
 
-	Rectangle<int16_t> TwoSpriteButton::bounds(Point<int16_t> parentpos) const
-	{
-		bool selected = state == Button::State::MOUSEOVER || state == Button::State::PRESSED;
-		Point<int16_t> absp;
-		Point<int16_t> dim;
+    void TwoSpriteButton::draw(Point<int16_t> parentpos) const {
+        if (active) {
+            bool selected = state == MOUSEOVER || state == PRESSED;
 
-		if (selected)
-		{
-			absp = parentpos + spos - textures[selected].get_origin();
-			dim = textures[selected].get_dimensions();
-		}
-		else
-		{
-			absp = parentpos + npos - textures[selected].get_origin();
-			dim = textures[selected].get_dimensions();
-		}
+            if (selected)
+                textures[selected].draw(spos + parentpos);
+            else
+                textures[selected].draw(npos + parentpos);
+        }
+    }
 
-		return Rectangle<int16_t>(absp, absp + dim);
-	}
+    Rectangle<int16_t> TwoSpriteButton::bounds(Point<int16_t> parentpos) const {
+        bool selected = state == MOUSEOVER || state == PRESSED;
+        Point<int16_t> absp;
+        Point<int16_t> dim;
 
-	int16_t TwoSpriteButton::width() const
-	{
-		bool selected = state == Button::State::MOUSEOVER || state == Button::State::PRESSED;
+        if (selected) {
+            absp = parentpos + spos - textures[selected].get_origin();
+            dim = textures[selected].get_dimensions();
+        } else {
+            absp = parentpos + npos - textures[selected].get_origin();
+            dim = textures[selected].get_dimensions();
+        }
 
-		return textures[selected].width();
-	}
+        return Rectangle<int16_t>(absp, absp + dim);
+    }
 
-	Point<int16_t> TwoSpriteButton::origin() const
-	{
-		bool selected = state == Button::State::MOUSEOVER || state == Button::State::PRESSED;
+    int16_t TwoSpriteButton::width() const {
+        bool selected = state == MOUSEOVER || state == PRESSED;
 
-		return textures[selected].get_origin();
-	}
+        return textures[selected].width();
+    }
+
+    Point<int16_t> TwoSpriteButton::origin() const {
+        bool selected = state == MOUSEOVER || state == PRESSED;
+
+        return textures[selected].get_origin();
+    }
 }

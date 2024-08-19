@@ -17,153 +17,126 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "InPacket.h"
 
-namespace ms
-{
-	InPacket::InPacket(const int8_t* recv, size_t length)
-	{
-		bytes = recv;
-		top = length;
-		pos = 0;
-	}
+namespace ms {
+    InPacket::InPacket(const int8_t* recv, size_t length) {
+        bytes = recv;
+        top = length;
+        pos = 0;
+    }
 
-	bool InPacket::available() const
-	{
-		return length() > 0;
-	}
+    bool InPacket::available() const {
+        return length() > 0;
+    }
 
-	size_t InPacket::length() const
-	{
-		return top - pos;
-	}
+    size_t InPacket::length() const {
+        return top - pos;
+    }
 
-	void InPacket::skip(size_t count)
-	{
-		if (count > length())
-			throw PacketError("Stack underflow at " + std::to_string(pos));
+    void InPacket::skip(size_t count) {
+        if (count > length())
+            throw PacketError("Stack underflow at " + std::to_string(pos));
 
-		pos += count;
-	}
+        pos += count;
+    }
 
-	bool InPacket::read_bool()
-	{
-		return read_byte() == 1;
-	}
+    bool InPacket::read_bool() {
+        return read_byte() == 1;
+    }
 
-	int8_t InPacket::read_byte()
-	{
-		return read<int8_t>();
-	}
+    int8_t InPacket::read_byte() {
+        return read<int8_t>();
+    }
 
-	int16_t InPacket::read_short()
-	{
-		return read<int16_t>();
-	}
+    int16_t InPacket::read_short() {
+        return read<int16_t>();
+    }
 
-	int32_t InPacket::read_int()
-	{
-		return read<int32_t>();
-	}
+    int32_t InPacket::read_int() {
+        return read<int32_t>();
+    }
 
-	int64_t InPacket::read_long()
-	{
-		return read<int64_t>();
-	}
+    int64_t InPacket::read_long() {
+        return read<int64_t>();
+    }
 
-	Point<int16_t> InPacket::read_point()
-	{
-		int16_t x = read<int16_t>();
-		int16_t y = read<int16_t>();
+    Point<int16_t> InPacket::read_point() {
+        int16_t x = read<int16_t>();
+        int16_t y = read<int16_t>();
 
-		return Point<int16_t>(x, y);
-	}
+        return Point<int16_t>(x, y);
+    }
 
-	std::string InPacket::read_string()
-	{
-		uint16_t length = read<uint16_t>();
+    std::string InPacket::read_string() {
+        uint16_t length = read<uint16_t>();
 
-		return read_padded_string(length);
-	}
+        return read_padded_string(length);
+    }
 
-	std::string InPacket::read_padded_string(uint16_t count)
-	{
-		std::string ret;
+    std::string InPacket::read_padded_string(uint16_t count) {
+        std::string ret;
 
-		for (int16_t i = 0; i < count; i++)
-		{
-			char letter = read_byte();
+        for (int16_t i = 0; i < count; i++) {
+            char letter = read_byte();
 
-			if (letter != '\0')
-				ret.push_back(letter);
-		}
+            if (letter != '\0')
+                ret.push_back(letter);
+        }
 
-		return ret;
-	}
+        return ret;
+    }
 
-	void InPacket::skip_bool()
-	{
-		skip_byte();
-	}
+    void InPacket::skip_bool() {
+        skip_byte();
+    }
 
-	void InPacket::skip_byte()
-	{
-		skip(sizeof(int8_t));
-	}
+    void InPacket::skip_byte() {
+        skip(sizeof(int8_t));
+    }
 
-	void InPacket::skip_short()
-	{
-		skip(sizeof(int16_t));
-	}
+    void InPacket::skip_short() {
+        skip(sizeof(int16_t));
+    }
 
-	void InPacket::skip_int()
-	{
-		skip(sizeof(int32_t));
-	}
+    void InPacket::skip_int() {
+        skip(sizeof(int32_t));
+    }
 
-	void InPacket::skip_long()
-	{
-		skip(sizeof(int64_t));
-	}
+    void InPacket::skip_long() {
+        skip(sizeof(int64_t));
+    }
 
-	void InPacket::skip_point()
-	{
-		skip(sizeof(int16_t));
-		skip(sizeof(int16_t));
-	}
+    void InPacket::skip_point() {
+        skip(sizeof(int16_t));
+        skip(sizeof(int16_t));
+    }
 
-	void InPacket::skip_string()
-	{
-		uint16_t length = read<uint16_t>();
+    void InPacket::skip_string() {
+        uint16_t length = read<uint16_t>();
 
-		skip_padded_string(length);
-	}
+        skip_padded_string(length);
+    }
 
-	void InPacket::skip_padded_string(uint16_t length)
-	{
-		skip(length);
-	}
+    void InPacket::skip_padded_string(uint16_t length) {
+        skip(length);
+    }
 
-	bool InPacket::inspect_bool()
-	{
-		return inspect_byte() == 1;
-	}
+    bool InPacket::inspect_bool() {
+        return inspect_byte() == 1;
+    }
 
-	int8_t InPacket::inspect_byte()
-	{
-		return inspect<int8_t>();
-	}
+    int8_t InPacket::inspect_byte() {
+        return inspect<int8_t>();
+    }
 
-	int16_t InPacket::inspect_short()
-	{
-		return inspect<int16_t>();
-	}
+    int16_t InPacket::inspect_short() {
+        return inspect<int16_t>();
+    }
 
-	int32_t InPacket::inspect_int()
-	{
-		return inspect<int32_t>();
-	}
+    int32_t InPacket::inspect_int() {
+        return inspect<int32_t>();
+    }
 
-	int64_t InPacket::inspect_long()
-	{
-		return inspect<int64_t>();
-	}
+    int64_t InPacket::inspect_long() {
+        return inspect<int64_t>();
+    }
 }

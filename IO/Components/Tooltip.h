@@ -19,30 +19,28 @@
 
 #include "../../Template/Point.h"
 
-namespace ms
-{
-	// Interface for tooltips
-	// Window with helpful information that appears on mouse hover at a specific location
-	class Tooltip
-	{
-	public:
-		// Possible parent UIs for Tooltips
-		enum Parent
-		{
-			NONE,
-			EQUIPINVENTORY,
-			ITEMINVENTORY,
-			SKILLBOOK,
-			SHOP,
-			EVENT,
-			TEXT,
-			KEYCONFIG,
-			WORLDMAP,
-			MINIMAP
-		};
+namespace ms {
+    // Interface for tooltips
+    // Window with helpful information that appears on mouse hover at a specific location
+    class Tooltip {
+    public:
+        // Possible parent UIs for Tooltips
+        enum Parent {
+            NONE,
+            EQUIPINVENTORY,
+            ITEMINVENTORY,
+            SKILLBOOK,
+            SHOP,
+            EVENT,
+            TEXT,
+            KEYCONFIG,
+            WORLDMAP,
+            MINIMAP
+        };
 
-		virtual ~Tooltip() {}
+        virtual ~Tooltip() {
+        }
 
-		virtual void draw(Point<int16_t> cursorpos) const = 0;
-	};
+        virtual void draw(Point<int16_t> cursorpos) const = 0;
+    };
 }

@@ -27,329 +27,284 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	UILoginNotice::UILoginNotice(uint16_t message, std::function<void()> okhandler, std::function<void()> cancelhandler) : okhandler(okhandler), cancelhandler(cancelhandler)
-	{
-		multiple = false;
+namespace ms {
+    UILoginNotice::UILoginNotice(uint16_t message, std::function<void()> okhandler,
+                                 std::function<void()> cancelhandler) : okhandler(okhandler),
+                                                                        cancelhandler(cancelhandler) {
+        multiple = false;
 
-		nl::node Notice = nl::nx::UI["Login.img"]["Notice"];
-		nl::node backgrnd;
+        nl::node Notice = nl::nx::UI["Login.img"]["Notice"];
+        nl::node backgrnd;
 
-		switch (message)
-		{
-			case Message::NAME_IN_USE:
-			case Message::ILLEGAL_NAME:
-			case Message::BLOCKED_ID:
-			case Message::INCORRECT_PIC:
-				backgrnd = Notice["backgrnd"]["1"];
-				break;
-			default:
-				backgrnd = Notice["backgrnd"]["0"];
-				break;
-		}
+        switch (message) {
+        case NAME_IN_USE:
+        case ILLEGAL_NAME:
+        case BLOCKED_ID:
+        case INCORRECT_PIC:
+            backgrnd = Notice["backgrnd"]["1"];
+            break;
+        default:
+            backgrnd = Notice["backgrnd"]["0"];
+            break;
+        }
 
-		sprites.emplace_back(backgrnd);
-		sprites.emplace_back(Notice["text"][message], Point<int16_t>(17, 13));
+        sprites.emplace_back(backgrnd);
+        sprites.emplace_back(Notice["text"][message], Point<int16_t>(17, 13));
 
-		if (message == Message::DELETE_CONFIRMATION || message == Message::CASH_ITEMS_CONFIRM_DELETION)
-		{
-			multiple = true;
+        if (message == DELETE_CONFIRMATION || message == CASH_ITEMS_CONFIRM_DELETION) {
+            multiple = true;
 
-			buttons[Buttons::YES] = std::make_unique<MapleButton>(Notice["BtYes"], Point<int16_t>(70, 106));
-			buttons[Buttons::NO] = std::make_unique<MapleButton>(Notice["BtNo"], Point<int16_t>(130, 106));
-		}
-		else
-		{
-			buttons[Buttons::YES] = std::make_unique<MapleButton>(Notice["BtYes"], Point<int16_t>(100, 106));
-		}
+            buttons[YES] = std::make_unique<MapleButton>(Notice["BtYes"], Point<int16_t>(70, 106));
+            buttons[NO] = std::make_unique<MapleButton>(Notice["BtNo"], Point<int16_t>(130, 106));
+        } else {
+            buttons[YES] = std::make_unique<MapleButton>(Notice["BtYes"], Point<int16_t>(100, 106));
+        }
 
-		position = Point<int16_t>(388, 313);
-		dimension = Texture(backgrnd).get_dimensions();
-	}
+        position = Point<int16_t>(388, 313);
+        dimension = Texture(backgrnd).get_dimensions();
+    }
 
-	UILoginNotice::UILoginNotice(uint16_t message, std::function<void()> okhandler) : UILoginNotice(message, okhandler, []() {}) {}
-	UILoginNotice::UILoginNotice(uint16_t message) : UILoginNotice(message, []() {}) {}
+    UILoginNotice::UILoginNotice(uint16_t message, std::function<void()> okhandler) : UILoginNotice(
+        message, okhandler, []() {
+        }) {
+    }
 
-	void UILoginNotice::send_key(int32_t keycode, bool pressed, bool escape)
-	{
-		if (pressed)
-		{
-			if (escape)
-			{
-				if (!multiple)
-					okhandler();
-				else
-					cancelhandler();
+    UILoginNotice::UILoginNotice(uint16_t message) : UILoginNotice(message, []() {
+    }) {
+    }
 
-				deactivate();
-			}
-			else if (keycode == KeyAction::RETURN)
-			{
-				okhandler();
-				deactivate();
-			}
-		}
-	}
+    void UILoginNotice::send_key(int32_t keycode, bool pressed, bool escape) {
+        if (pressed) {
+            if (escape) {
+                if (!multiple)
+                    okhandler();
+                else
+                    cancelhandler();
 
-	UIElement::Type UILoginNotice::get_type() const
-	{
-		return TYPE;
-	}
+                deactivate();
+            } else if (keycode == KeyAction::RETURN) {
+                okhandler();
+                deactivate();
+            }
+        }
+    }
 
-	Button::State UILoginNotice::button_pressed(uint16_t buttonid)
-	{
-		if (buttonid == Buttons::YES)
-			okhandler();
-		else if (buttonid == Buttons::NO)
-			cancelhandler();
+    UIElement::Type UILoginNotice::get_type() const {
+        return TYPE;
+    }
 
-		deactivate();
+    Button::State UILoginNotice::button_pressed(uint16_t buttonid) {
+        if (buttonid == YES)
+            okhandler();
+        else if (buttonid == NO)
+            cancelhandler();
 
-		return Button::State::NORMAL;
-	}
+        deactivate();
 
-	UIQuitConfirm::UIQuitConfirm()
-	{
-		nl::node notice = nl::nx::UI["Login.img"]["Notice"];
-		nl::node backgrnd = notice["backgrnd"]["0"];
+        return Button::State::NORMAL;
+    }
 
-		sprites.emplace_back(backgrnd);
-		sprites.emplace_back(notice["text"][UILoginNotice::Message::CONFIRM_EXIT], Point<int16_t>(17, 13));
+    UIQuitConfirm::UIQuitConfirm() {
+        nl::node notice = nl::nx::UI["Login.img"]["Notice"];
+        nl::node backgrnd = notice["backgrnd"]["0"];
 
-		buttons[Buttons::BT_OK] = std::make_unique<MapleButton>(notice["BtYes"], Point<int16_t>(68, 106));
-		buttons[Buttons::BT_CANCEL] = std::make_unique<MapleButton>(notice["BtNo"], Point<int16_t>(129, 106));
+        sprites.emplace_back(backgrnd);
+        sprites.emplace_back(notice["text"][UILoginNotice::Message::CONFIRM_EXIT], Point<int16_t>(17, 13));
 
-		position = Point<int16_t>(387, 293);
-		dimension = Texture(backgrnd).get_dimensions();
-	}
+        buttons[BT_OK] = std::make_unique<MapleButton>(notice["BtYes"], Point<int16_t>(68, 106));
+        buttons[BT_CANCEL] = std::make_unique<MapleButton>(notice["BtNo"], Point<int16_t>(129, 106));
 
-	void UIQuitConfirm::send_key(int32_t keycode, bool pressed, bool escape)
-	{
-		if (pressed)
-		{
-			if (escape)
-			{
-				deactivate();
-			}
-			else if (keycode == KeyAction::RETURN)
-			{
-				UI::get().quit();
-				deactivate();
-			}
-		}
-	}
+        position = Point<int16_t>(387, 293);
+        dimension = Texture(backgrnd).get_dimensions();
+    }
 
-	UIElement::Type UIQuitConfirm::get_type() const
-	{
-		return TYPE;
-	}
+    void UIQuitConfirm::send_key(int32_t keycode, bool pressed, bool escape) {
+        if (pressed) {
+            if (escape) {
+                deactivate();
+            } else if (keycode == KeyAction::RETURN) {
+                UI::get().quit();
+                deactivate();
+            }
+        }
+    }
 
-	Button::State UIQuitConfirm::button_pressed(uint16_t buttonid)
-	{
-		if (buttonid == BT_OK)
-			UI::get().quit();
+    UIElement::Type UIQuitConfirm::get_type() const {
+        return TYPE;
+    }
 
-		deactivate();
+    Button::State UIQuitConfirm::button_pressed(uint16_t buttonid) {
+        if (buttonid == BT_OK)
+            UI::get().quit();
 
-		return Button::PRESSED;
-	}
+        deactivate();
 
-	UIClassConfirm::UIClassConfirm(uint16_t selected_class, bool unavailable, std::function<void()> okhandler) : okhandler(okhandler)
-	{
-		nl::node RaceSelect = nl::nx::UI["Login.img"]["RaceSelect_new"];
-		nl::node type = unavailable ? RaceSelect["deny"] : RaceSelect["confirm"];
-		nl::node backgrnd = type["backgrnd"];
-		nl::node race = type["race"][selected_class];
+        return Button::PRESSED;
+    }
 
-		int16_t backgrnd_x = Texture(backgrnd).get_dimensions().x();
-		int16_t race_x = Texture(race).get_dimensions().x();
+    UIClassConfirm::UIClassConfirm(uint16_t selected_class, bool unavailable,
+                                   std::function<void()> okhandler) : okhandler(okhandler) {
+        nl::node RaceSelect = nl::nx::UI["Login.img"]["RaceSelect_new"];
+        nl::node type = unavailable ? RaceSelect["deny"] : RaceSelect["confirm"];
+        nl::node backgrnd = type["backgrnd"];
+        nl::node race = type["race"][selected_class];
 
-		int16_t pos_x = (backgrnd_x - race_x) / 2;
+        int16_t backgrnd_x = Texture(backgrnd).get_dimensions().x();
+        int16_t race_x = Texture(race).get_dimensions().x();
 
-		sprites.emplace_back(backgrnd);
-		sprites.emplace_back(race, Point<int16_t>(pos_x, 10) + (Point<int16_t>)race["origin"]);
+        int16_t pos_x = (backgrnd_x - race_x) / 2;
 
-		if (unavailable)
-		{
-			buttons[Buttons::OK] = std::make_unique<MapleButton>(type["BtOK"]);
-		}
-		else
-		{
-			buttons[Buttons::OK] = std::make_unique<MapleButton>(type["BtOK"], Point<int16_t>(62, 107));
-			buttons[Buttons::CANCEL] = std::make_unique<MapleButton>(type["BtCancel"], Point<int16_t>(137, 107));
-		}
+        sprites.emplace_back(backgrnd);
+        sprites.emplace_back(race, Point<int16_t>(pos_x, 10) + static_cast<Point<int16_t>>(race["origin"]));
 
-		position = Point<int16_t>(398, 273);
-		dimension = Texture(backgrnd).get_dimensions();
-	}
+        if (unavailable) {
+            buttons[OK] = std::make_unique<MapleButton>(type["BtOK"]);
+        } else {
+            buttons[OK] = std::make_unique<MapleButton>(type["BtOK"], Point<int16_t>(62, 107));
+            buttons[CANCEL] = std::make_unique<MapleButton>(type["BtCancel"], Point<int16_t>(137, 107));
+        }
 
-	Cursor::State UIClassConfirm::send_cursor(bool clicked, Point<int16_t> cursorpos)
-	{
-		for (auto& btit : buttons)
-		{
-			if (btit.second->is_active() && btit.second->bounds(position).contains(cursorpos))
-			{
-				if (btit.second->get_state() == Button::State::NORMAL)
-				{
-					Sound(Sound::Name::BUTTONOVER).play();
+        position = Point<int16_t>(398, 273);
+        dimension = Texture(backgrnd).get_dimensions();
+    }
 
-					btit.second->set_state(Button::State::MOUSEOVER);
-				}
-				else if (btit.second->get_state() == Button::State::MOUSEOVER)
-				{
-					if (clicked)
-					{
-						Sound(Sound::Name::BUTTONCLICK).play();
+    Cursor::State UIClassConfirm::send_cursor(bool clicked, Point<int16_t> cursorpos) {
+        for (auto& btit : buttons) {
+            if (btit.second->is_active() && btit.second->bounds(position).contains(cursorpos)) {
+                if (btit.second->get_state() == Button::State::NORMAL) {
+                    Sound(Sound::Name::BUTTONOVER).play();
 
-						btit.second->set_state(button_pressed(btit.first));
-					}
-				}
-			}
-			else if (btit.second->get_state() == Button::State::MOUSEOVER)
-			{
-				btit.second->set_state(Button::State::NORMAL);
-			}
-		}
+                    btit.second->set_state(Button::State::MOUSEOVER);
+                } else if (btit.second->get_state() == Button::State::MOUSEOVER) {
+                    if (clicked) {
+                        Sound(Sound::Name::BUTTONCLICK).play();
 
-		return Cursor::State::LEAF;
-	}
+                        btit.second->set_state(button_pressed(btit.first));
+                    }
+                }
+            } else if (btit.second->get_state() == Button::State::MOUSEOVER) {
+                btit.second->set_state(Button::State::NORMAL);
+            }
+        }
 
-	void UIClassConfirm::send_key(int32_t keycode, bool pressed, bool escape)
-	{
-		if (pressed)
-		{
-			if (escape)
-				deactivate();
-			else if (keycode == KeyAction::Id::RETURN)
-				button_pressed(Buttons::OK);
-		}
-	}
+        return Cursor::State::LEAF;
+    }
 
-	UIElement::Type UIClassConfirm::get_type() const
-	{
-		return TYPE;
-	}
+    void UIClassConfirm::send_key(int32_t keycode, bool pressed, bool escape) {
+        if (pressed) {
+            if (escape)
+                deactivate();
+            else if (keycode == KeyAction::Id::RETURN)
+                button_pressed(OK);
+        }
+    }
 
-	Button::State UIClassConfirm::button_pressed(uint16_t buttonid)
-	{
-		deactivate();
+    UIElement::Type UIClassConfirm::get_type() const {
+        return TYPE;
+    }
 
-		if (buttonid == Buttons::OK)
-			okhandler();
+    Button::State UIClassConfirm::button_pressed(uint16_t buttonid) {
+        deactivate();
 
-		return Button::State::NORMAL;
-	}
+        if (buttonid == OK)
+            okhandler();
 
-	UIKeySelect::UIKeySelect(std::function<void(bool)> oh, bool l) : okhandler(oh), login(l)
-	{
-		nl::node KeyType = nl::nx::UI["UIWindow2.img"]["KeyConfig"]["KeyType"];
-		nl::node backgrnd = KeyType["backgrnd"];
+        return Button::State::NORMAL;
+    }
 
-		sprites.emplace_back(backgrnd);
+    UIKeySelect::UIKeySelect(std::function<void(bool)> oh, bool l) : okhandler(oh), login(l) {
+        nl::node KeyType = nl::nx::UI["UIWindow2.img"]["KeyConfig"]["KeyType"];
+        nl::node backgrnd = KeyType["backgrnd"];
 
-		buttons[Buttons::CLOSE] = std::make_unique<MapleButton>(KeyType["btClose"]);
-		buttons[Buttons::TYPEA] = std::make_unique<MapleButton>(KeyType["btTypeA"]);
-		buttons[Buttons::TYPEB] = std::make_unique<MapleButton>(KeyType["btTypeB"], Point<int16_t>(1, 1));
+        sprites.emplace_back(backgrnd);
 
-		if (login)
-			buttons[Buttons::CLOSE]->set_active(false);
+        buttons[CLOSE] = std::make_unique<MapleButton>(KeyType["btClose"]);
+        buttons[TYPEA] = std::make_unique<MapleButton>(KeyType["btTypeA"]);
+        buttons[TYPEB] = std::make_unique<MapleButton>(KeyType["btTypeB"], Point<int16_t>(1, 1));
 
-		position = Point<int16_t>(293, 229);
-		dimension = Texture(backgrnd).get_dimensions();
-	}
+        if (login)
+            buttons[CLOSE]->set_active(false);
 
-	void UIKeySelect::send_key(int32_t keycode, bool pressed, bool escape)
-	{
-		if (pressed && !login)
-			if (escape || keycode == KeyAction::Id::RETURN)
-				deactivate();
-	}
+        position = Point<int16_t>(293, 229);
+        dimension = Texture(backgrnd).get_dimensions();
+    }
 
-	UIElement::Type UIKeySelect::get_type() const
-	{
-		return TYPE;
-	}
+    void UIKeySelect::send_key(int32_t keycode, bool pressed, bool escape) {
+        if (pressed && !login)
+            if (escape || keycode == KeyAction::Id::RETURN)
+                deactivate();
+    }
 
-	Button::State UIKeySelect::button_pressed(uint16_t buttonid)
-	{
-		switch (buttonid)
-		{
-			default:
-			case Buttons::CLOSE:
-				deactivate();
-				break;
-			case Buttons::TYPEA:
-			case Buttons::TYPEB:
-			{
-				bool alternate = (buttonid == Buttons::TYPEA) ? false : true;
+    UIElement::Type UIKeySelect::get_type() const {
+        return TYPE;
+    }
 
-				if (alternate)
-					buttons[Buttons::TYPEA]->set_state(Button::State::DISABLED);
-				else
-					buttons[Buttons::TYPEB]->set_state(Button::State::DISABLED);
+    Button::State UIKeySelect::button_pressed(uint16_t buttonid) {
+        switch (buttonid) {
+        default:
+        case CLOSE:
+            deactivate();
+            break;
+        case TYPEA:
+        case TYPEB: {
+            bool alternate = (buttonid != TYPEA);
 
-				auto onok = [&, alternate]()
-				{
-					okhandler(alternate);
-					deactivate();
-				};
+            if (alternate)
+                buttons[TYPEA]->set_state(Button::State::DISABLED);
+            else
+                buttons[TYPEB]->set_state(Button::State::DISABLED);
 
-				UI::get().emplace<UIKeyConfirm>(alternate, onok, login);
-				break;
-			}
-		}
+            auto onok = [&, alternate]() {
+                okhandler(alternate);
+                deactivate();
+            };
 
-		return Button::State::DISABLED;
-	}
+            UI::get().emplace<UIKeyConfirm>(alternate, onok, login);
+            break;
+        }
+        }
 
-	UIKeyConfirm::UIKeyConfirm(bool alternate, std::function<void()> oh, bool l) : okhandler(oh), login(l)
-	{
-		nl::node alert = nl::nx::UI["UIWindow2.img"]["KeyConfig"]["KeyType"]["alert"];
-		nl::node background = alternate ? alert["alternate"] : alert["default"];
+        return Button::State::DISABLED;
+    }
 
-		sprites.emplace_back(background);
+    UIKeyConfirm::UIKeyConfirm(bool alternate, std::function<void()> oh, bool l) : okhandler(oh), login(l) {
+        nl::node alert = nl::nx::UI["UIWindow2.img"]["KeyConfig"]["KeyType"]["alert"];
+        nl::node background = alternate ? alert["alternate"] : alert["default"];
 
-		buttons[Buttons::OK] = std::make_unique<MapleButton>(alert["btOk"]);
+        sprites.emplace_back(background);
 
-		position = Point<int16_t>(388, 313);
-		dimension = Texture(background).get_dimensions();
-	}
+        buttons[OK] = std::make_unique<MapleButton>(alert["btOk"]);
 
-	void UIKeyConfirm::send_key(int32_t keycode, bool pressed, bool escape)
-	{
-		if (pressed)
-		{
-			if (keycode == KeyAction::Id::RETURN)
-			{
-				confirm();
-			}
-			else if (!login && escape)
-			{
-				deactivate();
+        position = Point<int16_t>(388, 313);
+        dimension = Texture(background).get_dimensions();
+    }
 
-				UI::get().remove(UIElement::Type::LOGINNOTICE);
-			}
-		}
-	}
+    void UIKeyConfirm::send_key(int32_t keycode, bool pressed, bool escape) {
+        if (pressed) {
+            if (keycode == KeyAction::Id::RETURN) {
+                confirm();
+            } else if (!login && escape) {
+                deactivate();
 
-	UIElement::Type UIKeyConfirm::get_type() const
-	{
-		return TYPE;
-	}
+                UI::get().remove(LOGINNOTICE);
+            }
+        }
+    }
 
-	Button::State UIKeyConfirm::button_pressed(uint16_t buttonid)
-	{
-		confirm();
+    UIElement::Type UIKeyConfirm::get_type() const {
+        return TYPE;
+    }
 
-		return Button::State::NORMAL;
-	}
+    Button::State UIKeyConfirm::button_pressed(uint16_t buttonid) {
+        confirm();
 
-	void UIKeyConfirm::confirm()
-	{
-		okhandler();
-		deactivate();
+        return Button::State::NORMAL;
+    }
 
-		UI::get().remove(UIElement::Type::LOGINNOTICE);
-	}
+    void UIKeyConfirm::confirm() {
+        okhandler();
+        deactivate();
+
+        UI::get().remove(LOGINNOTICE);
+    }
 }

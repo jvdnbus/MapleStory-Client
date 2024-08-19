@@ -24,33 +24,31 @@
 #include "../../Graphics/Text.h"
 #include "../../Template/BoolPair.h"
 
-namespace ms
-{
-	class ItemTooltip : public Tooltip
-	{
-	public:
-		ItemTooltip();
+namespace ms {
+    class ItemTooltip : public Tooltip {
+    public:
+        ItemTooltip();
 
-		void draw(Point<int16_t> position) const override;
+        void draw(Point<int16_t> position) const override;
 
-		bool set_item(int32_t itemid);
+        bool set_item(int32_t itemid);
 
-	private:
-		int32_t itemid;
-		int16_t fillwidth;
-		int16_t fillheight;
-		int16_t descdelta;
-		Texture itemicon;
+    private:
+        int32_t itemid;
+        int16_t fillwidth;
+        int16_t fillheight;
+        int16_t descdelta;
+        Texture itemicon;
 
-		Text name;
-		Text desc;
-		Text qual;
-		MapleFrame frame;
-		Texture cover;
-		Texture base;
-		Texture itemcover;
-		BoolPair<Texture> type;
-		bool untradable;
-		bool unique;
-	};
+        Text name;
+        Text desc;
+        Text qual;
+        MapleFrame frame;
+        Texture cover;
+        Texture base;
+        Texture itemcover;
+        BoolPair<Texture> type;
+        bool untradable;
+        bool unique;
+    };
 }

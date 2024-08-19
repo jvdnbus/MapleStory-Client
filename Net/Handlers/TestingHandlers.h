@@ -19,17 +19,14 @@
 
 #include "../PacketHandler.h"
 
-namespace ms
-{
-	// TODO: Comment
-	class CheckSpwResultHandler : public PacketHandler
-	{
-		void handle(InPacket& recv) const override;
-	};
+namespace ms {
+    // TODO: Comment
+    class CheckSpwResultHandler : public PacketHandler {
+        void handle(InPacket& recv) override;
+    };
 
-	// TODO: Comment
-	class FieldEffectHandler : public PacketHandler
-	{
-		void handle(InPacket& recv) const override;
-	};
+    // TODO: Comment
+    class FieldEffectHandler : public PacketHandler {
+        void handle(InPacket& recv) override;
+    };
 }

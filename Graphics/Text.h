@@ -22,109 +22,104 @@
 #include <map>
 #include <vector>
 
-namespace ms
-{
-	class Text
-	{
-	public:
-		enum Font
-		{
-			A11M,
-			A11B,
-			A12M,
-			A12B,
-			A13M,
-			A13B,
-			A14M,
-			A14B,
-			A15M,
-			A15B,
-			A18M,
-			A18B,
-			NUM_FONTS
-		};
+namespace ms {
+    class Text {
+    public:
+        enum Font {
+            A11M,
+            A11B,
+            A12M,
+            A12B,
+            A13M,
+            A13B,
+            A14M,
+            A14B,
+            A15M,
+            A15B,
+            A18M,
+            A18B,
+            NUM_FONTS
+        };
 
-		enum Alignment
-		{
-			LEFT,
-			CENTER,
-			RIGHT
-		};
+        enum Alignment {
+            LEFT,
+            CENTER,
+            RIGHT
+        };
 
-		enum Background
-		{
-			NONE,
-			NAMETAG
-		};
+        enum Background {
+            NONE,
+            NAMETAG
+        };
 
-		class Layout
-		{
-		public:
-			struct Word
-			{
-				size_t first;
-				size_t last;
-				Font font;
-				Color::Name color;
-			};
+        class Layout {
+        public:
+            struct Word {
+                size_t first;
+                size_t last;
+                Font font;
+                Color::Name color;
+            };
 
-			struct Line
-			{
-				std::vector<Word> words;
-				Point<int16_t> position;
-			};
+            struct Line {
+                std::vector<Word> words;
+                Point<int16_t> position;
+            };
 
-			Layout(const std::vector<Line>& lines, const std::vector<int16_t>& advances, int16_t width, int16_t height, int16_t endx, int16_t endy);
-			Layout();
+            Layout(const std::vector<Line>& lines, const std::vector<int16_t>& advances, int16_t width, int16_t height,
+                   int16_t endx, int16_t endy);
+            Layout();
 
-			int16_t width() const;
-			int16_t height() const;
-			int16_t advance(size_t index) const;
-			Point<int16_t> get_dimensions() const;
-			Point<int16_t> get_endoffset() const;
+            int16_t width() const;
+            int16_t height() const;
+            int16_t advance(size_t index) const;
+            Point<int16_t> get_dimensions() const;
+            Point<int16_t> get_endoffset() const;
 
-			using iterator = std::vector<Line>::const_iterator;
-			iterator begin() const;
-			iterator end() const;
+            using iterator = std::vector<Line>::const_iterator;
+            iterator begin() const;
+            iterator end() const;
 
-		private:
-			std::vector<Line> lines;
-			std::vector<int16_t> advances;
-			Point<int16_t> dimensions;
-			Point<int16_t> endoffset;
-		};
+        private:
+            std::vector<Line> lines;
+            std::vector<int16_t> advances;
+            Point<int16_t> dimensions;
+            Point<int16_t> endoffset;
+        };
 
-		Text(Font font, Alignment alignment, Color::Name color, Background background, const std::string& text = "", uint16_t maxwidth = 0, bool formatted = true, int16_t line_adj = 0);
-		Text(Font font, Alignment alignment, Color::Name color, const std::string& text = "", uint16_t maxwidth = 0, bool formatted = true, int16_t line_adj = 0);
-		Text();
+        Text(Font font, Alignment alignment, Color::Name color, Background background, const std::string& text = "",
+             uint16_t maxwidth = 0, bool formatted = true, int16_t line_adj = 0);
+        Text(Font font, Alignment alignment, Color::Name color, const std::string& text = "", uint16_t maxwidth = 0,
+             bool formatted = true, int16_t line_adj = 0);
+        Text();
 
-		void draw(const DrawArgument& args) const;
-		void draw(const DrawArgument& args, const Range<int16_t>& vertical) const;
+        void draw(const DrawArgument& args) const;
+        void draw(const DrawArgument& args, const Range<int16_t>& vertical) const;
 
-		void change_text(const std::string& text);
-		void change_color(Color::Name color);
-		void set_background(Background background);
+        void change_text(const std::string& text);
+        void change_color(Color::Name color);
+        void set_background(Background background);
 
-		bool empty() const;
-		size_t length() const;
-		int16_t width() const;
-		int16_t height() const;
-		uint16_t advance(size_t pos) const;
-		Point<int16_t> dimensions() const;
-		Point<int16_t> endoffset() const;
-		const std::string& get_text() const;
+        bool empty() const;
+        size_t length() const;
+        int16_t width() const;
+        int16_t height() const;
+        uint16_t advance(size_t pos) const;
+        Point<int16_t> dimensions() const;
+        Point<int16_t> endoffset() const;
+        const std::string& get_text() const;
 
-	private:
-		void reset_layout();
+    private:
+        void reset_layout();
 
-		Font font;
-		Alignment alignment;
-		Color::Name color;
-		Background background;
-		Layout layout;
-		uint16_t maxwidth;
-		bool formatted;
-		std::string text;
-		int16_t line_adj;
-	};
+        Font font;
+        Alignment alignment;
+        Color::Name color;
+        Background background;
+        Layout layout;
+        uint16_t maxwidth;
+        bool formatted;
+        std::string text;
+        int16_t line_adj;
+    };
 }

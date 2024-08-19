@@ -22,87 +22,74 @@
 #include <iostream>
 #include <unordered_map>
 
-namespace ms
-{
-	namespace string_conversion
-	{
-		template<typename T>
-		inline T or_default(const std::string& str, T def)
-		{
-			try
-			{
-				int32_t intval = std::stoi(str);
-				return static_cast<T>(intval);
-			}
-			catch (const std::exception& ex)
-			{
-				LOG(LOG_ERROR, __func__ << ": " << ex.what());
+namespace ms {
+    namespace string_conversion {
+        template <typename T>
+        T or_default(const std::string& str, T def) {
+            try {
+                int32_t intval = std::stoi(str);
+                return static_cast<T>(intval);
+            } catch (const std::exception& ex) {
+                LOG(LOG_ERROR, __func__ << ": " << ex.what());
 
-				return def;
-			}
-		}
+                return def;
+            }
+        }
 
-		template<typename T>
-		inline T or_zero(const std::string& str)
-		{
-			return or_default<T>(str, T(0));
-		}
-	};
+        template <typename T>
+        T or_zero(const std::string& str) {
+            return or_default<T>(str, T(0));
+        }
+    };
 
-	namespace string_format
-	{
-		// Format a number string so that each three decimal points are separated by a comma
-		void split_number(std::string& input);
+    namespace string_format {
+        // Format a number string so that each three decimal points are separated by a comma
+        void split_number(std::string& input);
 
-		// Prefix an id with zeros so that it has the minimum specified length
-		std::string extend_id(int32_t id, size_t length);
+        // Prefix an id with zeros so that it has the minimum specified length
+        std::string extend_id(int32_t id, size_t length);
 
-		// Pad a string with leading zeros to a specified length
-		std::string pad_string(std::string str, size_t length);
+        // Pad a string with leading zeros to a specified length
+        std::string pad_string(std::string str, size_t length);
 
-		// Cut off a string at a specified width with an ellipsis
-		void format_with_ellipsis(Text& input, int16_t width, uint16_t ellipsis_width = 2U, bool word_break = false);
+        // Cut off a string at a specified width with an ellipsis
+        void format_with_ellipsis(Text& input, int16_t width, uint16_t ellipsis_width = 2U, bool word_break = false);
 
-		// Convert a string to lowercase letters
-		std::string tolower(std::string str);
-	};
+        // Convert a string to lowercase letters
+        std::string tolower(std::string str);
+    };
 
-	namespace bytecode
-	{
-		// Check if a bit mask contains the specified value
-		bool compare(int32_t mask, int32_t value);
-	}
+    namespace bytecode {
+        // Check if a bit mask contains the specified value
+        bool compare(int32_t mask, int32_t value);
+    }
 
-	namespace NxHelper
-	{
-		namespace Map
-		{
-			struct MapInfo
-			{
-				std::string description;
-				std::string name;
-				std::string street_name;
-				std::string full_name;
-			};
+    namespace NxHelper {
+        namespace Map {
+            struct MapInfo {
+                std::string description;
+                std::string name;
+                std::string street_name;
+                std::string full_name;
+            };
 
-			// Returns all relative map info
-			MapInfo get_map_info_by_id(int32_t mapid);
+            // Returns all relative map info
+            MapInfo get_map_info_by_id(int32_t mapid);
 
-			// Returns the category of a map
-			std::string get_map_category(int32_t mapid);
+            // Returns the category of a map
+            std::string get_map_category(int32_t mapid);
 
-			// Returns a list of all life on a map (Mobs and NPCs)
-			std::unordered_map<int64_t, std::pair<std::string, std::string>> get_life_on_map(int32_t mapid);
+            // Returns a list of all life on a map (Mobs and NPCs)
+            std::unordered_map<int64_t, std::pair<std::string, std::string>> get_life_on_map(int32_t mapid);
 
-			// Returns the name of the node, under which the argument map id is in
-			nl::node get_map_node_name(int32_t mapid);
-		}
-	}
+            // Returns the name of the node, under which the argument map id is in
+            nl::node get_map_node_name(int32_t mapid);
+        }
+    }
 
-	namespace single_console
-	{
-		void log_message(std::string message);
+    namespace single_console {
+        void log_message(std::string message);
 
-		static std::list<std::string> log_history;
-	}
+        static std::list<std::string> log_history;
+    }
 }

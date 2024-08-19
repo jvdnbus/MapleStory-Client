@@ -37,7 +37,7 @@
 
 // Log Level
 #ifdef _DEBUG
-	#define LOG_LEVEL LOG_DEBUG
+#define LOG_LEVEL LOG_NETWORK
 #else
 	#define LOG_LEVEL LOG_WARN
 #endif
@@ -54,7 +54,7 @@
 
 // Log Commands
 #ifdef _DEBUG
-	#define LOG(level, message) level <= LOG_LEVEL ? std::cout << "[" << LOG_TEXT(level) << "]: " << message << std::endl : std::cout
+#define LOG(level, message) level <= LOG_LEVEL ? std::cout << "[" << LOG_TEXT(level) << "]: " << message << std::endl : std::cout
 #else
 	#define LOG(level, message) void(0)
 #endif

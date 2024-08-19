@@ -17,82 +17,79 @@
 //////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-namespace ms
-{
-	// Error codes to be checked after initialization
-	class Error
-	{
-	public:
-		enum Code
-		{
-			NONE,
-			CONNECTION,
-			NLNX,
-			WZ,
-			MISSING_FILE,
-			WRONG_UI_FILE,
-			GLFW,
-			GLEW,
-			FREETYPE,
-			VERTEX_SHADER,
-			FRAGMENT_SHADER,
-			SHADER_PROGRAM_LINK,
-			SHADER_PROGRAM_VALID,
-			SHADER_VARS,
-			WINDOW,
-			AUDIO,
-			MISSING_ICON,
-			FONT_PATH,
-			LENGTH
-		};
+namespace ms {
+    // Error codes to be checked after initialization
+    class Error {
+    public:
+        enum Code {
+            NONE,
+            CONNECTION,
+            NLNX,
+            WZ,
+            MISSING_FILE,
+            WRONG_UI_FILE,
+            GLFW,
+            GLEW,
+            FREETYPE,
+            VERTEX_SHADER,
+            FRAGMENT_SHADER,
+            SHADER_PROGRAM_LINK,
+            SHADER_PROGRAM_VALID,
+            SHADER_VARS,
+            WINDOW,
+            AUDIO,
+            MISSING_ICON,
+            FONT_PATH,
+            LENGTH
+        };
 
-		constexpr Error(Code c) : Error(c, "") {}
-		constexpr Error(Code c, const char* args) : code(c), args(args) {}
+        constexpr Error(Code c) : Error(c, "") {
+        }
 
-		constexpr operator bool() const
-		{
-			return code != Code::NONE;
-		}
+        constexpr Error(Code c, const char* args) : code(c), args(args) {
+        }
 
-		constexpr bool can_retry() const
-		{
-			return code == Code::CONNECTION || code == Code::MISSING_FILE || code == Code::WRONG_UI_FILE || code == Code::MISSING_ICON || code == Code::FONT_PATH;
-		}
+        constexpr operator bool() const {
+            return code != NONE;
+        }
 
-		constexpr const char* get_message() const
-		{
-			return messages[code];
-		}
+        constexpr bool can_retry() const {
+            return code == CONNECTION || code == MISSING_FILE || code == WRONG_UI_FILE || code ==
+                MISSING_ICON || code == FONT_PATH;
+        }
 
-		constexpr const char* get_args() const
-		{
-			return args;
-		}
+        constexpr const char* get_message() const {
+            return messages[code];
+        }
 
-	private:
-		Code code;
-		const char* args;
+        constexpr const char* get_args() const {
+            return args;
+        }
 
-		static constexpr const char* messages[Code::LENGTH] =
-		{
-			"",
-			"Cannot connect to server.",
-			"Could not initialize NLNX.",
-			"Could not initialize WZ.",
-			"Missing a game file: ",
-			"UI.nx has wrong version.",
-			"Could not initialize GLFW.",
-			"Could not initialize GLEW.",
-			"Could not initialize FreeType.",
-			"Failed to compile vertex shader.",
-			"Failed to compile fragment shader.",
-			"Failed to link shader program.",
-			"Failed to validate shader program.",
-			"Failed to locate shader variables.",
-			"Failed to create window.",
-			"Failed to initialize audio.",
-			"Could not load icon.",
-			"Could not load fonts."
-		};
-	};
+    private:
+        Code code;
+        const char* args;
+
+        static constexpr const char* messages[LENGTH] =
+        {
+            "",
+            "Cannot connect to server.",
+            "Could not initialize NLNX.",
+            "Could not initialize WZ.",
+            "Missing a game file: ",
+            "UI.nx has wrong version.",
+            "Could not initialize GLFW.",
+            "Could not initialize GLEW.",
+            "Could not initialize FreeType.",
+            "Failed to compile vertex shader.",
+            "Failed to compile fragment shader.",
+            "Failed to link shader program.",
+            "Failed to validate shader program.",
+            "Failed to locate shader variables.",
+            "Failed to create window.",
+            "Failed to initialize audio.",
+            "Could not load icon.",
+            "Could not load fonts."
+        };
+    };
 }

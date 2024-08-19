@@ -30,83 +30,79 @@
 #include "../Util/WzFiles.h"
 #endif
 
-namespace ms
-{
-	class Sound
-	{
-	public:
-		// Preloaded sounds
-		enum Name
-		{
-			/// UI
-			BUTTONCLICK,
-			BUTTONOVER,
-			CHARSELECT,
-			DLGNOTICE,
-			MENUDOWN,
-			MENUUP,
-			RACESELECT,
-			SCROLLUP,
-			SELECTMAP,
-			TAB,
-			WORLDSELECT,
-			DRAGSTART,
-			DRAGEND,
-			WORLDMAPOPEN,
-			WORLDMAPCLOSE,
+namespace ms {
+    class Sound {
+    public:
+        // Preloaded sounds
+        enum Name {
+            /// UI
+            BUTTONCLICK,
+            BUTTONOVER,
+            CHARSELECT,
+            DLGNOTICE,
+            MENUDOWN,
+            MENUUP,
+            RACESELECT,
+            SCROLLUP,
+            SELECTMAP,
+            TAB,
+            WORLDSELECT,
+            DRAGSTART,
+            DRAGEND,
+            WORLDMAPOPEN,
+            WORLDMAPCLOSE,
 
-			/// Login
-			GAMESTART,
+            /// Login
+            GAMESTART,
 
-			/// Game
-			JUMP,
-			DROP,
-			PICKUP,
-			PORTAL,
-			LEVELUP,
-			TOMBSTONE,
-			LENGTH
-		};
+            /// Game
+            JUMP,
+            DROP,
+            PICKUP,
+            PORTAL,
+            LEVELUP,
+            TOMBSTONE,
+            LENGTH
+        };
 
-		Sound(Name name);
-		Sound(int32_t itemid);
-		Sound(nl::node src);
-		Sound();
+        Sound(Name name);
+        Sound(int32_t itemid);
+        Sound(nl::node src);
+        Sound();
 
-		void play() const;
+        void play() const;
 
-		static Error init();
-		static void close();
-		static bool set_sfxvolume(uint8_t volume);
+        static Error init();
+        static void close();
+        static bool set_sfxvolume(uint8_t volume);
 
-	private:
-		size_t id;
+    private:
+        size_t id;
 
-		static void play(size_t id);
+        static void play(size_t id);
 
-		static size_t add_sound(nl::node src);
-		static void add_sound(Name name, nl::node src);
-		static void add_sound(std::string itemid, nl::node src);
+        static size_t add_sound(nl::node src);
+        static void add_sound(Name name, nl::node src);
+        static void add_sound(std::string itemid, nl::node src);
 
-		static std::string format_id(int32_t itemid);
+        static std::string format_id(int32_t itemid);
 
-		static std::unordered_map<size_t, uint64_t> samples;
-		static EnumMap<Name, size_t> soundids;
-		static std::unordered_map<std::string, size_t> itemids;
-	};
+        static std::unordered_map<size_t, uint64_t> samples;
+        static EnumMap<Name, size_t> soundids;
+        static std::unordered_map<std::string, size_t> itemids;
+    };
 
-	class Music
-	{
-	public:
-		Music(std::string path);
+    class Music {
+    public:
+        Music(std::string path);
 
-		void play() const;
-		void play_once() const;
+        void play() const;
+        void play_once() const;
 
-		static Error init();
-		static bool set_bgmvolume(uint8_t volume);
+        static Error init();
+        static bool set_bgmvolume(uint8_t volume);
 
-	private:
-		std::string path;
-	};
+    private:
+        std::string path;
+    };
 }

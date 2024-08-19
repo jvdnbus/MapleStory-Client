@@ -21,40 +21,37 @@
 
 #include <iostream>
 
-namespace ms
-{
-	namespace MapleStat
-	{
-		Id by_id(size_t id)
-		{
-			if (id >= LENGTH)
-				LOG(LOG_DEBUG, "Unknown MapleStat::Id id: [" << id << "]");
+namespace ms {
+    namespace MapleStat {
+        Id by_id(size_t id) {
+            if (id >= LENGTH)
+                LOG(LOG_DEBUG, "Unknown MapleStat::Id id: [" << id << "]");
 
-			return static_cast<Id>(id);
-		}
+            return static_cast<Id>(id);
+        }
 
-		const EnumMap<Id, int32_t> codes =
-		{
-			0x1,
-			0x2,
-			0x4,
-			0x10,
-			0x20,
-			0x40,
-			0x80,
-			0x100,
-			0x200,
-			0x400,
-			0x800,
-			0x1000,
-			0x2000,
-			0x4000,
-			0x8000,
-			0x10000,
-			0x20000,
-			0x40000,
-			0x180008,
-			0x200000
-		};
-	}
+        const EnumMap<Id, int32_t> codes =
+        {
+            0x1,
+            0x2,
+            0x4,
+            0x10,
+            0x20,
+            0x40,
+            0x80,
+            0x100,
+            0x200,
+            0x400,
+            0x800,
+            0x1000,
+            0x2000,
+            0x4000,
+            0x8000,
+            0x10000,
+            0x20000,
+            0x40000,
+            0x180008,
+            0x200000
+        };
+    }
 }

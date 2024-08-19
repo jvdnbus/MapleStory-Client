@@ -19,11 +19,10 @@
 
 #include "UICommonCreation.h"
 
-namespace ms
-{
-	class UIExplorerCreation : public UICommonCreation
-	{
-	public:
-		UIExplorerCreation() : UICommonCreation("000") {}
-	};
+namespace ms {
+    class UIExplorerCreation : public UICommonCreation {
+    public:
+        UIExplorerCreation() : UICommonCreation("000") {
+        }
+    };
 }

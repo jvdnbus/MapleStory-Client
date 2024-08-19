@@ -23,30 +23,27 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	MapEffect::MapEffect(std::string path) : active(false)
-	{
-		nl::node Effect = nl::nx::Map002["Effect.img"];
+namespace ms {
+    MapEffect::MapEffect(std::string path) : active(false) {
+        nl::node Effect = nl::nx::Map002["Effect.img"];
 
-		effect = Effect.resolve(path);
+        effect = Effect.resolve(path);
 
-		int16_t width = Constants::Constants::get().get_viewwidth();
+        int16_t width = Constants::Constants::get().get_viewwidth();
 
-		position = Point<int16_t>(width / 2, 250);
-	}
+        position = Point<int16_t>(width / 2, 250);
+    }
 
-	MapEffect::MapEffect() {}
+    MapEffect::MapEffect() {
+    }
 
-	void MapEffect::draw() const
-	{
-		if (!active)
-			effect.draw(position, 1.0f);
-	}
+    void MapEffect::draw() const {
+        if (!active)
+            effect.draw(position, 1.0f);
+    }
 
-	void MapEffect::update()
-	{
-		if (!active)
-			active = effect.update(6);
-	}
+    void MapEffect::update() {
+        if (!active)
+            active = effect.update(6);
+    }
 }

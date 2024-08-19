@@ -21,51 +21,48 @@
 
 #include "../../Graphics/Text.h"
 
-namespace ms
-{
-	class ChatBalloon
-	{
-	public:
-		ChatBalloon(int8_t type);
-		ChatBalloon();
+namespace ms {
+    class ChatBalloon {
+    public:
+        ChatBalloon(int8_t type);
+        ChatBalloon();
 
-		void draw(Point<int16_t> position) const;
-		void update();
+        void draw(Point<int16_t> position) const;
+        void update();
 
-		void change_text(const std::string& text);
-		void expire();
+        void change_text(const std::string& text);
+        void expire();
 
-	private:
-		// How long a line stays on screen
-		static constexpr int16_t DURATION = 4000; // 4 seconds
+    private:
+        // How long a line stays on screen
+        static constexpr int16_t DURATION = 4000; // 4 seconds
 
-		MapleFrame frame;
-		Text textlabel;
-		Texture arrow;
-		int16_t duration;
-	};
+        MapleFrame frame;
+        Text textlabel;
+        Texture arrow;
+        int16_t duration;
+    };
 
-	class ChatBalloonHorizontal
-	{
-	public:
-		ChatBalloonHorizontal();
+    class ChatBalloonHorizontal {
+    public:
+        ChatBalloonHorizontal();
 
-		void draw(Point<int16_t> position) const;
+        void draw(Point<int16_t> position) const;
 
-		void change_text(const std::string& text);
+        void change_text(const std::string& text);
 
-	private:
-		Text textlabel;
-		Texture arrow;
-		Texture center;
-		Texture northeast;
-		Texture north;
-		Texture northwest;
-		Texture west;
-		Texture southwest;
-		Texture south;
-		Texture southeast;
-		int16_t xtile;
-		int16_t ytile;
-	};
+    private:
+        Text textlabel;
+        Texture arrow;
+        Texture center;
+        Texture northeast;
+        Texture north;
+        Texture northwest;
+        Texture west;
+        Texture southwest;
+        Texture south;
+        Texture southeast;
+        int16_t xtile;
+        int16_t ytile;
+    };
 }

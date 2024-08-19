@@ -19,36 +19,35 @@
 
 #include "../../Graphics/Texture.h"
 
-namespace ms
-{
-	class Gauge
-	{
-	public:
-		enum Type : uint8_t
-		{
-			DEFAULT,
-			CASHSHOP,
-			WORLDSELECT
-		};
+namespace ms {
+    class Gauge {
+    public:
+        enum Type : uint8_t {
+            DEFAULT,
+            CASHSHOP,
+            WORLDSELECT
+        };
 
-		Gauge() {}
-		Gauge(Type type, Texture front, int16_t maximum, float percent);
-		Gauge(Type type, Texture front, Texture middle, int16_t maximum, float percent);
-		Gauge(Type type, Texture front, Texture middle, Texture end, int16_t maximum, float percentage);
+        Gauge() {
+        }
 
-		void draw(const DrawArgument& args) const;
-		void update(float target);
+        Gauge(Type type, Texture front, int16_t maximum, float percent);
+        Gauge(Type type, Texture front, Texture middle, int16_t maximum, float percent);
+        Gauge(Type type, Texture front, Texture middle, Texture end, int16_t maximum, float percentage);
 
-	private:
-		Texture barfront;
-		Texture barmid;
-		Texture barend;
-		int16_t maximum;
+        void draw(const DrawArgument& args) const;
+        void update(float target);
 
-		float percentage;
-		float target;
-		float step;
+    private:
+        Texture barfront;
+        Texture barmid;
+        Texture barend;
+        int16_t maximum;
 
-		Type type;
-	};
+        float percentage;
+        float target;
+        float step;
+
+        Type type;
+    };
 }

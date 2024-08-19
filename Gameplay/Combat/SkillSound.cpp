@@ -21,23 +21,19 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	SingleSkillSound::SingleSkillSound(std::string strid)
-	{
-		nl::node soundsrc = nl::nx::Sound["Skill.img"][strid];
+namespace ms {
+    SingleSkillSound::SingleSkillSound(std::string strid) {
+        nl::node soundsrc = nl::nx::Sound["Skill.img"][strid];
 
-		usesound = soundsrc["Use"];
-		hitsound = soundsrc["Hit"];
-	}
+        usesound = soundsrc["Use"];
+        hitsound = soundsrc["Hit"];
+    }
 
-	void SingleSkillSound::play_use() const
-	{
-		usesound.play();
-	}
+    void SingleSkillSound::play_use() const {
+        usesound.play();
+    }
 
-	void SingleSkillSound::play_hit() const
-	{
-		hitsound.play();
-	}
+    void SingleSkillSound::play_hit() const {
+        hitsound.play();
+    }
 }

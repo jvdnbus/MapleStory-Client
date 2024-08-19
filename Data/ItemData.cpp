@@ -21,189 +21,165 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	ItemData::ItemData(int32_t id) : itemid(id)
-	{
-		untradable = false;
-		unique = false;
-		unsellable = false;
-		cashitem = false;
-		gender = 0;
+namespace ms {
+    ItemData::ItemData(int32_t id) : itemid(id) {
+        untradable = false;
+        unique = false;
+        unsellable = false;
+        cashitem = false;
+        gender = 0;
 
-		nl::node src;
-		nl::node strsrc;
+        nl::node src;
+        nl::node strsrc;
 
-		std::string strprefix = "0" + std::to_string(get_item_prefix(itemid));
-		std::string strid = "0" + std::to_string(itemid);
-		int32_t prefix = get_prefix(itemid);
+        std::string strprefix = "0" + std::to_string(get_item_prefix(itemid));
+        std::string strid = "0" + std::to_string(itemid);
+        int32_t prefix = get_prefix(itemid);
 
-		switch (prefix)
-		{
-			case 1:
-				category = get_eqcategory(itemid);
-				src = nl::nx::Character[category][strid + ".img"]["info"];
-				strsrc = nl::nx::String["Eqp.img"]["Eqp"][category][std::to_string(itemid)];
-				break;
-			case 2:
-				category = "Consume";
-				src = nl::nx::Item["Consume"][strprefix + ".img"][strid]["info"];
-				strsrc = nl::nx::String["Consume.img"][std::to_string(itemid)];
-				break;
-			case 3:
-				category = "Install";
-				src = nl::nx::Item["Install"][strprefix + ".img"][strid]["info"];
-				strsrc = nl::nx::String["Ins.img"][std::to_string(itemid)];
-				break;
-			case 4:
-				category = "Etc";
-				src = nl::nx::Item["Etc"][strprefix + ".img"][strid]["info"];
-				strsrc = nl::nx::String["Etc.img"]["Etc"][std::to_string(itemid)];
-				break;
-			case 5:
-				category = "Cash";
-				src = nl::nx::Item["Cash"][strprefix + ".img"][strid]["info"];
-				strsrc = nl::nx::String["Cash.img"][std::to_string(itemid)];
-				break;
-		}
+        switch (prefix) {
+        case 1:
+            category = get_eqcategory(itemid);
+            src = nl::nx::Character[category][strid + ".img"]["info"];
+            strsrc = nl::nx::String["Eqp.img"]["Eqp"][category][std::to_string(itemid)];
+            break;
+        case 2:
+            category = "Consume";
+            src = nl::nx::Item["Consume"][strprefix + ".img"][strid]["info"];
+            strsrc = nl::nx::String["Consume.img"][std::to_string(itemid)];
+            break;
+        case 3:
+            category = "Install";
+            src = nl::nx::Item["Install"][strprefix + ".img"][strid]["info"];
+            strsrc = nl::nx::String["Ins.img"][std::to_string(itemid)];
+            break;
+        case 4:
+            category = "Etc";
+            src = nl::nx::Item["Etc"][strprefix + ".img"][strid]["info"];
+            strsrc = nl::nx::String["Etc.img"]["Etc"][std::to_string(itemid)];
+            break;
+        case 5:
+            category = "Cash";
+            src = nl::nx::Item["Cash"][strprefix + ".img"][strid]["info"];
+            strsrc = nl::nx::String["Cash.img"][std::to_string(itemid)];
+            break;
+        }
 
-		if (src)
-		{
-			icons[false] = src["icon"];
-			icons[true] = src["iconRaw"];
-			price = src["price"];
-			untradable = src["tradeBlock"].get_bool();
-			unique = src["only"].get_bool();
-			unsellable = src["notSale"].get_bool();
-			cashitem = src["cash"].get_bool();
-			gender = get_item_gender(itemid);
+        if (src) {
+            icons[false] = src["icon"];
+            icons[true] = src["iconRaw"];
+            price = src["price"];
+            untradable = src["tradeBlock"].get_bool();
+            unique = src["only"].get_bool();
+            unsellable = src["notSale"].get_bool();
+            cashitem = src["cash"].get_bool();
+            gender = get_item_gender(itemid);
 
-			name = strsrc["name"];
-			desc = strsrc["desc"];
+            name = strsrc["name"];
+            desc = strsrc["desc"];
 
-			valid = true;
-		}
-		else
-		{
-			valid = false;
-		}
-	}
+            valid = true;
+        } else {
+            valid = false;
+        }
+    }
 
-	std::string ItemData::get_eqcategory(int32_t id) const
-	{
-		constexpr const char* categorynames[15] =
-		{
-			"Cap",
-			"Accessory",
-			"Accessory",
-			"Accessory",
-			"Coat",
-			"Longcoat",
-			"Pants",
-			"Shoes",
-			"Glove",
-			"Shield",
-			"Cape",
-			"Ring",
-			"Accessory",
-			"Accessory",
-			"Accessory"
-		};
+    std::string ItemData::get_eqcategory(int32_t id) const {
+        constexpr const char* categorynames[15] =
+        {
+            "Cap",
+            "Accessory",
+            "Accessory",
+            "Accessory",
+            "Coat",
+            "Longcoat",
+            "Pants",
+            "Shoes",
+            "Glove",
+            "Shield",
+            "Cape",
+            "Ring",
+            "Accessory",
+            "Accessory",
+            "Accessory"
+        };
 
-		int32_t index = get_item_prefix(id) - 100;
+        int32_t index = get_item_prefix(id) - 100;
 
-		if (index < 15)
-			return categorynames[index];
-		else if (index >= 30 && index <= 70)
-			return "Weapon";
-		else
-			return "";
-	}
+        if (index < 15)
+            return categorynames[index];
+        if (index >= 30 && index <= 70)
+            return "Weapon";
+        return "";
+    }
 
-	int32_t ItemData::get_prefix(int32_t id) const
-	{
-		return id / 1000000;
-	}
+    int32_t ItemData::get_prefix(int32_t id) const {
+        return id / 1000000;
+    }
 
-	int32_t ItemData::get_item_prefix(int32_t id) const
-	{
-		return id / 10000;
-	}
+    int32_t ItemData::get_item_prefix(int32_t id) const {
+        return id / 10000;
+    }
 
-	int8_t ItemData::get_item_gender(int32_t id) const
-	{
-		const int32_t item_prefix = get_item_prefix(id);
+    int8_t ItemData::get_item_gender(int32_t id) const {
+        const int32_t item_prefix = get_item_prefix(id);
 
-		if ((get_prefix(id) != 1 && item_prefix != 254) || item_prefix == 119 || item_prefix == 168)
-			return 2;
+        if ((get_prefix(id) != 1 && item_prefix != 254) || item_prefix == 119 || item_prefix == 168)
+            return 2;
 
-		const int32_t gender_digit = id / 1000 % 10;
+        const int32_t gender_digit = id / 1000 % 10;
 
-		return (gender_digit > 1) ? 2 : gender_digit;
-	}
+        return (gender_digit > 1) ? 2 : gender_digit;
+    }
 
-	bool ItemData::is_valid() const
-	{
-		return valid;
-	}
+    bool ItemData::is_valid() const {
+        return valid;
+    }
 
-	bool ItemData::is_untradable() const
-	{
-		return untradable;
-	}
+    bool ItemData::is_untradable() const {
+        return untradable;
+    }
 
-	bool ItemData::is_unique() const
-	{
-		return unique;
-	}
+    bool ItemData::is_unique() const {
+        return unique;
+    }
 
-	bool ItemData::is_unsellable() const
-	{
-		return unsellable;
-	}
+    bool ItemData::is_unsellable() const {
+        return unsellable;
+    }
 
-	bool ItemData::is_cashitem() const
-	{
-		return cashitem;
-	}
+    bool ItemData::is_cashitem() const {
+        return cashitem;
+    }
 
-	ItemData::operator bool() const
-	{
-		return is_valid();
-	}
+    ItemData::operator bool() const {
+        return is_valid();
+    }
 
-	int32_t ItemData::get_id() const
-	{
-		return itemid;
-	}
+    int32_t ItemData::get_id() const {
+        return itemid;
+    }
 
-	int32_t ItemData::get_price() const
-	{
-		return price;
-	}
+    int32_t ItemData::get_price() const {
+        return price;
+    }
 
-	int8_t ItemData::get_gender() const
-	{
-		return gender;
-	}
+    int8_t ItemData::get_gender() const {
+        return gender;
+    }
 
-	const std::string& ItemData::get_name() const
-	{
-		return name;
-	}
+    const std::string& ItemData::get_name() const {
+        return name;
+    }
 
-	const std::string& ItemData::get_desc() const
-	{
-		return desc;
-	}
+    const std::string& ItemData::get_desc() const {
+        return desc;
+    }
 
-	const std::string& ItemData::get_category() const
-	{
-		return category;
-	}
+    const std::string& ItemData::get_category() const {
+        return category;
+    }
 
-	const Texture& ItemData::get_icon(bool raw) const
-	{
-		return icons[raw];
-	}
+    const Texture& ItemData::get_icon(bool raw) const {
+        return icons[raw];
+    }
 }

@@ -23,43 +23,41 @@
 
 #include <map>
 
-namespace ms
-{
-	class Reactor : public MapObject
-	{
-	public:
-		Reactor(int32_t oid, int32_t rid, int8_t state, Point<int16_t> position);
+namespace ms {
+    class Reactor : public MapObject {
+    public:
+        Reactor(int32_t oid, int32_t rid, int8_t state, Point<int16_t> position);
 
-		void draw(double viewx, double viewy, float alpha) const override;
-		int8_t update(const Physics& physics);
+        void draw(double viewx, double viewy, float alpha) const override;
+        int8_t update(const Physics& physics) override;
 
-		void set_state(int8_t state);
-		void destroy(int8_t state, Point<int16_t> position);
+        void set_state(int8_t state);
+        void destroy(int8_t state, Point<int16_t> position);
 
-		bool is_hittable() const;
+        bool is_hittable() const;
 
-		// Check if this mob collides with the specified rectangle
-		bool is_in_range(const Rectangle<int16_t>& range) const;
+        // Check if this mob collides with the specified rectangle
+        bool is_in_range(const Rectangle<int16_t>& range) const;
 
-	private:
-		int32_t oid;
-		int32_t rid;
-		int8_t state;
-		// TODO: Below
-		//int8_t stance; // ??
-		// TODO: These are in the GMS client
-		//bool movable; // Snowball?
-		//int32_t questid;
-		//bool activates_by_touch;
+    private:
+        int32_t oid;
+        int32_t rid;
+        int8_t state;
+        // TODO: Below
+        //int8_t stance; // ??
+        // TODO: These are in the GMS client
+        //bool movable; // Snowball?
+        //int32_t questid;
+        //bool activates_by_touch;
 
-		nl::node src;
-		std::map<int8_t, Animation> animations;
-		bool animation_ended;
+        nl::node src;
+        std::map<int8_t, Animation> animations;
+        bool animation_ended;
 
-		bool active;
-		bool hittable;
-		bool dead;
+        bool active;
+        bool hittable;
+        bool dead;
 
-		Animation normal;
-	};
+        Animation normal;
+    };
 }

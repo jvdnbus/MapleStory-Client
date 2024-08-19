@@ -21,117 +21,109 @@
 
 #include "../Components/Textfield.h"
 
-namespace ms
-{
-	class UINotice : public UIDragElement<PosNOTICE>
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::NOTICE;
-		static constexpr bool FOCUSED = true;
-		static constexpr bool TOGGLED = false;
+namespace ms {
+    class UINotice : public UIDragElement<PosNOTICE> {
+    public:
+        static constexpr Type TYPE = NOTICE;
+        static constexpr bool FOCUSED = true;
+        static constexpr bool TOGGLED = false;
 
-	protected:
-		enum NoticeType : uint8_t
-		{
-			YESNO,
-			ENTERNUMBER,
-			OK
-		};
+    protected:
+        enum NoticeType : uint8_t {
+            YESNO,
+            ENTERNUMBER,
+            OK
+        };
 
-		UINotice(std::string message, NoticeType type, Text::Alignment alignment);
-		UINotice(std::string message, NoticeType type);
+        UINotice(std::string message, NoticeType type, Text::Alignment alignment);
+        UINotice(std::string message, NoticeType type);
 
-		void draw(bool textfield) const;
+        void draw(bool textfield) const;
 
-		int16_t box2offset(bool textfield) const;
+        int16_t box2offset(bool textfield) const;
 
-	private:
-		Texture top;
-		Texture center;
-		Texture centerbox;
-		Texture box;
-		Texture box2;
-		Texture bottom;
-		Texture bottombox;
-		Text question;
-		int16_t height;
-		NoticeType type;
-		Text::Alignment alignment;
-	};
+    private:
+        Texture top;
+        Texture center;
+        Texture centerbox;
+        Texture box;
+        Texture box2;
+        Texture bottom;
+        Texture bottombox;
+        Text question;
+        int16_t height;
+        NoticeType type;
+        Text::Alignment alignment;
+    };
 
-	class UIYesNo : public UINotice
-	{
-	public:
-		UIYesNo(std::string message, std::function<void(bool yes)> yesnohandler, Text::Alignment alignment);
-		UIYesNo(std::string message, std::function<void(bool yes)> yesnohandler);
+    class UIYesNo : public UINotice {
+    public:
+        UIYesNo(std::string message, std::function<void(bool yes)> yesnohandler, Text::Alignment alignment);
+        UIYesNo(std::string message, std::function<void(bool yes)> yesnohandler);
 
-		void draw(float alpha) const override;
+        void draw(float alpha) const override;
 
-		void send_key(int32_t keycode, bool pressed, bool escape) override;
+        void send_key(int32_t keycode, bool pressed, bool escape) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-	protected:
-		Button::State button_pressed(uint16_t buttonid) override;
+    protected:
+        Button::State button_pressed(uint16_t buttonid) override;
 
-	private:
-		enum Buttons : int16_t
-		{
-			YES, NO
-		};
+    private:
+        enum Buttons : int16_t {
+            YES, NO
+        };
 
-		std::function<void(bool yes)> yesnohandler;
-	};
+        std::function<void(bool yes)> yesnohandler;
+    };
 
-	class UIEnterNumber : public UINotice
-	{
-	public:
-		UIEnterNumber(std::string message, std::function<void(int32_t number)> numhandler, int32_t max, int32_t quantity);
+    class UIEnterNumber : public UINotice {
+    public:
+        UIEnterNumber(std::string message, std::function<void(int32_t number)> numhandler, int32_t max,
+                      int32_t quantity);
 
-		void draw(float alpha) const override;
-		void update() override;
+        void draw(float alpha) const override;
+        void update() override;
 
-		Cursor::State send_cursor(bool pressed, Point<int16_t> cursorpos) override;
-		void send_key(int32_t keycode, bool pressed, bool escape) override;
+        Cursor::State send_cursor(bool pressed, Point<int16_t> cursorpos) override;
+        void send_key(int32_t keycode, bool pressed, bool escape) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-	protected:
-		Button::State button_pressed(uint16_t buttonid) override;
+    protected:
+        Button::State button_pressed(uint16_t buttonid) override;
 
-	private:
-		void handlestring(std::string numstr);
+    private:
+        void handlestring(std::string numstr);
 
-		enum Buttons : int16_t
-		{
-			OK, CANCEL
-		};
+        enum Buttons : int16_t {
+            OK, CANCEL
+        };
 
-		std::function<void(int32_t number)> numhandler;
-		Textfield numfield;
-		int32_t max;
-	};
+        std::function<void(int32_t number)> numhandler;
+        Textfield numfield;
+        int32_t max;
+    };
 
-	class UIOk : public UINotice
-	{
-	public:
-		UIOk(std::string message, std::function<void(bool ok)> okhandler);
+    class UIOk : public UINotice {
+    public:
+        UIOk(std::string message, std::function<void(bool ok)> okhandler);
 
-		void draw(float alpha) const override;
+        void draw(float alpha) const override;
 
-		void send_key(int32_t keycode, bool pressed, bool escape) override;
+        void send_key(int32_t keycode, bool pressed, bool escape) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-	protected:
-		Button::State button_pressed(uint16_t buttonid) override;
+    protected:
+        Button::State button_pressed(uint16_t buttonid) override;
 
-	private:
-		enum Buttons : int16_t
-		{
-			OK
-		};
+    private:
+        enum Buttons : int16_t {
+            OK
+        };
 
-		std::function<void(bool ok)> okhandler;
-	};
+        std::function<void(bool ok)> okhandler;
+    };
 }

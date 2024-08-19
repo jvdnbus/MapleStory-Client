@@ -20,77 +20,66 @@
 #include <cstdint>
 #include <random>
 
-namespace ms
-{
-	// Can be used to generate random numbers.
-	class Randomizer
-	{
-	public:
-		bool next_bool() const
-		{
-			return next_int(2) == 1;
-		}
+namespace ms {
+    // Can be used to generate random numbers.
+    class Randomizer {
+    public:
+        bool next_bool() const {
+            return next_int(2) == 1;
+        }
 
-		bool below(float percent) const
-		{
-			return next_real(1.0f) < percent;
-		}
+        bool below(float percent) const {
+            return next_real(1.0f) < percent;
+        }
 
-		bool above(float percent) const
-		{
-			return next_real(1.0f) > percent;
-		}
+        bool above(float percent) const {
+            return next_real(1.0f) > percent;
+        }
 
-		template <class T>
-		T next_real(T to) const
-		{
-			return next_real<T>(0, to);
-		}
+        template <class T>
+        T next_real(T to) const {
+            return next_real<T>(0, to);
+        }
 
-		template <class T>
-		T next_real(T from, T to) const
-		{
-			if (from >= to)
-				return from;
+        template <class T>
+        T next_real(T from, T to) const {
+            if (from >= to)
+                return from;
 
-			std::uniform_real_distribution<T> range(from, to);
-			std::random_device rd;
-			std::default_random_engine engine{ rd() };
+            std::uniform_real_distribution<T> range(from, to);
+            std::random_device rd;
+            std::default_random_engine engine{rd()};
 
-			return range(engine);
-		}
+            return range(engine);
+        }
 
-		template <class T>
-		T next_int(T to) const
-		{
-			return next_int<T>(0, to);
-		}
+        template <class T>
+        T next_int(T to) const {
+            return next_int<T>(0, to);
+        }
 
-		template <class T>
-		T next_int(T from, T to) const
-		{
-			if (from >= to)
-				return from;
+        template <class T>
+        T next_int(T from, T to) const {
+            if (from >= to)
+                return from;
 
-			std::uniform_int_distribution<T> range(from, to - 1);
-			std::random_device rd;
-			std::default_random_engine engine{ rd() };
+            std::uniform_int_distribution<T> range(from, to - 1);
+            std::random_device rd;
+            std::default_random_engine engine{rd()};
 
-			return range(engine);
-		}
+            return range(engine);
+        }
 
-		template <class E>
-		E next_enum(E to = E::LENGTH) const
-		{
-			return next_enum(E(), to);
-		}
+        template <class E>
+        E next_enum(E to = E::LENGTH) const {
+            return next_enum(E(), to);
+        }
 
-		template <class E>
-		E next_enum(E from, E to) const
-		{
-			auto next_underlying = next_int<std::underlying_type<E>::type>(from, to);
+        template <class E>
+        E next_enum(E from, E to) const {
+            auto next_underlying = next_int<std::underlying_type_t<E>>(from, to);
 
-			return static_cast<E>(next_underlying);
-		}
-	};
+            return static_cast<E>(next_underlying);
+        }
+    };
 }

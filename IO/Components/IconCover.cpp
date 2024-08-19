@@ -17,70 +17,62 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "IconCover.h"
 
-namespace ms
-{
-	IconCover::IconCover(Type t, int32_t duration)
-	{
-		cover = ColorBox(30, 30, Color::Name::BLACK, 0.6f);
+namespace ms {
+    IconCover::IconCover(Type t, int32_t duration) {
+        cover = ColorBox(30, 30, Color::Name::BLACK, 0.6f);
 
-		if (duration <= Constants::TIMESTEP)
-			scalestep = 1.0f;
-		else
-			scalestep = Constants::TIMESTEP * 1.0f / duration;
+        if (duration <= Constants::TIMESTEP)
+            scalestep = 1.0f;
+        else
+            scalestep = Constants::TIMESTEP * 1.0f / duration;
 
-		type = t;
+        type = t;
 
-		switch (type)
-		{
-		case Type::BUFF:
-			yscale.set(0.0f);
-			break;
-		case Type::COOLDOWN:
-			yscale.set(1.0f);
-			break;
-		}
-	}
+        switch (type) {
+        case BUFF:
+            yscale.set(0.0f);
+            break;
+        case COOLDOWN:
+            yscale.set(1.0f);
+            break;
+        }
+    }
 
-	void IconCover::draw(Point<int16_t> position, float alpha) const
-	{
-		float interyscale = yscale.get(alpha);
-		auto interheight = static_cast<int16_t>(30 * interyscale);
+    void IconCover::draw(Point<int16_t> position, float alpha) const {
+        float interyscale = yscale.get(alpha);
+        auto interheight = static_cast<int16_t>(30 * interyscale);
 
-		if (interheight == 0)
-			return;
+        if (interheight == 0)
+            return;
 
-		cover.draw(
-			DrawArgument(
-				position + Point<int16_t>(0, 30 - interheight),
-				Point<int16_t>(30, interheight)
-				)
-			);
-	}
+        cover.draw(
+            DrawArgument(
+                position + Point<int16_t>(0, 30 - interheight),
+                Point<int16_t>(30, interheight)
+            )
+        );
+    }
 
-	void IconCover::update()
-	{
-		switch (type)
-		{
-		case Type::BUFF:
-			yscale += scalestep;
+    void IconCover::update() {
+        switch (type) {
+        case BUFF:
+            yscale += scalestep;
 
-			if (yscale.last() >= 1.0f)
-			{
-				yscale.set(1.0f);
-				scalestep = 0.0f;
-			}
+            if (yscale.last() >= 1.0f) {
+                yscale.set(1.0f);
+                scalestep = 0.0f;
+            }
 
-			break;
-		case Type::COOLDOWN:
-			yscale -= scalestep;
+            break;
+        case COOLDOWN:
+            yscale -= scalestep;
 
-			if (yscale.last() <= 0.0f)
-			{
-				yscale.set(0.0f);
-				scalestep = 0.0f;
-			}
+            if (yscale.last() <= 0.0f) {
+                yscale.set(0.0f);
+                scalestep = 0.0f;
+            }
 
-			break;
-		}
-	}
+            break;
+        }
+    }
 }

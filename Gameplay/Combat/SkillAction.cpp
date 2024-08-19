@@ -19,70 +19,60 @@
 
 #include "../../Util/Misc.h"
 
-namespace ms
-{
-	void RegularAction::apply(Char& target, Attack::Type atype) const
-	{
-		Weapon::Type weapontype = target.get_weapontype();
-		bool degenerate;
+namespace ms {
+    void RegularAction::apply(Char& target, Attack::Type atype) const {
+        Weapon::Type weapontype = target.get_weapontype();
+        bool degenerate;
 
-		switch (weapontype)
-		{
-		case Weapon::BOW:
-		case Weapon::CROSSBOW:
-		case Weapon::CLAW:
-		case Weapon::GUN:
-			degenerate = atype != Attack::RANGED;
-			break;
-		default:
-			degenerate = false;
-			break;
-		}
+        switch (weapontype) {
+        case Weapon::BOW:
+        case Weapon::CROSSBOW:
+        case Weapon::CLAW:
+        case Weapon::GUN:
+            degenerate = atype != Attack::RANGED;
+            break;
+        default:
+            degenerate = false;
+            break;
+        }
 
-		target.attack(degenerate);
-	}
+        target.attack(degenerate);
+    }
 
-	SingleAction::SingleAction(nl::node src)
-	{
-		action = src["action"]["0"];
-	}
+    SingleAction::SingleAction(nl::node src) {
+        action = src["action"]["0"];
+    }
 
-	void SingleAction::apply(Char& target, Attack::Type) const
-	{
-		target.attack(action);
-	}
+    void SingleAction::apply(Char& target, Attack::Type) const {
+        target.attack(action);
+    }
 
-	TwoHandedAction::TwoHandedAction(nl::node src)
-	{
-		actions[false] = src["action"]["0"];
-		actions[true] = src["action"]["1"];
-	}
+    TwoHandedAction::TwoHandedAction(nl::node src) {
+        actions[false] = src["action"]["0"];
+        actions[true] = src["action"]["1"];
+    }
 
-	void TwoHandedAction::apply(Char& target, Attack::Type) const
-	{
-		bool twohanded = target.is_twohanded();
-		std::string action = actions[twohanded];
+    void TwoHandedAction::apply(Char& target, Attack::Type) const {
+        bool twohanded = target.is_twohanded();
+        std::string action = actions[twohanded];
 
-		target.attack(action);
-	}
+        target.attack(action);
+    }
 
-	ByLevelAction::ByLevelAction(nl::node src, int32_t id)
-	{
-		for (auto sub : src["level"])
-		{
-			int32_t level = string_conversion::or_zero<int32_t>(sub.name());
-			actions[level] = sub["action"];
-		}
+    ByLevelAction::ByLevelAction(nl::node src, int32_t id) {
+        for (auto sub : src["level"]) {
+            int32_t level = string_conversion::or_zero<int32_t>(sub.name());
+            actions[level] = sub["action"];
+        }
 
-		skillid = id;
-	}
+        skillid = id;
+    }
 
-	void ByLevelAction::apply(Char& target, Attack::Type) const
-	{
-		int32_t level = target.get_skilllevel(skillid);
-		auto iter = actions.find(level);
+    void ByLevelAction::apply(Char& target, Attack::Type) const {
+        int32_t level = target.get_skilllevel(skillid);
+        auto iter = actions.find(level);
 
-		if (iter != actions.end())
-			target.attack(iter->second);
-	}
+        if (iter != actions.end())
+            target.attack(iter->second);
+    }
 }

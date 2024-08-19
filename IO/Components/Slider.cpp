@@ -21,322 +21,256 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	Slider::Slider(int32_t t, Range<int16_t> ver, int16_t xp, int16_t ur, int16_t rm, std::function<void(bool)> om) : type(t), vertical(ver), x(xp), onmoved(om)
-	{
-		start = Point<int16_t>(x, vertical.first());
-		end = Point<int16_t>(x, vertical.second());
+namespace ms {
+    Slider::Slider(int32_t t, Range<int16_t> ver, int16_t xp, int16_t ur, int16_t rm,
+                   std::function<void(bool)> om) : onmoved(om), vertical(ver), type(t), x(xp) {
+        start = Point<int16_t>(x, vertical.first());
+        end = Point<int16_t>(x, vertical.second());
 
-		nl::node src;
-		std::string base_str = "base";
+        nl::node src;
+        std::string base_str = "base";
 
-		if (type == Type::CHATBAR)
-		{
-			src = nl::nx::UI["StatusBar3.img"]["chat"]["common"]["scroll"];
-			base_str += "_c";
-		}
-		else
-		{
-			std::string VScr = "VScr";
+        if (type == CHATBAR) {
+            src = nl::nx::UI["StatusBar3.img"]["chat"]["common"]["scroll"];
+            base_str += "_c";
+        } else {
+            std::string VScr = "VScr";
 
-			if (type != Type::LINE_CYAN)
-				VScr += std::to_string(type);
+            if (type != LINE_CYAN)
+                VScr += std::to_string(type);
 
-			src = nl::nx::UI["Basic.img"][VScr];
-		}
+            src = nl::nx::UI["Basic.img"][VScr];
+        }
 
-		nl::node dsrc = src["disabled"];
+        nl::node dsrc = src["disabled"];
 
-		dbase = dsrc[base_str];
+        dbase = dsrc[base_str];
 
-		dprev = dsrc["prev"];
-		dnext = dsrc["next"];
+        dprev = dsrc["prev"];
+        dnext = dsrc["next"];
 
-		nl::node esrc = src["enabled"];
+        nl::node esrc = src["enabled"];
 
-		base = esrc[base_str];
+        base = esrc[base_str];
 
-		prev = TwoSpriteButton(esrc["prev0"], esrc["prev1"], start);
-		next = TwoSpriteButton(esrc["next0"], esrc["next1"], end);
+        prev = TwoSpriteButton(esrc["prev0"], esrc["prev1"], start);
+        next = TwoSpriteButton(esrc["next0"], esrc["next1"], end);
 
-		thumb = TwoSpriteButton(esrc["thumb0"], esrc["thumb1"]);
+        thumb = TwoSpriteButton(esrc["thumb0"], esrc["thumb1"]);
 
-		buttonheight = dnext.get_dimensions().y();
+        buttonheight = dnext.get_dimensions().y();
 
-		setrows(ur, rm);
+        setrows(ur, rm);
 
-		enabled = true;
-		scrolling = false;
-	}
+        enabled = true;
+        scrolling = false;
+    }
 
-	Slider::Slider() : Slider(0, {}, 0, 0, 0, {}) {}
+    Slider::Slider() : Slider(0, {}, 0, 0, 0, {}) {
+    }
 
-	bool Slider::isenabled() const
-	{
-		return enabled;
-	}
+    bool Slider::isenabled() const {
+        return enabled;
+    }
 
-	void Slider::setenabled(bool en)
-	{
-		enabled = en;
-	}
+    void Slider::setenabled(bool en) {
+        enabled = en;
+    }
 
-	void Slider::setrows(int16_t nr, int16_t ur, int16_t rm)
-	{
-		rowmax = rm - ur;
+    void Slider::setrows(int16_t nr, int16_t ur, int16_t rm) {
+        rowmax = rm - ur;
 
-		if (rowmax > 0)
-			rowheight = (vertical.length() - buttonheight * 2) / rowmax;
-		else
-			rowheight = 0;
+        if (rowmax > 0)
+            rowheight = (vertical.length() - buttonheight * 2) / rowmax;
+        else
+            rowheight = 0;
 
-		row = nr;
-	}
+        row = nr;
+    }
 
-	void Slider::setrows(int16_t ur, int16_t rm)
-	{
-		setrows(0, ur, rm);
-	}
+    void Slider::setrows(int16_t ur, int16_t rm) {
+        setrows(0, ur, rm);
+    }
 
-	void Slider::setvertical(Range<int16_t> ver)
-	{
-		vertical = ver;
-		start = Point<int16_t>(x, vertical.first());
-		end = Point<int16_t>(x, vertical.second());
-		prev.set_position(start);
-		next.set_position(end);
+    void Slider::setvertical(Range<int16_t> ver) {
+        vertical = ver;
+        start = Point<int16_t>(x, vertical.first());
+        end = Point<int16_t>(x, vertical.second());
+        prev.set_position(start);
+        next.set_position(end);
 
-		if (rowmax > 0)
-			rowheight = (vertical.length() - buttonheight * 2) / rowmax;
-		else
-			rowheight = 0;
-	}
+        if (rowmax > 0)
+            rowheight = (vertical.length() - buttonheight * 2) / rowmax;
+        else
+            rowheight = 0;
+    }
 
-	Range<int16_t> Slider::getvertical() const
-	{
-		return vertical;
-	}
+    Range<int16_t> Slider::getvertical() const {
+        return vertical;
+    }
 
-	void Slider::draw(Point<int16_t> position) const
-	{
-		Point<int16_t> base_pos = position + start;
-		Point<int16_t> fill = Point<int16_t>(0, vertical.length() + buttonheight - 2);
-		DrawArgument base_arg = DrawArgument(Point<int16_t>(base_pos.x(), base_pos.y() + 1), fill);
+    void Slider::draw(Point<int16_t> position) const {
+        Point<int16_t> base_pos = position + start;
+        auto fill = Point<int16_t>(0, vertical.length() + buttonheight - 2);
+        auto base_arg = DrawArgument(Point<int16_t>(base_pos.x(), base_pos.y() + 1), fill);
 
-		int16_t height = dbase.height();
-		int16_t maxheight = vertical.first() + height;
+        int16_t height = dbase.height();
+        int16_t maxheight = vertical.first() + height;
 
-		while (maxheight < vertical.second())
-		{
-			dbase.draw(position + Point<int16_t>(start.x(), maxheight));
+        while (maxheight < vertical.second()) {
+            dbase.draw(position + Point<int16_t>(start.x(), maxheight));
 
-			maxheight += height;
-		}
+            maxheight += height;
+        }
 
-		if (enabled)
-		{
-			if (rowheight > 0)
-			{
-				prev.draw(position);
-				next.draw(position);
-				thumb.draw(position + getthumbpos());
-			}
-			else
-			{
-				dprev.draw(position + start);
-				dnext.draw(position + end);
-			}
-		}
-		else
-		{
-			dprev.draw(position + start);
-			dnext.draw(position + end);
-		}
-	}
+        if (enabled) {
+            if (rowheight > 0) {
+                prev.draw(position);
+                next.draw(position);
+                thumb.draw(position + getthumbpos());
+            } else {
+                dprev.draw(position + start);
+                dnext.draw(position + end);
+            }
+        } else {
+            dprev.draw(position + start);
+            dnext.draw(position + end);
+        }
+    }
 
-	void Slider::remove_cursor()
-	{
-		scrolling = false;
+    void Slider::remove_cursor() {
+        scrolling = false;
 
-		thumb.set_state(Button::State::NORMAL);
-		next.set_state(Button::State::NORMAL);
-		prev.set_state(Button::State::NORMAL);
-	}
+        thumb.set_state(Button::State::NORMAL);
+        next.set_state(Button::State::NORMAL);
+        prev.set_state(Button::State::NORMAL);
+    }
 
-	Point<int16_t> Slider::getthumbpos() const
-	{
-		int16_t y =
-			row < rowmax ?
-			vertical.first() + row * rowheight + buttonheight :
-			vertical.second() - buttonheight * 2 - 2;
+    Point<int16_t> Slider::getthumbpos() const {
+        int16_t y =
+            row < rowmax ? vertical.first() + row * rowheight + buttonheight : vertical.second() - buttonheight * 2 - 2;
 
-		return Point<int16_t>(x, y);
-	}
+        return Point<int16_t>(x, y);
+    }
 
-	Cursor::State Slider::send_cursor(Point<int16_t> cursor, bool pressed)
-	{
-		Point<int16_t> relative = cursor - start;
+    Cursor::State Slider::send_cursor(Point<int16_t> cursor, bool pressed) {
+        Point<int16_t> relative = cursor - start;
 
-		if (scrolling)
-		{
-			if (pressed)
-			{
-				int16_t thumby = row * rowheight + buttonheight * 2;
-				int16_t delta = relative.y() - thumby;
+        if (scrolling) {
+            if (pressed) {
+                int16_t thumby = row * rowheight + buttonheight * 2;
+                int16_t delta = relative.y() - thumby;
 
-				if (delta > rowheight / 2 && row < rowmax)
-				{
-					row++;
-					onmoved(false);
-				}
-				else if (delta < -rowheight / 2 && row > 0)
-				{
-					row--;
-					onmoved(true);
-				}
+                if (delta > rowheight / 2 && row < rowmax) {
+                    row++;
+                    onmoved(false);
+                } else if (delta < -rowheight / 2 && row > 0) {
+                    row--;
+                    onmoved(true);
+                }
 
-				return Cursor::State::VSCROLLIDLE;
-			}
-			else
-			{
-				scrolling = false;
-			}
-		}
-		else if (relative.x() < 0 || relative.y() < 0 || relative.x() > 8 || relative.y() > vertical.second())
-		{
-			thumb.set_state(Button::State::NORMAL);
-			next.set_state(Button::State::NORMAL);
-			prev.set_state(Button::State::NORMAL);
+                return Cursor::State::VSCROLLIDLE;
+            }
+            scrolling = false;
+        } else if (relative.x() < 0 || relative.y() < 0 || relative.x() > 8 || relative.y() > vertical.second()) {
+            thumb.set_state(Button::State::NORMAL);
+            next.set_state(Button::State::NORMAL);
+            prev.set_state(Button::State::NORMAL);
 
-			return Cursor::State::IDLE;
-		}
+            return Cursor::State::IDLE;
+        }
 
-		Point<int16_t> thumbpos = getthumbpos();
+        Point<int16_t> thumbpos = getthumbpos();
 
-		if (thumb.bounds(thumbpos).contains(cursor))
-		{
-			if (pressed)
-			{
-				scrolling = true;
-				thumb.set_state(Button::State::PRESSED);
+        if (thumb.bounds(thumbpos).contains(cursor)) {
+            if (pressed) {
+                scrolling = true;
+                thumb.set_state(Button::State::PRESSED);
 
-				return Cursor::State::VSCROLLIDLE;
-			}
-			else
-			{
-				thumb.set_state(Button::State::NORMAL);
+                return Cursor::State::VSCROLLIDLE;
+            }
+            thumb.set_state(Button::State::NORMAL);
 
-				return Cursor::State::VSCROLL;
-			}
-		}
-		else
-		{
-			thumb.set_state(Button::State::NORMAL);
-		}
+            return Cursor::State::VSCROLL;
+        }
+        thumb.set_state(Button::State::NORMAL);
 
-		if (prev.bounds(Point<int16_t>()).contains(cursor))
-		{
-			if (pressed)
-			{
-				if (row > 0)
-				{
-					row--;
-					onmoved(true);
-				}
+        if (prev.bounds(Point<int16_t>()).contains(cursor)) {
+            if (pressed) {
+                if (row > 0) {
+                    row--;
+                    onmoved(true);
+                }
 
-				prev.set_state(Button::State::PRESSED);
+                prev.set_state(Button::State::PRESSED);
 
-				return Cursor::State::VSCROLLIDLE;
-			}
-			else
-			{
-				prev.set_state(Button::State::MOUSEOVER);
+                return Cursor::State::VSCROLLIDLE;
+            }
+            prev.set_state(Button::State::MOUSEOVER);
 
-				return Cursor::State::VSCROLL;
-			}
-		}
-		else
-		{
-			prev.set_state(Button::State::NORMAL);
-		}
+            return Cursor::State::VSCROLL;
+        }
+        prev.set_state(Button::State::NORMAL);
 
-		if (next.bounds(Point<int16_t>()).contains(cursor))
-		{
-			if (pressed)
-			{
-				if (row < rowmax)
-				{
-					row++;
-					onmoved(false);
-				}
+        if (next.bounds(Point<int16_t>()).contains(cursor)) {
+            if (pressed) {
+                if (row < rowmax) {
+                    row++;
+                    onmoved(false);
+                }
 
-				next.set_state(Button::State::PRESSED);
+                next.set_state(Button::State::PRESSED);
 
-				return Cursor::State::VSCROLLIDLE;
-			}
-			else
-			{
-				next.set_state(Button::State::MOUSEOVER);
+                return Cursor::State::VSCROLLIDLE;
+            }
+            next.set_state(Button::State::MOUSEOVER);
 
-				return Cursor::State::VSCROLL;
-			}
-		}
-		else
-		{
-			next.set_state(Button::State::NORMAL);
-		}
+            return Cursor::State::VSCROLL;
+        }
+        next.set_state(Button::State::NORMAL);
 
-		if (cursor.y() < vertical.second())
-		{
-			if (pressed)
-			{
-				auto yoffset = static_cast<double>(relative.y() - buttonheight * 2);
-				auto cursorrow = static_cast<int16_t>(std::round(yoffset / rowheight));
+        if (cursor.y() < vertical.second()) {
+            if (pressed) {
+                auto yoffset = static_cast<double>(relative.y() - buttonheight * 2);
+                auto cursorrow = static_cast<int16_t>(std::round(yoffset / rowheight));
 
-				if (cursorrow < 0)
-					cursorrow = 0;
-				else if (cursorrow > rowmax)
-					cursorrow = rowmax;
+                if (cursorrow < 0)
+                    cursorrow = 0;
+                else if (cursorrow > rowmax)
+                    cursorrow = rowmax;
 
-				int16_t delta = row - cursorrow;
+                int16_t delta = row - cursorrow;
 
-				for (size_t i = 0; i < 2; i++)
-				{
-					if (delta > 0)
-					{
-						row--;
-						delta--;
-						onmoved(true);
-					}
+                for (size_t i = 0; i < 2; i++) {
+                    if (delta > 0) {
+                        row--;
+                        delta--;
+                        onmoved(true);
+                    }
 
-					if (delta < 0)
-					{
-						row++;
-						delta++;
-						onmoved(false);
-					}
-				}
+                    if (delta < 0) {
+                        row++;
+                        delta++;
+                        onmoved(false);
+                    }
+                }
 
-				return Cursor::State::VSCROLLIDLE;
-			}
-		}
+                return Cursor::State::VSCROLLIDLE;
+            }
+        }
 
-		return Cursor::State::VSCROLL;
-	}
+        return Cursor::State::VSCROLL;
+    }
 
-	void Slider::send_scroll(double yoffset)
-	{
-		if (yoffset < 0 && row < rowmax)
-		{
-			row++;
-			onmoved(false);
-		}
+    void Slider::send_scroll(double yoffset) {
+        if (yoffset < 0 && row < rowmax) {
+            row++;
+            onmoved(false);
+        }
 
-		if (yoffset > 0 && row > 0)
-		{
-			row--;
-			onmoved(true);
-		}
-	}
+        if (yoffset > 0 && row > 0) {
+            row--;
+            onmoved(true);
+        }
+    }
 }

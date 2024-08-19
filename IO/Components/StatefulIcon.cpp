@@ -17,28 +17,25 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "StatefulIcon.h"
 
-namespace ms
-{
-	StatefulIcon::StatefulIcon(std::unique_ptr<Type> type, Texture ntx, Texture dtx, Texture motx) : Icon(std::move(type), ntx, -1)
-	{
-		ntx.shift(Point<int16_t>(0, 32));
-		dtx.shift(Point<int16_t>(0, 32));
-		motx.shift(Point<int16_t>(0, 32));
+namespace ms {
+    StatefulIcon::StatefulIcon(std::unique_ptr<Type> type, Texture ntx, Texture dtx, Texture motx) : Icon(
+        std::move(type), ntx, -1) {
+        ntx.shift(Point<int16_t>(0, 32));
+        dtx.shift(Point<int16_t>(0, 32));
+        motx.shift(Point<int16_t>(0, 32));
 
-		textures[State::NORMAL] = ntx;
-		textures[State::DISABLED] = dtx;
-		textures[State::MOUSEOVER] = motx;
+        textures[NORMAL] = ntx;
+        textures[DISABLED] = dtx;
+        textures[MOUSEOVER] = motx;
 
-		state = State::NORMAL;
-	}
+        state = NORMAL;
+    }
 
-	Texture StatefulIcon::get_texture() const
-	{
-		return textures[state];
-	}
+    Texture StatefulIcon::get_texture() const {
+        return textures[state];
+    }
 
-	void StatefulIcon::set_state(State s)
-	{
-		state = s;
-	}
+    void StatefulIcon::set_state(State s) {
+        state = s;
+    }
 }

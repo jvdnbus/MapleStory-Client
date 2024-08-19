@@ -21,74 +21,62 @@
 
 #include "../Configuration.h"
 
-namespace ms
-{
-	template <typename T>
-	// Base class for UI Windows which can be moved with the mouse cursor.
-	class UIDragElement : public UIElement
-	{
-	public:
-		void remove_cursor() override
-		{
-			UIElement::remove_cursor();
+namespace ms {
+    template <typename T>
+    // Base class for UI Windows which can be moved with the mouse cursor.
+    class UIDragElement : public UIElement {
+    public:
+        void remove_cursor() override {
+            UIElement::remove_cursor();
 
-			if (dragged)
-			{
-				dragged = false;
+            if (dragged) {
+                dragged = false;
 
-				Setting<T>::get().save(position);
-			}
-		}
+                Setting<T>::get().save(position);
+            }
+        }
 
-		Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override
-		{
-			if (clicked)
-			{
-				if (dragged)
-				{
-					position = cursorpos - cursoroffset;
+        Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override {
+            if (clicked) {
+                if (dragged) {
+                    position = cursorpos - cursoroffset;
 
-					return Cursor::State::CLICKING;
-				}
-				else if (indragrange(cursorpos))
-				{
-					cursoroffset = cursorpos - position;
-					dragged = true;
+                    return Cursor::State::CLICKING;
+                }
+                if (indragrange(cursorpos)) {
+                    cursoroffset = cursorpos - position;
+                    dragged = true;
 
-					return UIElement::send_cursor(clicked, cursorpos);
-				}
-			}
-			else
-			{
-				if (dragged)
-				{
-					dragged = false;
+                    return UIElement::send_cursor(clicked, cursorpos);
+                }
+            } else {
+                if (dragged) {
+                    dragged = false;
 
-					Setting<T>::get().save(position);
-				}
-			}
+                    Setting<T>::get().save(position);
+                }
+            }
 
-			return UIElement::send_cursor(clicked, cursorpos);
-		}
+            return UIElement::send_cursor(clicked, cursorpos);
+        }
 
-	protected:
-		UIDragElement() : UIDragElement(Point<int16_t>(0, 0)) {}
+    protected:
+        UIDragElement() : UIDragElement(Point<int16_t>(0, 0)) {
+        }
 
-		UIDragElement(Point<int16_t> d) : dragarea(d)
-		{
-			position = Setting<T>::get().load();
-		}
+        UIDragElement(Point<int16_t> d) : dragarea(d) {
+            position = Setting<T>::get().load();
+        }
 
-		bool dragged = false;
-		Point<int16_t> dragarea;
-		Point<int16_t> cursoroffset;
+        bool dragged = false;
+        Point<int16_t> dragarea;
+        Point<int16_t> cursoroffset;
 
-	private:
-		virtual bool indragrange(Point<int16_t> cursorpos) const
-		{
-			auto bounds = Rectangle<int16_t>(position, position + dragarea);
+    private:
+        virtual bool indragrange(Point<int16_t> cursorpos) const {
+            auto bounds = Rectangle<int16_t>(position, position + dragarea);
 
-			return bounds.contains(cursorpos);
-		}
-	};
+            return bounds.contains(cursorpos);
+        }
+    };
 }

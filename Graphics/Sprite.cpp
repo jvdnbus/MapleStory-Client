@@ -17,46 +17,45 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "Sprite.h"
 
-namespace ms
-{
-	Sprite::Sprite(const Animation& a, const DrawArgument& args) : animation(a), stateargs(args) {}
-	Sprite::Sprite(nl::node src, const DrawArgument& args) : animation(src), stateargs(args) {}
-	Sprite::Sprite(nl::node src) : Sprite(src, {}) {}
-	Sprite::Sprite() {}
+namespace ms {
+    Sprite::Sprite(const Animation& a, const DrawArgument& args) : animation(a), stateargs(args) {
+    }
 
-	void Sprite::draw(Point<int16_t> parentpos, float alpha) const
-	{
-		auto absargs = stateargs + parentpos;
-		animation.draw(absargs, alpha);
-	}
+    Sprite::Sprite(nl::node src, const DrawArgument& args) : animation(src), stateargs(args) {
+    }
 
-	bool Sprite::update(uint16_t timestep)
-	{
-		return animation.update(timestep);
-	}
+    Sprite::Sprite(nl::node src) : Sprite(src, {}) {
+    }
 
-	bool Sprite::update()
-	{
-		return animation.update();
-	}
+    Sprite::Sprite() {
+    }
 
-	int16_t Sprite::width() const
-	{
-		return get_dimensions().x();
-	}
+    void Sprite::draw(Point<int16_t> parentpos, float alpha) const {
+        auto absargs = stateargs + parentpos;
+        animation.draw(absargs, alpha);
+    }
 
-	int16_t Sprite::height() const
-	{
-		return get_dimensions().y();
-	}
+    bool Sprite::update(uint16_t timestep) {
+        return animation.update(timestep);
+    }
 
-	Point<int16_t> Sprite::get_origin() const
-	{
-		return animation.get_origin();
-	}
+    bool Sprite::update() {
+        return animation.update();
+    }
 
-	Point<int16_t> Sprite::get_dimensions() const
-	{
-		return animation.get_dimensions();
-	}
+    int16_t Sprite::width() const {
+        return get_dimensions().x();
+    }
+
+    int16_t Sprite::height() const {
+        return get_dimensions().y();
+    }
+
+    Point<int16_t> Sprite::get_origin() const {
+        return animation.get_origin();
+    }
+
+    Point<int16_t> Sprite::get_dimensions() const {
+        return animation.get_dimensions();
+    }
 }

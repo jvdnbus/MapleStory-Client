@@ -27,67 +27,55 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	UILogo::UILogo() : UIElement(Point<int16_t>(0, 0), Point<int16_t>(800, 600))
-	{
-		Music("BgmUI.img/NxLogo").play_once();
+namespace ms {
+    UILogo::UILogo() : UIElement(Point<int16_t>(0, 0), Point<int16_t>(800, 600)) {
+        Music("BgmUI.img/NxLogo").play_once();
 
-		if (Configuration::get().get_auto_login())
-			wizet_ended = true;
-		else
-			wizet_ended = false;
+        if (Configuration::get().get_auto_login())
+            wizet_ended = true;
+        else
+            wizet_ended = false;
 
-		user_clicked = false;
+        user_clicked = false;
 
-		nl::node Logo = nl::nx::UI["Logo.img"];
+        nl::node Logo = nl::nx::UI["Logo.img"];
 
-		Wizet = Logo["Wizet"];
-		WizetEnd = Logo["Wizet"]["28"];
-	}
+        Wizet = Logo["Wizet"];
+        WizetEnd = Logo["Wizet"]["28"];
+    }
 
-	void UILogo::draw(float inter) const
-	{
-		if (!user_clicked)
-		{
-			if (!wizet_ended)
-				Wizet.draw(position, inter);
-			else
-				WizetEnd.draw(position);
-		}
-		else
-		{
-			WizetEnd.draw(position);
-		}
-	}
+    void UILogo::draw(float inter) const {
+        if (!user_clicked) {
+            if (!wizet_ended)
+                Wizet.draw(position, inter);
+            else
+                WizetEnd.draw(position);
+        } else {
+            WizetEnd.draw(position);
+        }
+    }
 
-	void UILogo::update()
-	{
-		if (!wizet_ended)
-		{
-			wizet_ended = Wizet.update(3);
-		}
-		else
-		{
-			Configuration::get().set_start_shown(true);
+    void UILogo::update() {
+        if (!wizet_ended) {
+            wizet_ended = Wizet.update(3);
+        } else {
+            Configuration::get().set_start_shown(true);
 
-			UI::get().remove(UIElement::Type::START);
-			UI::get().emplace<UILogin>();
-		}
-	}
+            UI::get().remove(START);
+            UI::get().emplace<UILogin>();
+        }
+    }
 
-	Cursor::State UILogo::send_cursor(bool clicked, Point<int16_t> cursorpos)
-	{
-		Cursor::State ret = clicked ? Cursor::State::CLICKING : Cursor::State::IDLE;
+    Cursor::State UILogo::send_cursor(bool clicked, Point<int16_t> cursorpos) {
+        Cursor::State ret = clicked ? Cursor::State::CLICKING : Cursor::State::IDLE;
 
-		if (clicked && !user_clicked)
-			user_clicked = true;
+        if (clicked && !user_clicked)
+            user_clicked = true;
 
-		return ret;
-	}
+        return ret;
+    }
 
-	UIElement::Type UILogo::get_type() const
-	{
-		return TYPE;
-	}
+    UIElement::Type UILogo::get_type() const {
+        return TYPE;
+    }
 }

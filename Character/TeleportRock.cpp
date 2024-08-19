@@ -17,15 +17,12 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "TeleportRock.h"
 
-namespace ms
-{
-	void TeleportRock::addlocation(int32_t mapid)
-	{
-		locations.push_back(mapid);
-	}
+namespace ms {
+    void TeleportRock::addlocation(int32_t mapid) {
+        locations.push_back(mapid);
+    }
 
-	void TeleportRock::addviplocation(int32_t mapid)
-	{
-		viplocations.push_back(mapid);
-	}
+    void TeleportRock::addviplocation(int32_t mapid) {
+        viplocations.push_back(mapid);
+    }
 }

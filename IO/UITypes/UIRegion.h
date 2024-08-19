@@ -19,35 +19,32 @@
 
 #include "../UIElement.h"
 
-namespace ms
-{
-	class UIRegion : public UIElement
-	{
-	public:
-		static constexpr Type TYPE = UIElement::Type::REGION;
-		static constexpr bool FOCUSED = false;
-		static constexpr bool TOGGLED = false;
+namespace ms {
+    class UIRegion : public UIElement {
+    public:
+        static constexpr Type TYPE = REGION;
+        static constexpr bool FOCUSED = false;
+        static constexpr bool TOGGLED = false;
 
-		UIRegion();
+        UIRegion();
 
-		Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
+        Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
 
-		UIElement::Type get_type() const override;
+        Type get_type() const override;
 
-	protected:
-		Button::State button_pressed(uint16_t buttonid) override;
+    protected:
+        Button::State button_pressed(uint16_t buttonid) override;
 
-	private:
-		void clear_tooltip();
+    private:
+        void clear_tooltip();
 
-		enum Buttons : uint16_t
-		{
-			NA,
-			EU,
-			EXIT
-		};
+        enum Buttons : uint16_t {
+            NA,
+            EU,
+            EXIT
+        };
 
-		Rectangle<int16_t> na_rect;
-		Rectangle<int16_t> eu_rect;
-	};
+        Rectangle<int16_t> na_rect;
+        Rectangle<int16_t> eu_rect;
+    };
 }

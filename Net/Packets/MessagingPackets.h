@@ -19,53 +19,46 @@
 
 #include "../OutPacket.h"
 
-namespace ms
-{
-	// Packet which sends a message to general chat
-	// Opcode: GENERAL_CHAT(49)
-	class GeneralChatPacket : public OutPacket
-	{
-	public:
-		GeneralChatPacket(const std::string& message, bool show) : OutPacket(OutPacket::Opcode::GENERAL_CHAT)
-		{
-			write_string(message);
-			write_byte(show);
-		}
-	};
+namespace ms {
+    // Packet which sends a message to general chat
+    // Opcode: GENERAL_CHAT(49)
+    class GeneralChatPacket : public OutPacket {
+    public:
+        GeneralChatPacket(const std::string& message, bool show) : OutPacket(GENERAL_CHAT) {
+            write_string(message);
+            write_byte(show);
+        }
+    };
 
-	// Packet which sends a message to different chats
-	// Opcode: MULTI_CHAT(119)
-	class MultiChatPacket : public OutPacket
-	{
-	public:
-		enum Type : uint8_t
-		{
-			BUDDY,
-			PARTY,
-			GUILD,
-			ALLIANCE
-		};
+    // Packet which sends a message to different chats
+    // Opcode: MULTI_CHAT(119)
+    class MultiChatPacket : public OutPacket {
+    public:
+        enum Type : uint8_t {
+            BUDDY,
+            PARTY,
+            GUILD,
+            ALLIANCE
+        };
 
-		MultiChatPacket(Type type, const std::list<int32_t>& recipients, const std::string& message) : OutPacket(OutPacket::Opcode::MULTI_CHAT)
-		{
-			write_byte(type);
-			write_byte(recipients.size());
+        MultiChatPacket(Type type, const std::list<int32_t>& recipients, const std::string& message) : OutPacket(
+            MULTI_CHAT) {
+            write_byte(type);
+            write_byte(recipients.size());
 
-			for (int32_t recipient : recipients)
-				write_int(recipient);
+            for (int32_t recipient : recipients)
+                write_int(recipient);
 
-			write_string(message);
-		}
-	};
+            write_string(message);
+        }
+    };
 
-	// Packet which sends a message to a spouse
-	// Opcode: SPOUSE_CHAT(121)
-	class SpouseChatPacket : public OutPacket
-	{
-	public:
-		SpouseChatPacket(const std::string& message) : OutPacket(OutPacket::Opcode::SPOUSE_CHAT)
-		{
-			write_string(message);
-		}
-	};
+    // Packet which sends a message to a spouse
+    // Opcode: SPOUSE_CHAT(121)
+    class SpouseChatPacket : public OutPacket {
+    public:
+        SpouseChatPacket(const std::string& message) : OutPacket(SPOUSE_CHAT) {
+            write_string(message);
+        }
+    };
 }

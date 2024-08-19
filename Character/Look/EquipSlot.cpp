@@ -21,20 +21,16 @@
 
 #include <iostream>
 
-namespace ms
-{
-	namespace EquipSlot
-	{
-		Id by_id(size_t id)
-		{
-			if (id >= Id::LENGTH)
-			{
-				LOG(LOG_DEBUG, "Unknown EquipSlot::Id id: [" << id << "]");
+namespace ms {
+    namespace EquipSlot {
+        Id by_id(size_t id) {
+            if (id >= LENGTH) {
+                LOG(LOG_DEBUG, "Unknown EquipSlot::Id id: [" << id << "]");
 
-				return Id::NONE;
-			}
+                return NONE;
+            }
 
-			return static_cast<Id>(id);
-		}
-	}
+            return static_cast<Id>(id);
+        }
+    }
 }

@@ -23,126 +23,112 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	ChatBalloon::ChatBalloon(int8_t type)
-	{
-		std::string typestr;
+namespace ms {
+    ChatBalloon::ChatBalloon(int8_t type) {
+        std::string typestr;
 
-		if (type < 0)
-		{
-			switch (type)
-			{
-				case -1:
-					typestr = "dead";
-					break;
-			}
-		}
-		else
-		{
-			typestr = std::to_string(type);
-		}
+        if (type < 0) {
+            switch (type) {
+            case -1:
+                typestr = "dead";
+                break;
+            }
+        } else {
+            typestr = std::to_string(type);
+        }
 
-		nl::node src = nl::nx::UI["ChatBalloon.img"][typestr];
+        nl::node src = nl::nx::UI["ChatBalloon.img"][typestr];
 
-		arrow = src["arrow"];
-		frame = src;
+        arrow = src["arrow"];
+        frame = src;
 
-		textlabel = Text(Text::Font::A11M, Text::Alignment::CENTER, Color::Name::BLACK, "", 80);
+        textlabel = Text(Text::Font::A11M, Text::Alignment::CENTER, Color::Name::BLACK, "", 80);
 
-		duration = 0;
-	}
+        duration = 0;
+    }
 
-	ChatBalloon::ChatBalloon() : ChatBalloon(0) {}
+    ChatBalloon::ChatBalloon() : ChatBalloon(0) {
+    }
 
-	void ChatBalloon::change_text(const std::string& text)
-	{
-		textlabel.change_text(text);
+    void ChatBalloon::change_text(const std::string& text) {
+        textlabel.change_text(text);
 
-		duration = DURATION;
-	}
+        duration = DURATION;
+    }
 
-	void ChatBalloon::draw(Point<int16_t> position) const
-	{
-		if (duration == 0)
-			return;
+    void ChatBalloon::draw(Point<int16_t> position) const {
+        if (duration == 0)
+            return;
 
-		int16_t width = textlabel.width();
-		int16_t height = textlabel.height();
+        int16_t width = textlabel.width();
+        int16_t height = textlabel.height();
 
-		frame.draw(position, width, height);
-		arrow.draw(position);
-		textlabel.draw(position - Point<int16_t>(0, height + 4));
-	}
+        frame.draw(position, width, height);
+        arrow.draw(position);
+        textlabel.draw(position - Point<int16_t>(0, height + 4));
+    }
 
-	void ChatBalloon::update()
-	{
-		duration -= Constants::TIMESTEP;
+    void ChatBalloon::update() {
+        duration -= Constants::TIMESTEP;
 
-		if (duration < 0)
-			duration = 0;
-	}
+        if (duration < 0)
+            duration = 0;
+    }
 
-	void ChatBalloon::expire()
-	{
-		duration = 0;
-	}
+    void ChatBalloon::expire() {
+        duration = 0;
+    }
 
-	ChatBalloonHorizontal::ChatBalloonHorizontal()
-	{
-		nl::node Balloon = nl::nx::UI["Login.img"]["WorldNotice"]["Balloon"];
+    ChatBalloonHorizontal::ChatBalloonHorizontal() {
+        nl::node Balloon = nl::nx::UI["Login.img"]["WorldNotice"]["Balloon"];
 
-		arrow = Balloon["arrow"];
-		center = Balloon["c"];
-		northeast = Balloon["ne"];
-		north = Balloon["n"];
-		northwest = Balloon["nw"];
-		west = Balloon["w"];
-		southwest = Balloon["sw"];
-		south = Balloon["s"];
-		southeast = Balloon["se"];
+        arrow = Balloon["arrow"];
+        center = Balloon["c"];
+        northeast = Balloon["ne"];
+        north = Balloon["n"];
+        northwest = Balloon["nw"];
+        west = Balloon["w"];
+        southwest = Balloon["sw"];
+        south = Balloon["s"];
+        southeast = Balloon["se"];
 
-		xtile = std::max<int16_t>(north.width(), 1);
-		ytile = std::max<int16_t>(west.height(), 1);
+        xtile = std::max<int16_t>(north.width(), 1);
+        ytile = std::max<int16_t>(west.height(), 1);
 
-		textlabel = Text(Text::Font::A12B, Text::Alignment::LEFT, Color::Name::BLACK);
-	}
+        textlabel = Text(Text::Font::A12B, Text::Alignment::LEFT, Color::Name::BLACK);
+    }
 
-	void ChatBalloonHorizontal::draw(Point<int16_t> position) const
-	{
-		int16_t width = textlabel.width() + 9;
-		int16_t height = textlabel.height() - 1;
+    void ChatBalloonHorizontal::draw(Point<int16_t> position) const {
+        int16_t width = textlabel.width() + 9;
+        int16_t height = textlabel.height() - 1;
 
-		int16_t left = position.x() - width / 2;
-		int16_t top = position.y() - height;
-		int16_t right = left + width;
-		int16_t bottom = top + height;
+        int16_t left = position.x() - width / 2;
+        int16_t top = position.y() - height;
+        int16_t right = left + width;
+        int16_t bottom = top + height;
 
-		northwest.draw(DrawArgument(left, top));
-		southwest.draw(DrawArgument(left, bottom));
+        northwest.draw(DrawArgument(left, top));
+        southwest.draw(DrawArgument(left, bottom));
 
-		for (int16_t y = top; y < bottom; y += ytile)
-		{
-			west.draw(DrawArgument(left, y));
-		}
+        for (int16_t y = top; y < bottom; y += ytile) {
+            west.draw(DrawArgument(left, y));
+        }
 
-		center.draw(DrawArgument(Point<int16_t>(left, top), Point<int16_t>(width + 1, height)));
+        center.draw(DrawArgument(Point<int16_t>(left, top), Point<int16_t>(width + 1, height)));
 
-		for (int16_t x = left; x < right; x += xtile)
-		{
-			north.draw(DrawArgument(x, top));
-			south.draw(DrawArgument(x, bottom));
-		}
+        for (int16_t x = left; x < right; x += xtile) {
+            north.draw(DrawArgument(x, top));
+            south.draw(DrawArgument(x, bottom));
+        }
 
-		northeast.draw(DrawArgument(right, top));
-		southeast.draw(DrawArgument(right, bottom));
+        northeast.draw(DrawArgument(right, top));
+        southeast.draw(DrawArgument(right, bottom));
 
-		arrow.draw(DrawArgument(right + 1, top));
-		textlabel.draw(DrawArgument(left + 6, top - 4));
-	}
+        arrow.draw(DrawArgument(right + 1, top));
+        textlabel.draw(DrawArgument(left + 6, top - 4));
+    }
 
-	void ChatBalloonHorizontal::change_text(const std::string& text)
-	{
-		textlabel.change_text(text);
-	}
+    void ChatBalloonHorizontal::change_text(const std::string& text) {
+        textlabel.change_text(text);
+    }
 }

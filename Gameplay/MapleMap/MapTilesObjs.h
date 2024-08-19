@@ -25,34 +25,35 @@
 
 #include <map>
 
-namespace ms
-{
-	// A tile and object layer
-	class TilesObjs
-	{
-	public:
-		TilesObjs() {}
-		TilesObjs(nl::node src);
+namespace ms {
+    // A tile and object layer
+    class TilesObjs {
+    public:
+        TilesObjs() {
+        }
 
-		void draw(Point<int16_t> viewpos, float alpha) const;
-		void update();
+        TilesObjs(nl::node src);
 
-	private:
-		std::multimap<uint8_t, Tile> tiles;
-		std::multimap<uint8_t, Obj> objs;
-	};
+        void draw(Point<int16_t> viewpos, float alpha) const;
+        void update();
 
-	// The collection of tile and object layers on a map
-	class MapTilesObjs
-	{
-	public:
-		MapTilesObjs() {}
-		MapTilesObjs(nl::node src);
+    private:
+        std::multimap<uint8_t, Tile> tiles;
+        std::multimap<uint8_t, Obj> objs;
+    };
 
-		void draw(Layer::Id layer, Point<int16_t> viewpos, float alpha) const;
-		void update();
+    // The collection of tile and object layers on a map
+    class MapTilesObjs {
+    public:
+        MapTilesObjs() {
+        }
 
-	private:
-		EnumMap<Layer::Id, TilesObjs> layers;
-	};
+        MapTilesObjs(nl::node src);
+
+        void draw(Layer::Id layer, Point<int16_t> viewpos, float alpha) const;
+        void update();
+
+    private:
+        EnumMap<Layer::Id, TilesObjs> layers;
+    };
 }

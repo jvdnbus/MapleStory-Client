@@ -19,10 +19,8 @@
 
 #include "../Packets/CommonPackets.h"
 
-namespace ms
-{
-	void PingHandler::handle(InPacket&) const
-	{
-		PongPacket().dispatch();
-	}
+namespace ms {
+    void PingHandler::handle(InPacket&) {
+        PongPacket().dispatch();
+    }
 }

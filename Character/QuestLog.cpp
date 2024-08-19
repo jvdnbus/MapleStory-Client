@@ -17,33 +17,27 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "QuestLog.h"
 
-namespace ms
-{
-	void QuestLog::add_started(int16_t qid, const std::string& qdata)
-	{
-		started[qid] = qdata;
-	}
+namespace ms {
+    void QuestLog::add_started(int16_t qid, const std::string& qdata) {
+        started[qid] = qdata;
+    }
 
-	void QuestLog::add_in_progress(int16_t qid, int16_t qidl, const std::string& qdata)
-	{
-		in_progress[qid] = make_pair(qidl, qdata);
-	}
+    void QuestLog::add_in_progress(int16_t qid, int16_t qidl, const std::string& qdata) {
+        in_progress[qid] = make_pair(qidl, qdata);
+    }
 
-	void QuestLog::add_completed(int16_t qid, int64_t time)
-	{
-		completed[qid] = time;
-	}
+    void QuestLog::add_completed(int16_t qid, int64_t time) {
+        completed[qid] = time;
+    }
 
-	bool QuestLog::is_started(int16_t qid)
-	{
-		return started.count(qid) > 0;
-	}
+    bool QuestLog::is_started(int16_t qid) {
+        return started.count(qid) > 0;
+    }
 
-	int16_t QuestLog::get_last_started()
-	{
-		auto qend = started.end();
-		qend--;
+    int16_t QuestLog::get_last_started() {
+        auto qend = started.end();
+        --qend;
 
-		return qend->first;
-	}
+        return qend->first;
+    }
 }

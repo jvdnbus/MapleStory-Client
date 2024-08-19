@@ -21,16 +21,15 @@
 
 #include "../../Graphics/Animation.h"
 
-namespace ms
-{
-	class MesoDrop : public Drop
-	{
-	public:
-		MesoDrop(int32_t oid, int32_t owner, Point<int16_t> start, Point<int16_t> dest, int8_t type, int8_t mode, bool playerdrop, const Animation& icon);
+namespace ms {
+    class MesoDrop : public Drop {
+    public:
+        MesoDrop(int32_t oid, int32_t owner, Point<int16_t> start, Point<int16_t> dest, int8_t type, int8_t mode,
+                 bool playerdrop, const Animation& icon);
 
-		void draw(double viewx, double viewy, float alpha) const override;
+        void draw(double viewx, double viewy, float alpha) const override;
 
-	private:
-		const Animation& icon;
-	};
+    private:
+        const Animation& icon;
+    };
 }

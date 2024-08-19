@@ -26,248 +26,229 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	UIOptionMenu::UIOptionMenu() : UIDragElement<PosOPTIONMENU>(), selected_tab(0)
-	{
-		nl::node OptionMenu = nl::nx::UI["StatusBar3.img"]["OptionMenu"];
-		nl::node backgrnd = OptionMenu["backgrnd"];
+namespace ms {
+    UIOptionMenu::UIOptionMenu() : UIDragElement<PosOPTIONMENU>(), selected_tab(0) {
+        nl::node OptionMenu = nl::nx::UI["StatusBar3.img"]["OptionMenu"];
+        nl::node backgrnd = OptionMenu["backgrnd"];
 
-		sprites.emplace_back(backgrnd);
-		sprites.emplace_back(OptionMenu["backgrnd2"]);
+        sprites.emplace_back(backgrnd);
+        sprites.emplace_back(OptionMenu["backgrnd2"]);
 
-		nl::node graphic = OptionMenu["graphic"];
+        nl::node graphic = OptionMenu["graphic"];
 
-		tab_background[Buttons::TAB0] = graphic["layer:backgrnd"];
-		tab_background[Buttons::TAB1] = OptionMenu["sound"]["layer:backgrnd"];
-		tab_background[Buttons::TAB2] = OptionMenu["game"]["layer:backgrnd"];
-		tab_background[Buttons::TAB3] = OptionMenu["invite"]["layer:backgrnd"];
-		tab_background[Buttons::TAB4] = OptionMenu["screenshot"]["layer:backgrnd"];
+        tab_background[TAB0] = graphic["layer:backgrnd"];
+        tab_background[TAB1] = OptionMenu["sound"]["layer:backgrnd"];
+        tab_background[TAB2] = OptionMenu["game"]["layer:backgrnd"];
+        tab_background[TAB3] = OptionMenu["invite"]["layer:backgrnd"];
+        tab_background[TAB4] = OptionMenu["screenshot"]["layer:backgrnd"];
 
-		buttons[Buttons::CANCEL] = std::make_unique<MapleButton>(OptionMenu["button:Cancel"]);
-		buttons[Buttons::OK] = std::make_unique<MapleButton>(OptionMenu["button:OK"]);
-		buttons[Buttons::UIRESET] = std::make_unique<MapleButton>(OptionMenu["button:UIReset"]);
+        buttons[CANCEL] = std::make_unique<MapleButton>(OptionMenu["button:Cancel"]);
+        buttons[OK] = std::make_unique<MapleButton>(OptionMenu["button:OK"]);
+        buttons[UIRESET] = std::make_unique<MapleButton>(OptionMenu["button:UIReset"]);
 
-		nl::node tab = OptionMenu["tab"];
-		nl::node tab_disabled = tab["disabled"];
-		nl::node tab_enabled = tab["enabled"];
+        nl::node tab = OptionMenu["tab"];
+        nl::node tab_disabled = tab["disabled"];
+        nl::node tab_enabled = tab["enabled"];
 
-		for (size_t i = Buttons::TAB0; i < Buttons::CANCEL; i++)
-			buttons[i] = std::make_unique<TwoSpriteButton>(tab_disabled[i], tab_enabled[i]);
+        for (size_t i = TAB0; i < CANCEL; i++)
+            buttons[i] = std::make_unique<TwoSpriteButton>(tab_disabled[i], tab_enabled[i]);
 
-		std::string sButtonUOL = graphic["combo:resolution"]["sButtonUOL"].get_string();
-		std::string ctype = std::string(1, sButtonUOL.back());
-		MapleComboBox::Type type = static_cast<MapleComboBox::Type>(std::stoi(ctype));
+        std::string sButtonUOL = graphic["combo:resolution"]["sButtonUOL"].get_string();
+        auto ctype = std::string(1, sButtonUOL.back());
+        auto type = static_cast<MapleComboBox::Type>(std::stoi(ctype));
 
-		std::vector<std::string> resolutions =
-		{
-			"800 x 600 ( 4 : 3 )",
-			"1024 x 768 ( 4 : 3 )",
-			"1280 x 720 ( 16 : 9 )",
-			"1366 x 768 ( 16 : 9 )",
-			"1920 x 1080 ( 16 : 9 ) - Beta"
-		};
+        std::vector<std::string> resolutions =
+        {
+            "800 x 600 ( 4 : 3 )",
+            "1024 x 768 ( 4 : 3 )",
+            "1280 x 720 ( 16 : 9 )",
+            "1366 x 768 ( 16 : 9 )",
+            "1920 x 1080 ( 16 : 9 ) - Beta"
+        };
 
-		int16_t max_width = Configuration::get().get_max_width();
-		int16_t max_height = Configuration::get().get_max_height();
+        int16_t max_width = Configuration::get().get_max_width();
+        int16_t max_height = Configuration::get().get_max_height();
 
-		if (max_width >= 1920 && max_height >= 1200)
-			resolutions.emplace_back("1920 x 1200 ( 16 : 10 ) - Beta");
+        if (max_width >= 1920 && max_height >= 1200)
+            resolutions.emplace_back("1920 x 1200 ( 16 : 10 ) - Beta");
 
-		uint16_t default_option = 0;
-		int16_t screen_width = Constants::Constants::get().get_viewwidth();
-		int16_t screen_height = Constants::Constants::get().get_viewheight();
+        uint16_t default_option = 0;
+        int16_t screen_width = Constants::Constants::get().get_viewwidth();
+        int16_t screen_height = Constants::Constants::get().get_viewheight();
 
-		switch (screen_width)
-		{
-		case 800:
-			default_option = 0;
-			break;
-		case 1024:
-			default_option = 1;
-			break;
-		case 1280:
-			default_option = 2;
-			break;
-		case 1366:
-			default_option = 3;
-			break;
-		case 1920:
-			switch (screen_height)
-			{
-			case 1080:
-				default_option = 4;
-				break;
-			case 1200:
-				default_option = 5;
-				break;
-			}
+        switch (screen_width) {
+        case 800:
+            default_option = 0;
+            break;
+        case 1024:
+            default_option = 1;
+            break;
+        case 1280:
+            default_option = 2;
+            break;
+        case 1366:
+            default_option = 3;
+            break;
+        case 1920:
+            switch (screen_height) {
+            case 1080:
+                default_option = 4;
+                break;
+            case 1200:
+                default_option = 5;
+                break;
+            }
 
-			break;
-		}
+            break;
+        }
 
-		int64_t combobox_width = graphic["combo:resolution"]["boxWidth"].get_integer();
-		Point<int16_t> lt = Point<int16_t>(graphic["combo:resolution"]["lt"]);
+        int64_t combobox_width = graphic["combo:resolution"]["boxWidth"].get_integer();
+        auto lt = Point<int16_t>(graphic["combo:resolution"]["lt"]);
 
-		buttons[Buttons::SELECT_RES] = std::make_unique<MapleComboBox>(type, resolutions, default_option, position, lt, combobox_width);
+        buttons[SELECT_RES] = std::make_unique<MapleComboBox>(type, resolutions, default_option, position, lt,
+                                                              combobox_width);
 
-		Point<int16_t> bg_dimensions = Texture(backgrnd).get_dimensions();
+        Point<int16_t> bg_dimensions = Texture(backgrnd).get_dimensions();
 
-		dimension = bg_dimensions;
-		dragarea = Point<int16_t>(bg_dimensions.x(), 20);
+        dimension = bg_dimensions;
+        dragarea = Point<int16_t>(bg_dimensions.x(), 20);
 
-		change_tab(Buttons::TAB2);
-	}
+        change_tab(TAB2);
+    }
 
-	void UIOptionMenu::draw(float inter) const
-	{
-		UIElement::draw_sprites(inter);
+    void UIOptionMenu::draw(float inter) const {
+        draw_sprites(inter);
 
-		tab_background[selected_tab].draw(position);
+        tab_background[selected_tab].draw(position);
 
-		UIElement::draw_buttons(inter);
-	}
+        draw_buttons(inter);
+    }
 
-	Button::State UIOptionMenu::button_pressed(uint16_t buttonid)
-	{
-		switch (buttonid)
-		{
-		case Buttons::TAB0:
-		case Buttons::TAB1:
-		case Buttons::TAB2:
-		case Buttons::TAB3:
-		case Buttons::TAB4:
-			change_tab(buttonid);
-			return Button::State::IDENTITY;
-		case Buttons::CANCEL:
-			deactivate();
-			return Button::State::NORMAL;
-		case Buttons::OK:
-			switch (selected_tab)
-			{
-			case Buttons::TAB0:
-			{
-				uint16_t selected_value = buttons[Buttons::SELECT_RES]->get_selected();
+    Button::State UIOptionMenu::button_pressed(uint16_t buttonid) {
+        switch (buttonid) {
+        case TAB0:
+        case TAB1:
+        case TAB2:
+        case TAB3:
+        case TAB4:
+            change_tab(buttonid);
+            return Button::State::IDENTITY;
+        case CANCEL:
+            deactivate();
+            return Button::State::NORMAL;
+        case OK:
+            switch (selected_tab) {
+            case TAB0: {
+                uint16_t selected_value = buttons[SELECT_RES]->get_selected();
 
-				int16_t width = Constants::Constants::get().get_viewwidth();
-				int16_t height = Constants::Constants::get().get_viewheight();
+                int16_t width = Constants::Constants::get().get_viewwidth();
+                int16_t height = Constants::Constants::get().get_viewheight();
 
-				switch (selected_value)
-				{
-				case 0:
-					width = 800;
-					height = 600;
-					break;
-				case 1:
-					width = 1024;
-					height = 768;
-					break;
-				case 2:
-					width = 1280;
-					height = 720;
-					break;
-				case 3:
-					width = 1366;
-					height = 768;
-					break;
-				case 4:
-					width = 1920;
-					height = 1080;
-					break;
-				case 5:
-					width = 1920;
-					height = 1200;
-					break;
-				}
+                switch (selected_value) {
+                case 0:
+                    width = 800;
+                    height = 600;
+                    break;
+                case 1:
+                    width = 1024;
+                    height = 768;
+                    break;
+                case 2:
+                    width = 1280;
+                    height = 720;
+                    break;
+                case 3:
+                    width = 1366;
+                    height = 768;
+                    break;
+                case 4:
+                    width = 1920;
+                    height = 1080;
+                    break;
+                case 5:
+                    width = 1920;
+                    height = 1200;
+                    break;
+                }
 
-				Setting<Width>::get().save(width);
-				Setting<Height>::get().save(height);
+                Setting<Width>::get().save(width);
+                Setting<Height>::get().save(height);
 
-				Constants::Constants::get().set_viewwidth(width);
-				Constants::Constants::get().set_viewheight(height);
-			}
-			break;
-			case Buttons::TAB1:
-			case Buttons::TAB2:
-			case Buttons::TAB3:
-			case Buttons::TAB4:
-			default:
-				break;
-			}
+                Constants::Constants::get().set_viewwidth(width);
+                Constants::Constants::get().set_viewheight(height);
+            }
+            break;
+            case TAB1:
+            case TAB2:
+            case TAB3:
+            case TAB4:
+            default:
+                break;
+            }
 
-			deactivate();
-			return Button::State::NORMAL;
-		case Buttons::UIRESET:
-			return Button::State::DISABLED;
-		case Buttons::SELECT_RES:
-			buttons[Buttons::SELECT_RES]->toggle_pressed();
-			return Button::State::NORMAL;
-		default:
-			return Button::State::DISABLED;
-		}
-	}
+            deactivate();
+            return Button::State::NORMAL;
+        case UIRESET:
+            return Button::State::DISABLED;
+        case SELECT_RES:
+            buttons[SELECT_RES]->toggle_pressed();
+            return Button::State::NORMAL;
+        default:
+            return Button::State::DISABLED;
+        }
+    }
 
-	Cursor::State UIOptionMenu::send_cursor(bool clicked, Point<int16_t> cursorpos)
-	{
-		Cursor::State dstate = UIDragElement::send_cursor(clicked, cursorpos);
+    Cursor::State UIOptionMenu::send_cursor(bool clicked, Point<int16_t> cursorpos) {
+        Cursor::State dstate = UIDragElement::send_cursor(clicked, cursorpos);
 
-		if (dragged)
-			return dstate;
+        if (dragged)
+            return dstate;
 
-		auto& button = buttons[Buttons::SELECT_RES];
+        auto& button = buttons[SELECT_RES];
 
-		if (button->is_pressed())
-		{
-			if (button->in_combobox(cursorpos))
-			{
-				if (Cursor::State new_state = button->send_cursor(clicked, cursorpos))
-					return new_state;
-			}
-			else
-			{
-				remove_cursor();
-			}
-		}
+        if (button->is_pressed()) {
+            if (button->in_combobox(cursorpos)) {
+                if (Cursor::State new_state = button->send_cursor(clicked, cursorpos))
+                    return new_state;
+            } else {
+                remove_cursor();
+            }
+        }
 
-		return UIElement::send_cursor(clicked, cursorpos);
-	}
+        return UIElement::send_cursor(clicked, cursorpos);
+    }
 
-	void UIOptionMenu::send_key(int32_t keycode, bool pressed, bool escape)
-	{
-		if (pressed)
-		{
-			if (escape)
-				deactivate();
-			else if (keycode == KeyAction::Id::RETURN)
-				button_pressed(Buttons::OK);
-		}
-	}
+    void UIOptionMenu::send_key(int32_t keycode, bool pressed, bool escape) {
+        if (pressed) {
+            if (escape)
+                deactivate();
+            else if (keycode == KeyAction::Id::RETURN)
+                button_pressed(OK);
+        }
+    }
 
-	UIElement::Type UIOptionMenu::get_type() const
-	{
-		return TYPE;
-	}
+    UIElement::Type UIOptionMenu::get_type() const {
+        return TYPE;
+    }
 
-	void UIOptionMenu::change_tab(uint16_t tabid)
-	{
-		buttons[selected_tab]->set_state(Button::State::NORMAL);
-		buttons[tabid]->set_state(Button::State::PRESSED);
+    void UIOptionMenu::change_tab(uint16_t tabid) {
+        buttons[selected_tab]->set_state(Button::State::NORMAL);
+        buttons[tabid]->set_state(Button::State::PRESSED);
 
-		selected_tab = tabid;
+        selected_tab = tabid;
 
-		switch (tabid)
-		{
-		case Buttons::TAB0:
-			buttons[Buttons::SELECT_RES]->set_active(true);
-			break;
-		case Buttons::TAB1:
-		case Buttons::TAB2:
-		case Buttons::TAB3:
-		case Buttons::TAB4:
-			buttons[Buttons::SELECT_RES]->set_active(false);
-			break;
-		default:
-			break;
-		}
-	}
+        switch (tabid) {
+        case TAB0:
+            buttons[SELECT_RES]->set_active(true);
+            break;
+        case TAB1:
+        case TAB2:
+        case TAB3:
+        case TAB4:
+            buttons[SELECT_RES]->set_active(false);
+            break;
+        default:
+            break;
+        }
+    }
 }

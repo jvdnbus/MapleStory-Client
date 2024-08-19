@@ -21,382 +21,327 @@
 
 #include <fstream>
 
-namespace ms
-{
-	Configuration::Configuration()
-	{
-		settings.emplace<ServerIP>();
-		settings.emplace<ServerPort>();
-		settings.emplace<Fullscreen>();
-		settings.emplace<Width>();
-		settings.emplace<Height>();
-		settings.emplace<VSync>();
-		settings.emplace<FontPathNormal>();
-		settings.emplace<FontPathBold>();
-		settings.emplace<BGMVolume>();
-		settings.emplace<SFXVolume>();
-		settings.emplace<SaveLogin>();
-		settings.emplace<DefaultAccount>();
-		settings.emplace<DefaultWorld>();
-		settings.emplace<DefaultChannel>();
-		settings.emplace<DefaultRegion>();
-		settings.emplace<DefaultCharacter>();
-		settings.emplace<ChatViewMax>();
-		settings.emplace<ChatViewX>();
-		settings.emplace<ChatViewY>();
-		settings.emplace<PosSTATS>();
-		settings.emplace<PosEQINV>();
-		settings.emplace<PosINV>();
-		settings.emplace<PosSKILL>();
-		settings.emplace<PosQUEST>();
-		settings.emplace<PosMAP>();
-		settings.emplace<PosUSERLIST>();
-		settings.emplace<PosCHAT>();
-		settings.emplace<PosMINIMAP>();
-		settings.emplace<PosSHOP>();
-		settings.emplace<PosNOTICE>();
-		settings.emplace<PosMAPLECHAT>();
-		settings.emplace<PosCHANNEL>();
-		settings.emplace<PosJOYPAD>();
-		settings.emplace<PosEVENT>();
-		settings.emplace<PosKEYCONFIG>();
-		settings.emplace<PosOPTIONMENU>();
-		settings.emplace<PosCHARINFO>();
-		settings.emplace<MiniMapType>();
-		settings.emplace<MiniMapSimpleMode>();
-		settings.emplace<MiniMapDefaultHelpers>();
+namespace ms {
+    Configuration::Configuration() {
+        settings.emplace<ServerIP>();
+        settings.emplace<ServerPort>();
+        settings.emplace<Fullscreen>();
+        settings.emplace<Width>();
+        settings.emplace<Height>();
+        settings.emplace<VSync>();
+        settings.emplace<FontPathNormal>();
+        settings.emplace<FontPathBold>();
+        settings.emplace<BGMVolume>();
+        settings.emplace<SFXVolume>();
+        settings.emplace<SaveLogin>();
+        settings.emplace<DefaultAccount>();
+        settings.emplace<DefaultWorld>();
+        settings.emplace<DefaultChannel>();
+        settings.emplace<DefaultRegion>();
+        settings.emplace<DefaultCharacter>();
+        settings.emplace<ChatViewMax>();
+        settings.emplace<ChatViewX>();
+        settings.emplace<ChatViewY>();
+        settings.emplace<PosSTATS>();
+        settings.emplace<PosEQINV>();
+        settings.emplace<PosINV>();
+        settings.emplace<PosSKILL>();
+        settings.emplace<PosQUEST>();
+        settings.emplace<PosMAP>();
+        settings.emplace<PosUSERLIST>();
+        settings.emplace<PosCHAT>();
+        settings.emplace<PosMINIMAP>();
+        settings.emplace<PosSHOP>();
+        settings.emplace<PosNOTICE>();
+        settings.emplace<PosMAPLECHAT>();
+        settings.emplace<PosCHANNEL>();
+        settings.emplace<PosJOYPAD>();
+        settings.emplace<PosEVENT>();
+        settings.emplace<PosKEYCONFIG>();
+        settings.emplace<PosOPTIONMENU>();
+        settings.emplace<PosCHARINFO>();
+        settings.emplace<MiniMapType>();
+        settings.emplace<MiniMapSimpleMode>();
+        settings.emplace<MiniMapDefaultHelpers>();
 
-		load();
-	}
+        load();
+    }
 
-	Configuration::~Configuration()
-	{
+    Configuration::~Configuration() {
 #ifndef _DEBUG
 		save();
 #endif
-	}
+    }
 
-	void Configuration::load()
-	{
-		std::unordered_map<std::string, std::string> rawsettings;
-		std::ifstream file(FILENAME);
+    void Configuration::load() {
+        std::unordered_map<std::string, std::string> rawsettings;
+        std::ifstream file(FILENAME);
 
-		if (file.is_open())
-		{
-			// Go through the file line by line
-			std::string line;
+        if (file.is_open()) {
+            // Go through the file line by line
+            std::string line;
 
-			while (getline(file, line))
-			{
-				// If the setting is not empty, load the value.
-				size_t split = line.find('=');
+            while (getline(file, line)) {
+                // If the setting is not empty, load the value.
+                size_t split = line.find('=');
 
-				if (split != std::string::npos && split + 2 < line.size())
-				{
-					rawsettings.emplace(
-						line.substr(0, split - 1),
-						line.substr(split + 2)
-					);
-				}
-			}
-		}
+                if (split != std::string::npos && split + 2 < line.size()) {
+                    rawsettings.emplace(
+                        line.substr(0, split - 1),
+                        line.substr(split + 2)
+                    );
+                }
+            }
+        }
 
-		// Replace default values with loaded values
-		for (auto& setting : settings)
-		{
-			auto rsiter = rawsettings.find(setting.second->name);
+        // Replace default values with loaded values
+        for (auto& setting : settings) {
+            auto rsiter = rawsettings.find(setting.second->name);
 
-			if (rsiter != rawsettings.end())
-				setting.second->value = rsiter->second;
-		}
-	}
+            if (rsiter != rawsettings.end())
+                setting.second->value = rsiter->second;
+        }
+    }
 
-	void Configuration::save() const
-	{
-		// Open the settings file
-		std::ofstream config(FILENAME);
+    void Configuration::save() const {
+        // Open the settings file
+        std::ofstream config(FILENAME);
 
-		if (config.is_open())
-		{
-			// Save settings line by line
-			for (auto& setting : settings)
-				config << setting.second->to_string() << std::endl;
-		}
-	}
+        if (config.is_open()) {
+            // Save settings line by line
+            for (auto& setting : settings)
+                config << setting.second->to_string() << std::endl;
+        }
+    }
 
-	void Configuration::BoolEntry::save(bool b)
-	{
-		value = b ? "true" : "false";
-	}
+    void Configuration::BoolEntry::save(bool b) {
+        value = b ? "true" : "false";
+    }
 
-	bool Configuration::BoolEntry::load() const
-	{
-		return value == "true";
-	}
+    bool Configuration::BoolEntry::load() const {
+        return value == "true";
+    }
 
-	void Configuration::StringEntry::save(std::string str)
-	{
-		value = str;
-	}
+    void Configuration::StringEntry::save(std::string str) {
+        value = str;
+    }
 
-	std::string Configuration::StringEntry::load() const
-	{
-		return value;
-	}
+    std::string Configuration::StringEntry::load() const {
+        return value;
+    }
 
-	void Configuration::PointEntry::save(Point<int16_t> vec)
-	{
-		value = vec.to_string();
-	}
+    void Configuration::PointEntry::save(Point<int16_t> vec) {
+        value = vec.to_string();
+    }
 
-	Point<int16_t> Configuration::PointEntry::load() const
-	{
-		std::string xstr = value.substr(1, value.find(",") - 1);
-		std::string ystr = value.substr(value.find(",") + 1, value.find(")") - value.find(",") - 1);
+    Point<int16_t> Configuration::PointEntry::load() const {
+        std::string xstr = value.substr(1, value.find(",") - 1);
+        std::string ystr = value.substr(value.find(",") + 1, value.find(")") - value.find(",") - 1);
 
-		auto x = string_conversion::or_zero<int16_t>(xstr);
-		auto y = string_conversion::or_zero<int16_t>(ystr);
+        auto x = string_conversion::or_zero<int16_t>(xstr);
+        auto y = string_conversion::or_zero<int16_t>(ystr);
 
-		return { x, y };
-	}
+        return {x, y};
+    }
 
-	bool Configuration::get_show_fps() const
-	{
-		return SHOW_FPS;
-	}
+    bool Configuration::get_show_fps() const {
+        return SHOW_FPS;
+    }
 
-	bool Configuration::get_show_packets() const
-	{
-		return SHOW_PACKETS;
-	}
+    bool Configuration::get_show_packets() const {
+        return SHOW_PACKETS;
+    }
 
-	bool Configuration::get_auto_login() const
-	{
+    bool Configuration::get_auto_login() const {
 #ifdef NDEBUG
 		return false;
 #endif
 
-		return AUTO_LOGIN;
-	}
+        return AUTO_LOGIN;
+    }
 
-	uint8_t Configuration::get_auto_world()
-	{
-		return auto_world;
-	}
+    uint8_t Configuration::get_auto_world() {
+        return auto_world;
+    }
 
-	uint8_t Configuration::get_auto_channel()
-	{
-		return auto_channel;
-	}
+    uint8_t Configuration::get_auto_channel() {
+        return auto_channel;
+    }
 
-	std::string Configuration::get_auto_acc()
-	{
-		return auto_acc;
-	}
+    std::string Configuration::get_auto_acc() {
+        return auto_acc;
+    }
 
-	std::string Configuration::get_auto_pass()
-	{
-		return auto_pass;
-	}
+    std::string Configuration::get_auto_pass() {
+        return auto_pass;
+    }
 
-	std::string Configuration::get_auto_pic()
-	{
-		return auto_pic;
-	}
+    std::string Configuration::get_auto_pic() {
+        return auto_pic;
+    }
 
-	int32_t Configuration::get_auto_cid()
-	{
-		return auto_cid;
-	}
+    int32_t Configuration::get_auto_cid() {
+        return auto_cid;
+    }
 
-	std::string Configuration::get_title() const
-	{
-		return TITLE;
-	}
+    std::string Configuration::get_title() const {
+        return TITLE;
+    }
 
-	std::string Configuration::get_version() const
-	{
-		return VERSION;
-	}
+    std::string Configuration::get_version() const {
+        return VERSION;
+    }
 
-	std::string Configuration::get_login_music() const
-	{
-		return LoginMusic;
-	}
+    std::vector<std::string> Configuration::get_login_backgrounds() const {
+        return LoginBackgrounds;
+    }
 
-	std::string Configuration::get_login_music_sea() const
-	{
-		return LoginMusicSEA;
-	}
+    std::string Configuration::get_login_music() const {
+        return LoginMusic;
+    }
 
-	std::string Configuration::get_login_music_newtro() const
-	{
-		return LoginMusicNewtro;
-	}
+    std::string Configuration::get_login_music_sea() const {
+        return LoginMusicSEA;
+    }
 
-	std::string Configuration::get_joinlink() const
-	{
-		return JOINLINK;
-	}
+    std::string Configuration::get_login_music_newtro() const {
+        return LoginMusicNewtro;
+    }
 
-	std::string Configuration::get_website() const
-	{
-		return WEBSITE;
-	}
+    std::string Configuration::get_joinlink() const {
+        return JOINLINK;
+    }
 
-	std::string Configuration::get_findid() const
-	{
-		return FINDID;
-	}
+    std::string Configuration::get_website() const {
+        return WEBSITE;
+    }
 
-	std::string Configuration::get_findpass() const
-	{
-		return FINDPASS;
-	}
+    std::string Configuration::get_findid() const {
+        return FINDID;
+    }
 
-	std::string Configuration::get_resetpic() const
-	{
-		return RESETPIC;
-	}
+    std::string Configuration::get_findpass() const {
+        return FINDPASS;
+    }
 
-	std::string Configuration::get_chargenx() const
-	{
-		return CHARGENX;
-	}
+    std::string Configuration::get_resetpic() const {
+        return RESETPIC;
+    }
 
-	void Configuration::set_macs(char* macs)
-	{
-		MACS = macs;
-	}
+    std::string Configuration::get_chargenx() const {
+        return CHARGENX;
+    }
 
-	void Configuration::set_hwid(char* hwid, char* volumeSerialNumber)
-	{
-		VolumeSerialNumber = volumeSerialNumber;
+    void Configuration::set_macs(char* macs) {
+        MACS = macs;
+    }
 
-		std::string newHWID;
+    void Configuration::set_hwid(char* hwid, char* volumeSerialNumber) {
+        VolumeSerialNumber = volumeSerialNumber;
 
-		newHWID.append(hwid);
-		newHWID.append("_");
+        std::string newHWID;
 
-		std::string part1 = VolumeSerialNumber.substr(0, 2);
-		std::string part2 = VolumeSerialNumber.substr(2, 2);
-		std::string part3 = VolumeSerialNumber.substr(4, 2);
-		std::string part4 = VolumeSerialNumber.substr(6, 2);
+        newHWID.append(hwid);
+        newHWID.append("_");
 
-		// TODO: VolumeSerialNumber was not eight characters long, added fix for last part.
-		// TODO: Need to look into why the VolumeSerialNumber was seven characters long
-		part4 = string_format::pad_string(part4, 2);
+        std::string part1 = VolumeSerialNumber.substr(0, 2);
+        std::string part2 = VolumeSerialNumber.substr(2, 2);
+        std::string part3 = VolumeSerialNumber.substr(4, 2);
+        std::string part4 = VolumeSerialNumber.substr(6, 2);
 
-		newHWID.append(part4);
-		newHWID.append(part3);
-		newHWID.append(part2);
-		newHWID.append(part1);
+        // TODO: VolumeSerialNumber was not eight characters long, added fix for last part.
+        // TODO: Need to look into why the VolumeSerialNumber was seven characters long
+        part4 = string_format::pad_string(part4, 2);
 
-		HWID = newHWID;
-	}
+        newHWID.append(part4);
+        newHWID.append(part3);
+        newHWID.append(part2);
+        newHWID.append(part1);
 
-	void Configuration::set_max_width(int16_t max_width)
-	{
-		MAXWIDTH = max_width;
-	}
+        HWID = newHWID;
+    }
 
-	void Configuration::set_max_height(int16_t max_height)
-	{
-		MAXHEIGHT = max_height;
-	}
+    void Configuration::set_max_width(int16_t max_width) {
+        MAXWIDTH = max_width;
+    }
 
-	std::string Configuration::get_macs()
-	{
-		return MACS;
-	}
+    void Configuration::set_max_height(int16_t max_height) {
+        MAXHEIGHT = max_height;
+    }
 
-	std::string Configuration::get_hwid()
-	{
-		return HWID;
-	}
+    std::string Configuration::get_macs() {
+        return MACS;
+    }
 
-	std::string Configuration::get_vol_serial_num()
-	{
-		return VolumeSerialNumber;
-	}
+    std::string Configuration::get_hwid() {
+        return HWID;
+    }
 
-	int16_t Configuration::get_max_width()
-	{
-		return MAXWIDTH;
-	}
+    std::string Configuration::get_vol_serial_num() {
+        return VolumeSerialNumber;
+    }
 
-	int16_t Configuration::get_max_height()
-	{
-		return MAXHEIGHT;
-	}
+    int16_t Configuration::get_max_width() {
+        return MAXWIDTH;
+    }
 
-	bool Configuration::get_rightclicksell()
-	{
-		return rightclicksell;
-	}
+    int16_t Configuration::get_max_height() {
+        return MAXHEIGHT;
+    }
 
-	void Configuration::set_rightclicksell(bool value)
-	{
-		rightclicksell = value;
-	}
+    bool Configuration::get_rightclicksell() {
+        return rightclicksell;
+    }
 
-	bool Configuration::get_show_weekly()
-	{
-		return show_weekly;
-	}
+    void Configuration::set_rightclicksell(bool value) {
+        rightclicksell = value;
+    }
 
-	void Configuration::set_show_weekly(bool value)
-	{
-		show_weekly = value;
-	}
+    bool Configuration::get_show_weekly() {
+        return show_weekly;
+    }
 
-	bool Configuration::get_start_shown()
-	{
-		return start_shown;
-	}
+    void Configuration::set_show_weekly(bool value) {
+        show_weekly = value;
+    }
 
-	void Configuration::set_start_shown(bool value)
-	{
-		start_shown = value;
-	}
+    bool Configuration::get_start_shown() {
+        return start_shown;
+    }
 
-	uint8_t Configuration::get_worldid()
-	{
-		return worldid;
-	}
+    void Configuration::set_start_shown(bool value) {
+        start_shown = value;
+    }
 
-	void Configuration::set_worldid(uint8_t id)
-	{
-		worldid = id;
-	}
+    uint8_t Configuration::get_worldid() {
+        return worldid;
+    }
 
-	uint8_t Configuration::get_channelid()
-	{
-		return channelid;
-	}
+    void Configuration::set_worldid(uint8_t id) {
+        worldid = id;
+    }
 
-	void Configuration::set_channelid(uint8_t id)
-	{
-		channelid = id;
-	}
+    uint8_t Configuration::get_channelid() {
+        return channelid;
+    }
 
-	bool Configuration::get_admin()
-	{
-		return admin;
-	}
+    void Configuration::set_channelid(uint8_t id) {
+        channelid = id;
+    }
 
-	void Configuration::set_admin(bool value)
-	{
-		admin = value;
-	}
+    bool Configuration::get_admin() {
+        return admin;
+    }
 
-	bool Configuration::get_caps_lock_enabled()
-	{
-		return caps_lock_enabled;
-	}
+    void Configuration::set_admin(bool value) {
+        admin = value;
+    }
 
-	void Configuration::set_caps_lock_enabled(int value)
-	{
-		caps_lock_enabled = value;
-	}
+    bool Configuration::get_caps_lock_enabled() {
+        return caps_lock_enabled;
+    }
+
+    void Configuration::set_caps_lock_enabled(int value) {
+        caps_lock_enabled = value;
+    }
 }

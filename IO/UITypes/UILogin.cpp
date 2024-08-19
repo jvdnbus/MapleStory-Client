@@ -35,326 +35,297 @@
 #include <nlnx/nx.hpp>
 #endif
 
-namespace ms
-{
-	UILogin::UILogin() : UIElement(Point<int16_t>(0, 0), Point<int16_t>(1024, 768)), title_pos(Point<int16_t>(344, 246)), nexon(false)
-	{
-		std::string LoginMusicNewtro = Configuration::get().get_login_music_newtro();
+namespace ms {
+    UILogin::UILogin() : UIElement(Point<int16_t>(0, 0), Point<int16_t>(1024, 768)),
+                         title_pos(Point<int16_t>(344, 246)), nexon(false) {
+        std::string LoginMusicNewtro = Configuration::get().get_login_music_newtro();
 
-		Music(LoginMusicNewtro).play();
+        Music(LoginMusicNewtro).play();
 
-		std::string version_text = Configuration::get().get_version();
-		version = Text(Text::Font::A12B, Text::Alignment::LEFT, Color::Name::LEMONGRASS, "Ver. " + version_text);
-		version_pos = nl::nx::UI["Login.img"]["Common"]["version"]["pos"];
+        std::string version_text = Configuration::get().get_version();
+        version = Text(Text::Font::A12B, Text::Alignment::LEFT, Color::Name::LEMONGRASS, "Ver. " + version_text);
+        version_pos = nl::nx::UI["Login.img"]["Common"]["version"]["pos"];
 
-		nl::node Login = nl::nx::UI["Login.img"];
-		version_pos = Login["Common"]["version"]["pos"];
+        nl::node Login = nl::nx::UI["Login.img"];
+        version_pos = Login["Common"]["version"]["pos"];
 
-		nl::node Title_new = Login["Title_new"];
-		capslock = Title_new["capslock"];
+        nl::node Title_new = Login["Title_new"];
+        capslock = Title_new["capslock"];
 
-		nl::node check_src = Title_new["check"];
-		check[false] = check_src["0"];
-		check[true] = check_src["1"];
+        nl::node check_src = Title_new["check"];
+        check[false] = check_src["0"];
+        check[true] = check_src["1"];
 
-		sprites.emplace_back(nl::nx::Map001["Back"]["UI_login.img"]["back"]["0"], Point<int16_t>(512, 384));
-		sprites.emplace_back(Title_new["backgrd"], title_pos);
+        sprites.emplace_back(nl::nx::Map001["Back"]["UI_login.img"]["back"]["0"], Point<int16_t>(512, 384));
+        sprites.emplace_back(Title_new["backgrd"], title_pos);
 
-		nl::node Tab = Title_new["Tab"];
-		nl::node TabD = Tab["disabled"];
-		nl::node TabE = Tab["enabled"];
+        nl::node Tab = Title_new["Tab"];
+        nl::node TabD = Tab["disabled"];
+        nl::node TabE = Tab["enabled"];
 
-		buttons[Buttons::BtLogin] = std::make_unique<MapleButton>(Title_new["BtLogin"], title_pos);
-		buttons[Buttons::BtEmailSave] = std::make_unique<MapleButton>(Title_new["BtEmailSave"], title_pos);
-		buttons[Buttons::BtEmailLost] = std::make_unique<MapleButton>(Title_new["BtEmailLost"], title_pos);
-		buttons[Buttons::BtPasswdLost] = std::make_unique<MapleButton>(Title_new["BtPasswdLost"], title_pos);
-		buttons[Buttons::BtNew] = std::make_unique<MapleButton>(Title_new["BtNew"], title_pos);
-		buttons[Buttons::BtHomePage] = std::make_unique<MapleButton>(Title_new["BtHomePage"], title_pos);
-		buttons[Buttons::BtQuit] = std::make_unique<MapleButton>(Title_new["BtQuit"], title_pos);
-		buttons[Buttons::BtMapleID] = std::make_unique<TwoSpriteButton>(TabD["0"], TabE["0"], Point<int16_t>(344, 246));
-		buttons[Buttons::BtNexonID] = std::make_unique<TwoSpriteButton>(TabD["1"], TabE["1"], Point<int16_t>(344, 246));
+        buttons[BtLogin] = std::make_unique<MapleButton>(Title_new["BtLogin"], title_pos);
+        buttons[BtEmailSave] = std::make_unique<MapleButton>(Title_new["BtEmailSave"], title_pos);
+        buttons[BtEmailLost] = std::make_unique<MapleButton>(Title_new["BtEmailLost"], title_pos);
+        buttons[BtPasswdLost] = std::make_unique<MapleButton>(Title_new["BtPasswdLost"], title_pos);
+        buttons[BtNew] = std::make_unique<MapleButton>(Title_new["BtNew"], title_pos);
+        buttons[BtHomePage] = std::make_unique<MapleButton>(Title_new["BtHomePage"], title_pos);
+        buttons[BtQuit] = std::make_unique<MapleButton>(Title_new["BtQuit"], title_pos);
+        buttons[BtMapleID] = std::make_unique<TwoSpriteButton>(TabD["0"], TabE["0"], Point<int16_t>(344, 246));
+        buttons[BtNexonID] = std::make_unique<TwoSpriteButton>(TabD["1"], TabE["1"], Point<int16_t>(344, 246));
 
-		if (nexon)
-		{
-			buttons[Buttons::BtNexonID]->set_state(Button::State::PRESSED);
-			buttons[Buttons::BtMapleID]->set_state(Button::State::NORMAL);
-		}
-		else
-		{
-			buttons[Buttons::BtNexonID]->set_state(Button::State::NORMAL);
-			buttons[Buttons::BtMapleID]->set_state(Button::State::PRESSED);
-		}
+        if (nexon) {
+            buttons[BtNexonID]->set_state(Button::State::PRESSED);
+            buttons[BtMapleID]->set_state(Button::State::NORMAL);
+        } else {
+            buttons[BtNexonID]->set_state(Button::State::NORMAL);
+            buttons[BtMapleID]->set_state(Button::State::PRESSED);
+        }
 
-		background = ColorBox(dimension.x(), dimension.y(), Color::Name::BLACK, 1.0f);
+        background = ColorBox(dimension.x(), dimension.y(), Color::Name::BLACK, 1.0f);
 
-		Point<int16_t> textfield_pos = title_pos + Point<int16_t>(27, 69);
+        Point<int16_t> textfield_pos = title_pos + Point<int16_t>(27, 69);
 
 #pragma region Account
-		Texture account_src = Texture(Title_new["mapleID"]);
-		account_src_dim = account_src.get_dimensions();
+        auto account_src = Texture(Title_new["mapleID"]);
+        account_src_dim = account_src.get_dimensions();
 
-		account = Textfield(Text::Font::A13M, Text::Alignment::LEFT, Color::Name::JAMBALAYA, Rectangle<int16_t>(textfield_pos, textfield_pos + account_src_dim), TEXTFIELD_LIMIT);
+        account = Textfield(Text::Font::A13M, Text::Alignment::LEFT, Color::Name::JAMBALAYA,
+                            Rectangle<int16_t>(textfield_pos, textfield_pos + account_src_dim), TEXTFIELD_LIMIT);
 
-		account.set_key_callback
-		(
-			KeyAction::Id::TAB, [&]
-			{
-				account.set_state(Textfield::State::NORMAL);
-				password.set_state(Textfield::State::FOCUSED);
-			}
-		);
+        account.set_key_callback
+        (
+            KeyAction::Id::TAB, [&] {
+                account.set_state(Textfield::State::NORMAL);
+                password.set_state(Textfield::State::FOCUSED);
+            }
+        );
 
-		account.set_enter_callback
-		(
-			[&](std::string msg)
-			{
-				login();
-			}
-		);
+        account.set_enter_callback
+        (
+            [&](std::string msg) {
+                login();
+            }
+        );
 
-		account_bg[false] = account_src;
-		account_bg[true] = Title_new["nexonID"];
+        account_bg[false] = account_src;
+        account_bg[true] = Title_new["nexonID"];
 #pragma endregion
 
 #pragma region Password
-		textfield_pos.shift_y(account_src_dim.y() + 1);
+        textfield_pos.shift_y(account_src_dim.y() + 1);
 
-		Texture password_src = Title_new["PW"];
-		password_src_dim = password_src.get_dimensions();
+        Texture password_src = Title_new["PW"];
+        password_src_dim = password_src.get_dimensions();
 
-		password = Textfield(Text::Font::A13M, Text::Alignment::LEFT, Color::Name::JAMBALAYA, Rectangle<int16_t>(textfield_pos, textfield_pos + password_src_dim), TEXTFIELD_LIMIT);
+        password = Textfield(Text::Font::A13M, Text::Alignment::LEFT, Color::Name::JAMBALAYA,
+                             Rectangle<int16_t>(textfield_pos, textfield_pos + password_src_dim), TEXTFIELD_LIMIT);
 
-		password.set_key_callback
-		(
-			KeyAction::Id::TAB, [&]
-			{
-				account.set_state(Textfield::State::FOCUSED);
-				password.set_state(Textfield::State::NORMAL);
-			}
-		);
+        password.set_key_callback
+        (
+            KeyAction::Id::TAB, [&] {
+                account.set_state(Textfield::State::FOCUSED);
+                password.set_state(Textfield::State::NORMAL);
+            }
+        );
 
-		password.set_enter_callback
-		(
-			[&](std::string msg)
-			{
-				login();
-			}
-		);
+        password.set_enter_callback
+        (
+            [&](std::string msg) {
+                login();
+            }
+        );
 
-		password.set_cryptchar('*');
-		password_bg = password_src;
+        password.set_cryptchar('*');
+        password_bg = password_src;
 #pragma endregion
 
-		saveid = Setting<SaveLogin>::get().load();
+        saveid = Setting<SaveLogin>::get().load();
 
-		if (saveid)
-		{
-			account.change_text(Setting<DefaultAccount>::get().load());
-			password.set_state(Textfield::State::FOCUSED);
-		}
-		else
-		{
-			account.set_state(Textfield::State::FOCUSED);
-		}
+        if (saveid) {
+            account.change_text(Setting<DefaultAccount>::get().load());
+            password.set_state(Textfield::State::FOCUSED);
+        } else {
+            account.set_state(Textfield::State::FOCUSED);
+        }
 
-		if (Configuration::get().get_auto_login())
-		{
-			UI::get().emplace<UILoginWait>([]() {});
+        if (Configuration::get().get_auto_login()) {
+            UI::get().emplace<UILoginWait>([]() {
+            });
 
-			auto loginwait = UI::get().get_element<UILoginWait>();
+            auto loginwait = UI::get().get_element<UILoginWait>();
 
-			if (loginwait && loginwait->is_active())
-				LoginPacket(
-					Configuration::get().get_auto_acc(),
-					Configuration::get().get_auto_pass()
-				).dispatch();
-		}
-	}
+            if (loginwait && loginwait->is_active())
+                LoginPacket(
+                    Configuration::get().get_auto_acc(),
+                    Configuration::get().get_auto_pass()
+                ).dispatch();
+        }
+    }
 
-	void UILogin::draw(float alpha) const
-	{
-		background.draw(position + Point<int16_t>(0, 7));
+    void UILogin::draw(float alpha) const {
+        background.draw(position + Point<int16_t>(0, 7));
 
-		UIElement::draw(alpha);
+        UIElement::draw(alpha);
 
-		version.draw(position + version_pos - Point<int16_t>(0, 5));
-		account.draw(position + Point<int16_t>(5, 10));
-		password.draw(position + Point<int16_t>(5, 13));
+        version.draw(position + version_pos - Point<int16_t>(0, 5));
+        account.draw(position + Point<int16_t>(5, 10));
+        password.draw(position + Point<int16_t>(5, 13));
 
-		if (account.get_state() == Textfield::State::NORMAL && account.empty())
-			account_bg[nexon].draw(position + title_pos);
+        if (account.get_state() == Textfield::State::NORMAL && account.empty())
+            account_bg[nexon].draw(position + title_pos);
 
-		if (password.get_state() == Textfield::State::NORMAL && password.empty())
-			password_bg.draw(position + title_pos);
+        if (password.get_state() == Textfield::State::NORMAL && password.empty())
+            password_bg.draw(position + title_pos);
 
-		bool has_capslocks = UI::get().has_capslocks();
+        bool has_capslocks = UI::get().has_capslocks();
 
-		check[saveid].draw(position + title_pos);
+        check[saveid].draw(position + title_pos);
 
-		if (has_capslocks && account.get_state() == Textfield::State::FOCUSED)
-			capslock.draw(position + title_pos - Point<int16_t>(0, account_src_dim.y()));
+        if (has_capslocks && account.get_state() == Textfield::State::FOCUSED)
+            capslock.draw(position + title_pos - Point<int16_t>(0, account_src_dim.y()));
 
-		if (has_capslocks && password.get_state() == Textfield::State::FOCUSED)
-			capslock.draw(position + title_pos + Point<int16_t>(password_src_dim.x() - account_src_dim.x(), 0));
-	}
+        if (has_capslocks && password.get_state() == Textfield::State::FOCUSED)
+            capslock.draw(position + title_pos + Point<int16_t>(password_src_dim.x() - account_src_dim.x(), 0));
+    }
 
-	void UILogin::update()
-	{
-		UIElement::update();
+    void UILogin::update() {
+        UIElement::update();
 
-		account.update();
-		password.update();
-	}
+        account.update();
+        password.update();
+    }
 
-	void UILogin::login()
-	{
-		account.set_state(Textfield::State::DISABLED);
-		password.set_state(Textfield::State::DISABLED);
+    void UILogin::login() {
+        account.set_state(Textfield::State::DISABLED);
+        password.set_state(Textfield::State::DISABLED);
 
-		std::string account_text = account.get_text();
-		std::string password_text = password.get_text();
+        std::string account_text = account.get_text();
+        std::string password_text = password.get_text();
 
-		std::function<void()> okhandler = [&, password_text]()
-		{
-			account.set_state(Textfield::State::NORMAL);
-			password.set_state(Textfield::State::NORMAL);
+        std::function<void()> okhandler = [&, password_text]() {
+            account.set_state(Textfield::State::NORMAL);
+            password.set_state(Textfield::State::NORMAL);
 
-			if (!password_text.empty())
-				password.set_state(Textfield::State::FOCUSED);
-			else
-				account.set_state(Textfield::State::FOCUSED);
-		};
+            if (!password_text.empty())
+                password.set_state(Textfield::State::FOCUSED);
+            else
+                account.set_state(Textfield::State::FOCUSED);
+        };
 
-		if (account_text.empty())
-		{
-			UI::get().emplace<UILoginNotice>(UILoginNotice::Message::NOT_REGISTERED, okhandler);
-			return;
-		}
+        if (account_text.empty()) {
+            UI::get().emplace<UILoginNotice>(UILoginNotice::Message::NOT_REGISTERED, okhandler);
+            return;
+        }
 
-		if (password_text.length() <= 4)
-		{
-			UI::get().emplace<UILoginNotice>(UILoginNotice::Message::WRONG_PASSWORD, okhandler);
-			return;
-		}
+        if (password_text.length() <= 4) {
+            UI::get().emplace<UILoginNotice>(UILoginNotice::Message::WRONG_PASSWORD, okhandler);
+            return;
+        }
 
-		UI::get().emplace<UILoginWait>(okhandler);
+        UI::get().emplace<UILoginWait>(okhandler);
 
-		auto loginwait = UI::get().get_element<UILoginWait>();
+        auto loginwait = UI::get().get_element<UILoginWait>();
 
-		if (loginwait && loginwait->is_active())
-		{
-			// TODO: Implement login with email
-			if (nexon)
-				LoginEmailPacket(account_text, password_text).dispatch();
-			else
-				LoginPacket(account_text, password_text).dispatch();
-		}
-	}
+        if (loginwait && loginwait->is_active()) {
+            // TODO: Implement login with email
+            if (nexon)
+                LoginEmailPacket(account_text, password_text).dispatch();
+            else
+                LoginPacket(account_text, password_text).dispatch();
+        }
+    }
 
-	void UILogin::open_url(uint16_t id)
-	{
-		std::string url;
+    void UILogin::open_url(uint16_t id) {
+        std::string url;
 
-		switch (id)
-		{
-			case Buttons::BtNew:
-				url = Configuration::get().get_joinlink();
-				break;
-			case Buttons::BtHomePage:
-				url = Configuration::get().get_website();
-				break;
-			case Buttons::BtPasswdLost:
-				url = Configuration::get().get_findpass();
-				break;
-			case Buttons::BtEmailLost:
-				url = Configuration::get().get_findid();
-				break;
-			default:
-				return;
-		}
+        switch (id) {
+        case BtNew:
+            url = Configuration::get().get_joinlink();
+            break;
+        case BtHomePage:
+            url = Configuration::get().get_website();
+            break;
+        case BtPasswdLost:
+            url = Configuration::get().get_findpass();
+            break;
+        case BtEmailLost:
+            url = Configuration::get().get_findid();
+            break;
+        default:
+            return;
+        }
 
-		ShellExecuteA(NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
-	}
+        ShellExecuteA(nullptr, "open", url.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+    }
 
-	Button::State UILogin::button_pressed(uint16_t id)
-	{
-		switch (id)
-		{
-			case Buttons::BtLogin:
-			{
-				login();
+    Button::State UILogin::button_pressed(uint16_t id) {
+        switch (id) {
+        case BtLogin: {
+            login();
 
-				return Button::State::NORMAL;
-			}
-			case Buttons::BtNew:
-			case Buttons::BtHomePage:
-			case Buttons::BtPasswdLost:
-			case Buttons::BtEmailLost:
-			{
-				open_url(id);
+            return Button::State::NORMAL;
+        }
+        case BtNew:
+        case BtHomePage:
+        case BtPasswdLost:
+        case BtEmailLost: {
+            open_url(id);
 
-				return Button::State::NORMAL;
-			}
-			case Buttons::BtEmailSave:
-			{
-				saveid = !saveid;
+            return Button::State::NORMAL;
+        }
+        case BtEmailSave: {
+            saveid = !saveid;
 
-				Setting<SaveLogin>::get().save(saveid);
+            Setting<SaveLogin>::get().save(saveid);
 
-				return Button::State::MOUSEOVER;
-			}
-			case Buttons::BtQuit:
-			{
-				UI::get().quit();
+            return Button::State::MOUSEOVER;
+        }
+        case BtQuit: {
+            UI::get().quit();
 
-				return Button::State::PRESSED;
-			}
-			case Buttons::BtMapleID:
-			{
-				nexon = false;
+            return Button::State::PRESSED;
+        }
+        case BtMapleID: {
+            nexon = false;
 
-				buttons[Buttons::BtNexonID]->set_state(Button::State::NORMAL);
+            buttons[BtNexonID]->set_state(Button::State::NORMAL);
 
-				account.change_text("");
-				password.change_text("");
+            account.change_text("");
+            password.change_text("");
 
-				account.set_limit(TEXTFIELD_LIMIT);
+            account.set_limit(TEXTFIELD_LIMIT);
 
-				return Button::State::PRESSED;
-			}
-			case Buttons::BtNexonID:
-			{
-				nexon = true;
+            return Button::State::PRESSED;
+        }
+        case BtNexonID: {
+            nexon = true;
 
-				buttons[Buttons::BtMapleID]->set_state(Button::State::NORMAL);
+            buttons[BtMapleID]->set_state(Button::State::NORMAL);
 
-				account.change_text("");
-				password.change_text("");
-				
-				account.set_limit(72);
+            account.change_text("");
+            password.change_text("");
 
-				return Button::State::PRESSED;
-			}
-			default:
-			{
-				return Button::State::DISABLED;
-			}
-		}
-	}
+            account.set_limit(72);
 
-	Cursor::State UILogin::send_cursor(bool clicked, Point<int16_t> cursorpos)
-	{
-		if (Cursor::State new_state = account.send_cursor(cursorpos, clicked))
-			return new_state;
+            return Button::State::PRESSED;
+        }
+        default: {
+            return Button::State::DISABLED;
+        }
+        }
+    }
 
-		if (Cursor::State new_state = password.send_cursor(cursorpos, clicked))
-			return new_state;
+    Cursor::State UILogin::send_cursor(bool clicked, Point<int16_t> cursorpos) {
+        if (Cursor::State new_state = account.send_cursor(cursorpos, clicked))
+            return new_state;
 
-		return UIElement::send_cursor(clicked, cursorpos);
-	}
+        if (Cursor::State new_state = password.send_cursor(cursorpos, clicked))
+            return new_state;
 
-	UIElement::Type UILogin::get_type() const
-	{
-		return TYPE;
-	}
+        return UIElement::send_cursor(clicked, cursorpos);
+    }
+
+    UIElement::Type UILogin::get_type() const {
+        return TYPE;
+    }
 }

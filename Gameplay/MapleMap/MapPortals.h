@@ -21,34 +21,32 @@
 
 #include <unordered_map>
 
-namespace ms
-{
-	// Collection of portals on a map
-	// Draws and updates portals
-	// Also contains methods for using portals and obtaining spawn points
-	class MapPortals
-	{
-	public:
-		static void init();
+namespace ms {
+    // Collection of portals on a map
+    // Draws and updates portals
+    // Also contains methods for using portals and obtaining spawn points
+    class MapPortals {
+    public:
+        static void init();
 
-		MapPortals(nl::node source, int32_t mapid);
-		MapPortals();
+        MapPortals(nl::node source, int32_t mapid);
+        MapPortals();
 
-		void update(Point<int16_t> playerpos);
-		void draw(Point<int16_t> viewpos, float inter) const;
+        void update(Point<int16_t> playerpos);
+        void draw(Point<int16_t> viewpos, float inter) const;
 
-		Portal::WarpInfo find_warp_at(Point<int16_t> playerpos);
+        Portal::WarpInfo find_warp_at(Point<int16_t> playerpos);
 
-		Point<int16_t> get_portal_by_id(uint8_t id) const;
-		Point<int16_t> get_portal_by_name(const std::string& name) const;
+        Point<int16_t> get_portal_by_id(uint8_t id) const;
+        Point<int16_t> get_portal_by_name(const std::string& name) const;
 
-	private:
-		static std::unordered_map<Portal::Type, Animation> animations;
+    private:
+        static std::unordered_map<Portal::Type, Animation> animations;
 
-		std::unordered_map<uint8_t, Portal> portals_by_id;
-		std::unordered_map<std::string, uint8_t> portal_ids_by_name;
+        std::unordered_map<uint8_t, Portal> portals_by_id;
+        std::unordered_map<std::string, uint8_t> portal_ids_by_name;
 
-		static const int16_t WARPCD = 48;
-		int16_t cooldown;
-	};
+        static constexpr int16_t WARPCD = 48;
+        int16_t cooldown;
+    };
 }

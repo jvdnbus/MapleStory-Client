@@ -21,37 +21,34 @@
 
 #include "../../Graphics/Texture.h"
 
-namespace ms
-{
-	class Hair
-	{
-	public:
-		enum Layer
-		{
-			NONE,
-			DEFAULT,
-			BELOWBODY,
-			OVERHEAD,
-			SHADE,
-			BACK,
-			BELOWCAP,
-			BELOWCAPNARROW,
-			BELOWCAPWIDE,
-			NUM_LAYERS
-		};
+namespace ms {
+    class Hair {
+    public:
+        enum Layer {
+            NONE,
+            DEFAULT,
+            BELOWBODY,
+            OVERHEAD,
+            SHADE,
+            BACK,
+            BELOWCAP,
+            BELOWCAPNARROW,
+            BELOWCAPWIDE,
+            NUM_LAYERS
+        };
 
-		Hair(int32_t hairid, const BodyDrawInfo& drawinfo);
+        Hair(int32_t hairid, const BodyDrawInfo& drawinfo);
 
-		void draw(Layer layer, Stance::Id stance, uint8_t frame, const DrawArgument& args) const;
+        void draw(Layer layer, Stance::Id stance, uint8_t frame, const DrawArgument& args) const;
 
-		const std::string& get_name() const;
-		const std::string& getcolor() const;
+        const std::string& get_name() const;
+        const std::string& getcolor() const;
 
-	private:
-		std::unordered_map<uint8_t, Texture> stances[Stance::Id::LENGTH][Layer::NUM_LAYERS];
-		std::string name;
-		std::string color;
+    private:
+        std::unordered_map<uint8_t, Texture> stances[Stance::Id::LENGTH][NUM_LAYERS];
+        std::string name;
+        std::string color;
 
-		static const std::unordered_map<std::string, Layer> layers_by_name;
-	};
+        static const std::unordered_map<std::string, Layer> layers_by_name;
+    };
 }

@@ -21,74 +21,59 @@
 
 #include "../../Net/Packets/NpcInteractionPackets.h"
 
-namespace ms
-{
-	void MapNpcs::draw(Layer::Id layer, double viewx, double viewy, float alpha) const
-	{
-		npcs.draw(layer, viewx, viewy, alpha);
-	}
+namespace ms {
+    void MapNpcs::draw(Layer::Id layer, double viewx, double viewy, float alpha) const {
+        npcs.draw(layer, viewx, viewy, alpha);
+    }
 
-	void MapNpcs::update(const Physics& physics)
-	{
-		for (; !spawns.empty(); spawns.pop())
-		{
-			const NpcSpawn& spawn = spawns.front();
+    void MapNpcs::update(const Physics& physics) {
+        for (; !spawns.empty(); spawns.pop()) {
+            const NpcSpawn& spawn = spawns.front();
 
-			int32_t oid = spawn.get_oid();
-			Optional<MapObject> npc = npcs.get(oid);
+            int32_t oid = spawn.get_oid();
+            Optional<MapObject> npc = npcs.get(oid);
 
-			if (npc)
-				npc->makeactive();
-			else
-				npcs.add(spawn.instantiate(physics));
-		}
+            if (npc)
+                npc->makeactive();
+            else
+                npcs.add(spawn.instantiate(physics));
+        }
 
-		npcs.update(physics);
-	}
+        npcs.update(physics);
+    }
 
-	void MapNpcs::spawn(NpcSpawn&& spawn)
-	{
-		spawns.emplace(std::move(spawn));
-	}
+    void MapNpcs::spawn(NpcSpawn&& spawn) {
+        spawns.emplace(std::move(spawn));
+    }
 
-	void MapNpcs::remove(int32_t oid)
-	{
-		if (auto npc = npcs.get(oid))
-			npc->deactivate();
-	}
+    void MapNpcs::remove(int32_t oid) {
+        if (auto npc = npcs.get(oid))
+            npc->deactivate();
+    }
 
-	void MapNpcs::clear()
-	{
-		npcs.clear();
-	}
+    void MapNpcs::clear() {
+        npcs.clear();
+    }
 
-	MapObjects * MapNpcs::get_npcs()
-	{
-		return &npcs;
-	}
+    MapObjects* MapNpcs::get_npcs() {
+        return &npcs;
+    }
 
-	Cursor::State MapNpcs::send_cursor(bool pressed, Point<int16_t> position, Point<int16_t> viewpos)
-	{
-		for (auto& map_object : npcs)
-		{
-			Npc* npc = static_cast<Npc*>(map_object.second.get());
+    Cursor::State MapNpcs::send_cursor(bool pressed, Point<int16_t> position, Point<int16_t> viewpos) {
+        for (auto& map_object : npcs) {
+            auto npc = static_cast<Npc*>(map_object.second.get());
 
-			if (npc && npc->is_active() && npc->inrange(position, viewpos))
-			{
-				if (pressed)
-				{
-					// TODO: Try finding dialog first
-					TalkToNPCPacket(npc->get_oid()).dispatch();
+            if (npc && npc->is_active() && npc->inrange(position, viewpos)) {
+                if (pressed) {
+                    // TODO: Try finding dialog first
+                    TalkToNPCPacket(npc->get_oid()).dispatch();
 
-					return Cursor::State::IDLE;
-				}
-				else
-				{
-					return Cursor::State::CANCLICK;
-				}
-			}
-		}
+                    return Cursor::State::IDLE;
+                }
+                return Cursor::State::CANCLICK;
+            }
+        }
 
-		return Cursor::State::IDLE;
-	}
+        return Cursor::State::IDLE;
+    }
 }

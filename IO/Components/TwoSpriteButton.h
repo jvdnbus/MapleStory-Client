@@ -21,26 +21,30 @@
 
 #include "../../Template/BoolPair.h"
 
-namespace ms
-{
-	class TwoSpriteButton : public Button
-	{
-	public:
-		TwoSpriteButton(nl::node nsrc, nl::node ssrc, Point<int16_t> npos, Point<int16_t> spos);
-		TwoSpriteButton(nl::node nsrc, nl::node ssrc, Point<int16_t> position);
-		TwoSpriteButton(nl::node nsrc, nl::node ssrc);
-		TwoSpriteButton();
+namespace ms {
+    class TwoSpriteButton : public Button {
+    public:
+        TwoSpriteButton(nl::node nsrc, nl::node ssrc, Point<int16_t> npos, Point<int16_t> spos);
+        TwoSpriteButton(nl::node nsrc, nl::node ssrc, Point<int16_t> position);
+        TwoSpriteButton(nl::node nsrc, nl::node ssrc);
+        TwoSpriteButton();
 
-		void draw(Point<int16_t> position) const;
-		void update() {}
-		Rectangle<int16_t> bounds(Point<int16_t> position) const;
-		int16_t width() const;
-		Point<int16_t> origin() const;
-		Cursor::State send_cursor(bool, Point<int16_t>) { return Cursor::State::IDLE; }
+        void draw(Point<int16_t> position) const override;
 
-	private:
-		BoolPair<Texture> textures;
-		Point<int16_t> npos;
-		Point<int16_t> spos;
-	};
+        void update() override {
+        }
+
+        Rectangle<int16_t> bounds(Point<int16_t> position) const override;
+        int16_t width() const override;
+        Point<int16_t> origin() const override;
+
+        Cursor::State send_cursor(bool, Point<int16_t>) override {
+            return Cursor::State::IDLE;
+        }
+
+    private:
+        BoolPair<Texture> textures;
+        Point<int16_t> npos;
+        Point<int16_t> spos;
+    };
 }

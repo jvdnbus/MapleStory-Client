@@ -20,56 +20,53 @@
 #include "../Graphics/Animation.h"
 #include "../Template/EnumMap.h"
 
-namespace ms
-{
-	// Class that represents the mouse cursor
-	class Cursor
-	{
-	public:
-		// Maple cursor states that are linked to the cursor's animation
-		enum State
-		{
-			IDLE,
-			CANCLICK,
-			GAME,
-			HOUSE,
-			CANCLICK2,
-			CANGRAB,
-			GIFT,
-			VSCROLL,
-			HSCROLL,
-			VSCROLLIDLE,
-			HSCROLLIDLE,
-			GRABBING,
-			CLICKING,
-			RCLICK,
-			LEAF = 18,
-			CHATBARVDRAG = 67,
-			CHATBARHDRAG,
-			CHATBARBLTRDRAG,
-			CHATBARMOVE = 72,
-			CHATBARBRTLDRAG,
-			LENGTH
-		};
+namespace ms {
+    // Class that represents the mouse cursor
+    class Cursor {
+    public:
+        // Maple cursor states that are linked to the cursor's animation
+        enum State {
+            IDLE,
+            CANCLICK,
+            GAME,
+            HOUSE,
+            CANCLICK2,
+            CANGRAB,
+            GIFT,
+            VSCROLL,
+            HSCROLL,
+            VSCROLLIDLE,
+            HSCROLLIDLE,
+            GRABBING,
+            CLICKING,
+            RCLICK,
+            LEAF = 18,
+            CHATBARVDRAG = 67,
+            CHATBARHDRAG,
+            CHATBARBLTRDRAG,
+            CHATBARMOVE = 72,
+            CHATBARBRTLDRAG,
+            LENGTH
+        };
 
-		Cursor();
+        Cursor();
 
-		void init();
+        void init();
 
-		void draw(float alpha) const;
-		void update();
-		void set_state(State state);
-		void set_position(Point<int16_t> cursor_position);
-		State get_state() const;
-		Point<int16_t> get_position() const;
+        void draw(float alpha) const;
+        void update();
+        void set_state(State state);
+        void set_position(Point<int16_t> cursor_position);
+        State get_state() const;
+        Point<int16_t> get_position() const;
 
-	private:
-		EnumMap<State, Animation> animations;
+    private:
+        EnumMap<State, Animation> animations;
 
-		State state;
-		Point<int16_t> position;
-		int32_t hide_counter;
+        State state;
+        Point<int16_t> position;
+        int32_t hide_counter;
 
-		static constexpr int64_t HIDE_TIME = 15'000;
-	};
+        static constexpr int64_t HIDE_TIME = 15'000;
+    };
 }
