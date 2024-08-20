@@ -127,10 +127,10 @@ namespace ms {
             const char* args = error.get_args();
             bool can_retry = error.can_retry();
 
-            if (args && args[0])
-                LOG(LOG_ERROR, message << args);
-            else
-                LOG(LOG_ERROR, args);
+			if (args && args[0])
+				LOG(LOG_ERROR, message << args);
+			else
+				LOG(LOG_ERROR, message);
 
             if (can_retry)
                 LOG(LOG_INFO, "Enter 'retry' to try again.");
