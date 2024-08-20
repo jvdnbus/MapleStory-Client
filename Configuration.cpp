@@ -192,7 +192,7 @@ namespace ms {
         return VERSION;
     }
 
-    std::vector<std::string> Configuration::get_login_backgrounds() const {
+    std::vector<std::shared_ptr<UIWorldSelectBackground>> Configuration::get_login_backgrounds() const {
         return LoginBackgrounds;
     }
 

@@ -37,7 +37,7 @@
 
 // Log Level
 #ifdef _DEBUG
-#define LOG_LEVEL LOG_NETWORK
+#define LOG_LEVEL LOG_DEBUG
 #else
 	#define LOG_LEVEL LOG_WARN
 #endif

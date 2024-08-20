@@ -17,6 +17,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
+#include "IO/UITypes/UIWorldSelectBackground.h"
 #include "Template/Singleton.h"
 #include "Template/TypeMap.h"
 #include "Util/Misc.h"
@@ -59,7 +60,7 @@ namespace ms {
         // Get private member VERSION
         std::string get_version() const;
         // Get private member LoginBackground
-        std::vector<std::string> get_login_backgrounds() const;
+        std::vector<std::shared_ptr<UIWorldSelectBackground>> get_login_backgrounds() const;
         // Get private member LoginMusic
         std::string get_login_music() const;
         // Get private member LoginMusicSEA
@@ -219,7 +220,9 @@ namespace ms {
         const char* FILENAME = "Settings";
         const char* TITLE = "MapleStory";
         const char* VERSION = "228.3"; // "252.2"; //"228.3";
-        const std::vector<std::string> LoginBackgrounds = { "ghostShip", "aran", "killing", "neoCity", "tema" };
+        const std::vector<std::shared_ptr<UIWorldSelectBackground>> LoginBackgrounds = {
+            std::make_shared<UINeoCityBackground>()
+        }; // { "ghostShip", "aran", "killing", "neoCity", "tema" };
         const char* LoginMusic = "BgmUI.img/Title";
         const char* LoginMusicSEA = "BgmGL.img/OldMaple";
         const char* LoginMusicNewtro = "BgmEvent2.img/Newtro_Login";

@@ -36,13 +36,11 @@
 #endif
 
 namespace ms {
-    UIWorldSelect::UIWorldSelect() : UIElement(Point<int16_t>(0, 0), Point<int16_t>(800, 600)), worldcount(0),
+    UIWorldSelect::UIWorldSelect() : UIElement(Point<int16_t>(0, 0), Point<int16_t>(1024, 768)), worldcount(0),
                                      world_selected(false) {
         std::string version_text = Configuration::get().get_version();
         version = Text(Text::Font::A12B, Text::Alignment::LEFT, Color::Name::LEMONGRASS, "Ver. " + version_text);
         version_pos = nl::nx::UI["Login.img"]["Common"]["version"]["pos"];
-
-        auto background_pos = Point<int16_t>(512, 384);
         channelsrc_pos = Point<int16_t>(314, 217);
 
         worldid = Setting<DefaultWorld>::get().load();
@@ -58,21 +56,24 @@ namespace ms {
         set_region(regionid);
 
         nl::node WorldSelectMap = nl::nx::Map["Obj"]["login.img"]["WorldSelect"];
-        sprites.emplace_back(WorldSelectMap["default"]["0"], background_pos);
 
-        // std::vector<std::string> backgrounds = {"MapleLive"};
-        std::vector<std::string> backgrounds = Configuration::get().get_login_backgrounds();
+        nl::node default_bg = WorldSelectMap["default"];
+        if (default_bg) {
+            sprites.emplace_back(default_bg["0"]);
+        }
+
+        auto backgrounds = Configuration::get().get_login_backgrounds();
         size_t backgrounds_size = backgrounds.size();
 
         if (backgrounds_size > 0) {
+            size_t index = 0;
             if (backgrounds_size > 1) {
                 auto randomizer = Randomizer();
-                size_t index = randomizer.next_int(backgrounds_size);
-
-                sprites.emplace_back(WorldSelectMap[backgrounds[index]]["0"], background_pos);
-            } else {
-                sprites.emplace_back(WorldSelectMap[backgrounds[0]]["0"], background_pos);
+                index = randomizer.next_int(backgrounds_size);
             }
+            auto& bg = backgrounds[index];
+            nl::node bg_node = bg->get_background_node(WorldSelectMap);
+            bg->init(bg_node, dimension, sprites);
         }
 
         buttons[BtRegion] = std::make_unique<MapleButton>(WorldSelect["BtRegion"], Point<int16_t>(0, 1));

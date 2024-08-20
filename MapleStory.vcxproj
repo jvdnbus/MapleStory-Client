@@ -341,6 +341,7 @@ copy /y /d "$(ProjectDir)includes\NoLifeNx\nlnx\includes\lz4_v1_8_2_win$(Platfor
     <ClCompile Include="IO\UITypes\UIUserList.cpp" />
     <ClCompile Include="IO\UITypes\UIWorldMap.cpp" />
     <ClCompile Include="IO\UITypes\UIWorldSelect.cpp" />
+    <ClCompile Include="IO\UITypes\UIWorldSelectBackground.cpp" />
     <ClCompile Include="IO\Window.cpp" />
     <ClCompile Include="MapleStory.cpp" />
     <ClCompile Include="Net\Cryptography.cpp" />
@@ -603,6 +604,7 @@ copy /y /d "$(ProjectDir)includes\NoLifeNx\nlnx\includes\lz4_v1_8_2_win$(Platfor
     <ClInclude Include="Template\TimedQueue.h" />
     <ClInclude Include="Template\TypeMap.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="IO\UITypes\UIWorldSelectBackground.h" />
     <ClInclude Include="Util\HardwareInfo.h" />
     <ClInclude Include="Util\Lerp.h" />
     <ClInclude Include="Util\Misc.h" />
