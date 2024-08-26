@@ -409,7 +409,8 @@ namespace ms {
     }
 
     float Player::get_walkforce() const {
-        return 0.05f + 0.11f * static_cast<float>(stats.get_total(EquipStat::Id::SPEED)) / 100;
+        // Approximation based on direct comparison testing
+        return 0.00431f + 0.19653f * static_cast<float>(stats.get_total(EquipStat::Id::SPEED)) / 100;
     }
 
     float Player::get_jumpforce() const {

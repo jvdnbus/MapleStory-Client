@@ -37,13 +37,13 @@ namespace ms {
 
     protected:
         // Play the jumping sound
-        void play_jumpsound() const;
+        void play_jump_sound() const;
         // Check if the left or right key is pressed
-        bool haswalkinput(const Player& player) const;
+        bool has_walk_input(const Player& player) const;
         // Check if only the left key is pressed and not the right key
-        bool hasleftinput(const Player& player) const;
+        bool has_left_input(const Player& player) const;
         // Check if only the right key is pressed and not the left key
-        bool hasrightinput(const Player& player) const;
+        bool has_right_input(const Player& player) const;
     };
 
     // The initial state, determines which state the player should be in.

@@ -19,19 +19,19 @@
 
 namespace ms {
 #pragma region Base
-    void PlayerState::play_jumpsound() const {
+    void PlayerState::play_jump_sound() const {
         Sound(Sound::Name::JUMP).play();
     }
 
-    bool PlayerState::haswalkinput(const Player& player) const {
+    bool PlayerState::has_walk_input(const Player& player) const {
         return player.is_key_down(KeyAction::Id::LEFT) || player.is_key_down(KeyAction::Id::RIGHT);
     }
 
-    bool PlayerState::hasleftinput(const Player& player) const {
+    bool PlayerState::has_left_input(const Player& player) const {
         return player.is_key_down(KeyAction::Id::LEFT) && !player.is_key_down(KeyAction::Id::RIGHT);
     }
 
-    bool PlayerState::hasrightinput(const Player& player) const {
+    bool PlayerState::has_right_input(const Player& player) const {
         return player.is_key_down(KeyAction::Id::RIGHT) && !player.is_key_down(KeyAction::Id::LEFT);
     }
 #pragma endregion
@@ -78,7 +78,7 @@ namespace ms {
             return;
 
         if (down && ka == KeyAction::Id::JUMP) {
-            play_jumpsound();
+            play_jump_sound();
 
             player.get_phobj().vforce = -player.get_jumpforce();
         }
@@ -91,15 +91,15 @@ namespace ms {
         if (player.is_attacking())
             return;
 
-        if (hasrightinput(player)) {
+        if (has_right_input(player)) {
             player.set_direction(true);
             player.set_state(Char::State::WALK);
-        } else if (hasleftinput(player)) {
+        } else if (has_left_input(player)) {
             player.set_direction(false);
             player.set_state(Char::State::WALK);
         }
 
-        if (player.is_key_down(KeyAction::Id::DOWN) && !player.is_key_down(KeyAction::Id::UP) && !haswalkinput(player))
+        if (player.is_key_down(KeyAction::Id::DOWN) && !player.is_key_down(KeyAction::Id::UP) && !has_walk_input(player))
             player.set_state(Char::State::PRONE);
     }
 
@@ -119,14 +119,14 @@ namespace ms {
             return;
 
         if (down && ka == KeyAction::Id::JUMP) {
-            play_jumpsound();
+            play_jump_sound();
 
             player.get_phobj().vforce = -player.get_jumpforce();
         }
 
         if (down && ka == KeyAction::Id::JUMP && player.is_key_down(KeyAction::Id::DOWN) && player.get_phobj().
                                                                                                    enablejd) {
-            play_jumpsound();
+            play_jump_sound();
 
             player.get_phobj().y = player.get_phobj().groundbelow;
             player.set_state(Char::State::FALL);
@@ -140,13 +140,13 @@ namespace ms {
         if (player.is_attacking())
             return;
 
-        if (haswalkinput(player)) {
-            if (hasrightinput(player)) {
+        if (has_walk_input(player)) {
+            if (has_right_input(player)) {
                 player.set_direction(true);
                 player.get_phobj().hforce += player.get_walkforce();
-            } else if (hasleftinput(player)) {
+            } else if (has_left_input(player)) {
                 player.set_direction(false);
-                player.get_phobj().hforce += -player.get_walkforce();
+                player.get_phobj().hforce -= player.get_walkforce();
             }
         } else {
             if (player.is_key_down(KeyAction::Id::DOWN))
@@ -156,7 +156,7 @@ namespace ms {
 
     void PlayerWalkState::update_state(Player& player) const {
         if (player.get_phobj().onground) {
-            if (!haswalkinput(player) || player.get_phobj().hspeed == 0.0f)
+            if (!has_walk_input(player) || player.get_phobj().hspeed == 0.0f)
                 player.set_state(Char::State::STAND);
         } else {
             player.set_state(Char::State::FALL);
@@ -175,20 +175,20 @@ namespace ms {
 
         auto& hspeed = player.get_phobj().hspeed;
 
-        if (hasleftinput(player) && hspeed > 0.0)
+        if (has_left_input(player) && hspeed > 0.0)
             hspeed -= 0.025;
-        else if (hasrightinput(player) && hspeed < 0.0)
+        else if (has_right_input(player) && hspeed < 0.0)
             hspeed += 0.025;
 
-        if (hasleftinput(player))
+        if (has_left_input(player))
             player.set_direction(false);
-        else if (hasrightinput(player))
+        else if (has_right_input(player))
             player.set_direction(true);
     }
 
     void PlayerFallState::update_state(Player& player) const {
         if (player.get_phobj().onground) {
-            if (player.is_key_down(KeyAction::Id::DOWN) && !haswalkinput(player))
+            if (player.is_key_down(KeyAction::Id::DOWN) && !has_walk_input(player))
                 player.set_state(Char::State::PRONE);
             else
                 player.set_state(Char::State::STAND);
@@ -202,7 +202,7 @@ namespace ms {
     void PlayerProneState::send_action(Player& player, KeyAction::Id ka, bool down) const {
         if (down && ka == KeyAction::Id::JUMP) {
             if (player.get_phobj().enablejd && player.is_key_down(KeyAction::Id::DOWN)) {
-                play_jumpsound();
+                play_jump_sound();
 
                 player.get_phobj().y = player.get_phobj().groundbelow;
                 player.set_state(Char::State::FALL);
@@ -319,8 +319,8 @@ namespace ms {
             player.get_phobj().vspeed = 0.0;
         }
 
-        if (player.is_key_down(KeyAction::Id::JUMP) && haswalkinput(player)) {
-            play_jumpsound();
+        if (player.is_key_down(KeyAction::Id::JUMP) && has_walk_input(player)) {
+            play_jump_sound();
 
             const auto& walkforce = player.get_walkforce() * 8.0;
 

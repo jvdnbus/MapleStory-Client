@@ -119,7 +119,7 @@ namespace ms {
         nl::node src = nl::nx::Map["MapHelper.img"]["portal"]["game"];
 
         animations[Portal::HIDDEN] = src["ph"]["default"]["portalContinue"];
-        animations[Portal::REGULAR] = src["pv"]["default"];
+        animations[Portal::REGULAR] = src["pv"];
     }
 
     std::unordered_map<Portal::Type, Animation> MapPortals::animations;

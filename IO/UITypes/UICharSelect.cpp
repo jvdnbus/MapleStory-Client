@@ -245,7 +245,7 @@ namespace ms {
 
                     std::string levelstr = std::to_string(character_stats.stats[MapleStat::Id::LEVEL]);
                     int8_t lvy = 19;
-                    int16_t lvx = levelset.draw("201", levelPos + Point<int16_t>(-1, lvy));
+                    int16_t lvx = levelset.draw(levelstr, levelPos + Point<int16_t>(-1, lvy));
 
                     levelset.draw('l', levelPos + Point<int16_t>(-lvx - 3, lvy - 1));
                     namelabel.draw(namePos);

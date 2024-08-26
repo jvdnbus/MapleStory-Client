@@ -81,7 +81,7 @@ namespace ms {
 
         nl::node src = mapid == -1
                            ? nl::nx::UI["CashShopPreview.img"]
-                           : nl::nx::Map002["Map"]["Map" + prefix][strid + ".img"];
+                           : nl::nx::Map["Map"]["Map" + prefix][strid + ".img"];
 
         tilesobjs = MapTilesObjs(src);
         backgrounds = MapBackgrounds(src["back"]);
