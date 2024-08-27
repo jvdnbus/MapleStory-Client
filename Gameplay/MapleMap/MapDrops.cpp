@@ -50,7 +50,7 @@ namespace ms {
             int32_t oid = spawn.get_oid();
 
             if (Optional<MapObject> drop = drops.get(oid)) {
-                drop->makeactive();
+                drop->activate();
             } else {
                 int32_t itemid = spawn.get_itemid();
                 bool meso = spawn.is_meso();

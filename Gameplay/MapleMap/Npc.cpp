@@ -83,12 +83,12 @@ namespace ms {
         control = cnt;
         stance = "stand";
 
-        phobj.fhid = f;
+        physics_object.fh_id = f;
         set_position(position);
     }
 
     void Npc::draw(double viewx, double viewy, float alpha) const {
-        Point<int16_t> absp = phobj.get_absolute(viewx, viewy, alpha);
+        Point<int16_t> absp = physics_object.get_absolute(viewx, viewy, alpha);
 
         if (animations.count(stance))
             animations.at(stance).draw(DrawArgument(absp, flip), alpha);
@@ -102,9 +102,9 @@ namespace ms {
 
     int8_t Npc::update(const Physics& physics) {
         if (!active)
-            return phobj.fhlayer;
+            return physics_object.fh_layer;
 
-        physics.move_object(phobj);
+        physics.move_object(physics_object);
 
         if (animations.count(stance)) {
             bool aniend = animations.at(stance).update();
@@ -116,7 +116,7 @@ namespace ms {
             }
         }
 
-        return phobj.fhlayer;
+        return physics_object.fh_layer;
     }
 
     void Npc::set_stance(const std::string& st) {

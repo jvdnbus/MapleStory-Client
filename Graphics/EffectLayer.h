@@ -28,7 +28,7 @@ namespace ms {
     // A list of animations. Animations will be removed after all frames were displayed.
     class EffectLayer {
     public:
-        void drawbelow(Point<int16_t> position, float alpha) const;
+        void draw_below(Point<int16_t> position, float alpha) const;
         void drawabove(Point<int16_t> position, float alpha) const;
         void update();
         void add(const Animation& effect, const DrawArgument& args, int8_t z, float speed);

@@ -26,7 +26,7 @@ namespace ms {
         if (!active)
             return;
 
-        Point<int16_t> absp = phobj.get_absolute(viewx, viewy, alpha);
+        Point<int16_t> absp = physics_object.get_absolute(viewx, viewy, alpha);
         icon.draw({angle.get(alpha), absp, opacity.get(alpha)}, alpha);
     }
 }

@@ -38,7 +38,7 @@ namespace ms {
         }
 
         Movement(const PhysicsObject& phobj, uint8_t s) : Movement(ABSOLUTE, 0, phobj.get_x(), phobj.get_y(),
-                                                                   phobj.get_last_x(), phobj.get_last_y(), phobj.fhid,
+                                                                   phobj.get_last_x(), phobj.get_last_y(), phobj.fh_id,
                                                                    s, 1) {
         }
 

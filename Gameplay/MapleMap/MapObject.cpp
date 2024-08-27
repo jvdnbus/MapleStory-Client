@@ -18,20 +18,20 @@
 #include "MapObject.h"
 
 namespace ms {
-    MapObject::MapObject(int32_t o, Point<int16_t> p) : oid(o) {
+    MapObject::MapObject(int32_t o, Point<int16_t> p) : object_id(o) {
         set_position(p);
         active = true;
     }
 
     int8_t MapObject::update(const Physics& physics) {
-        physics.move_object(phobj);
+        physics.move_object(physics_object);
 
-        return phobj.fhlayer;
+        return physics_object.fh_layer;
     }
 
     void MapObject::set_position(int16_t x, int16_t y) {
-        phobj.set_x(x);
-        phobj.set_y(y);
+        physics_object.set_x(x);
+        physics_object.set_y(y);
     }
 
     void MapObject::set_position(Point<int16_t> position) {
@@ -40,7 +40,7 @@ namespace ms {
         set_position(x, y);
     }
 
-    void MapObject::makeactive() {
+    void MapObject::activate() {
         active = true;
     }
 
@@ -53,14 +53,14 @@ namespace ms {
     }
 
     int8_t MapObject::get_layer() const {
-        return phobj.fhlayer;
+        return physics_object.fh_layer;
     }
 
-    int32_t MapObject::get_oid() const {
-        return oid;
+    int32_t MapObject::get_object_id() const {
+        return object_id;
     }
 
     Point<int16_t> MapObject::get_position() const {
-        return phobj.get_position();
+        return physics_object.get_position();
     }
 }

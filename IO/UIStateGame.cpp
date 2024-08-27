@@ -298,7 +298,7 @@ namespace ms {
                 }
                 case KeyAction::Id::CHARINFO: {
                     emplace<UICharInfo>(
-                        Stage::get().get_player().get_oid()
+                        Stage::get().get_player().get_object_id()
                     );
 
                     break;

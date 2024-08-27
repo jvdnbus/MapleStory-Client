@@ -76,53 +76,53 @@ namespace ms {
                 set_position(charpos.x(), charpos.y());
             } else {
                 if (charpos.x() - curpos.x() > 50) {
-                    phobj.hforce = PETWALKFORCE;
+                    phobj.h_force = PETWALKFORCE;
                     flip = true;
 
                     set_stance(MOVE);
                 } else if (charpos.x() - curpos.x() < -50) {
-                    phobj.hforce = -PETWALKFORCE;
+                    phobj.h_force = -PETWALKFORCE;
                     flip = false;
 
                     set_stance(MOVE);
                 } else {
-                    phobj.hforce = 0.0;
+                    phobj.h_force = 0.0;
 
                     set_stance(STAND);
                 }
             }
 
             phobj.type = PhysicsObject::Type::NORMAL;
-            phobj.clear_flag(PhysicsObject::Flag::NOGRAVITY);
+            phobj.clear_flag(PhysicsObject::Flag::NO_GRAVITY);
             break;
         case HANG:
             set_position(charpos.x(), charpos.y());
-            phobj.set_flag(PhysicsObject::Flag::NOGRAVITY);
+            phobj.set_flag(PhysicsObject::Flag::NO_GRAVITY);
             break;
         case FLY:
             if ((charpos - curpos).length() > 250) {
                 set_position(charpos.x(), charpos.y());
             } else {
                 if (charpos.x() - curpos.x() > 50) {
-                    phobj.hforce = PETFLYFORCE;
+                    phobj.h_force = PETFLYFORCE;
                     flip = true;
                 } else if (charpos.x() - curpos.x() < -50) {
-                    phobj.hforce = -PETFLYFORCE;
+                    phobj.h_force = -PETFLYFORCE;
                     flip = false;
                 } else {
-                    phobj.hforce = 0.0f;
+                    phobj.h_force = 0.0f;
                 }
 
                 if (charpos.y() - curpos.y() > 50.0f)
-                    phobj.vforce = PETFLYFORCE;
+                    phobj.v_force = PETFLYFORCE;
                 else if (charpos.y() - curpos.y() < -50.0f)
-                    phobj.vforce = -PETFLYFORCE;
+                    phobj.v_force = -PETFLYFORCE;
                 else
-                    phobj.vforce = 0.0f;
+                    phobj.v_force = 0.0f;
             }
 
             phobj.type = PhysicsObject::Type::FLYING;
-            phobj.clear_flag(PhysicsObject::Flag::NOGRAVITY);
+            phobj.clear_flag(PhysicsObject::Flag::NO_GRAVITY);
             break;
         }
 

@@ -37,16 +37,16 @@ namespace ms {
 
         // Adds a MapObjects of this type
         void add(std::unique_ptr<MapObject> mapobject);
-        // Removes the MapObjects with the given oid
+        // Removes the MapObjects with the given object_id
         void remove(int32_t oid);
         // Removes all MapObjects of this type
         void clear();
 
         // Check if a map object with the specified id exists on the map
         bool contains(int32_t oid) const;
-        // Obtains a pointer to the MapObject with the given oid
+        // Obtains a pointer to the MapObject with the given object_id
         Optional<MapObject> get(int32_t oid);
-        // Obtains a constant pointer to the MapObject with the given oid
+        // Obtains a constant pointer to the MapObject with the given object_id
         Optional<const MapObject> get(int32_t oid) const;
 
         using underlying_t = std::unordered_map<int32_t, std::unique_ptr<MapObject>>;

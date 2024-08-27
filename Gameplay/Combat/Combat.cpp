@@ -134,7 +134,7 @@ namespace ms {
             std::vector<int32_t> reactor_targets = find_closest(reactor_objs, range, origin, mobcount, false);
 
             mobs.send_attack(result, attack, mob_targets, mobcount);
-            result.attacker = player.get_oid();
+            result.attacker = player.get_object_id();
             extract_effects(player, move, result);
 
             apply_use_movement(move);
@@ -144,7 +144,7 @@ namespace ms {
 
             if (reactor_targets.size())
                 if (Optional<Reactor> reactor = reactor_objs->get(reactor_targets.at(0)))
-                    DamageReactorPacket(reactor->get_oid(), player.get_position(), 0, 0).dispatch();
+                    DamageReactorPacket(reactor->get_object_id(), player.get_position(), 0, 0).dispatch();
         } else {
             move.apply_useeffects(player);
             move.apply_actions(player, Attack::Type::MAGIC);
@@ -164,7 +164,7 @@ namespace ms {
                 auto mob = static_cast<const Mob*>(mmo.second.get());
 
                 if (mob && mob->is_alive() && mob->is_in_range(range)) {
-                    int32_t oid = mob->get_oid();
+                    int32_t oid = mob->get_object_id();
                     uint16_t distance = mob->get_position().distance(origin);
                     distances.emplace(distance, oid);
                 }
@@ -173,7 +173,7 @@ namespace ms {
                 auto reactor = static_cast<const Reactor*>(mmo.second.get());
 
                 if (reactor && reactor->is_hittable() && reactor->is_in_range(range)) {
-                    int32_t oid = reactor->get_oid();
+                    int32_t oid = reactor->get_object_id();
                     uint16_t distance = reactor->get_position().distance(origin);
                     distances.emplace(distance, oid);
                 }

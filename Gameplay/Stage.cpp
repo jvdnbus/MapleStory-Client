@@ -169,7 +169,7 @@ namespace ms {
         if (player.is_invincible())
             return;
 
-        if (int32_t oid_id = mobs.find_colliding(player.get_phobj())) {
+        if (int32_t oid_id = mobs.find_colliding(player.get_physics_object())) {
             if (MobAttack attack = mobs.create_attack(oid_id)) {
                 MobAttackResult result = player.damage(attack);
                 TakeDamagePacket(result, TakeDamagePacket::From::TOUCH).dispatch();
@@ -264,7 +264,7 @@ namespace ms {
     }
 
     bool Stage::is_player(int32_t cid) const {
-        return cid == player.get_oid();
+        return cid == player.get_object_id();
     }
 
     MapNpcs& Stage::get_npcs() {

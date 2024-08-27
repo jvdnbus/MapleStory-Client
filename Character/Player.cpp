@@ -145,7 +145,7 @@ namespace ms {
 
         if (pst) {
             pst->update(*this);
-            physics.move_object(phobj);
+            physics.move_object(physics_object);
 
             bool aniend = Char::update(physics, get_stancespeed());
 
@@ -158,7 +158,7 @@ namespace ms {
         }
 
         uint8_t stancebyte = facing_right ? state : state + 1;
-        Movement newmove(phobj, stancebyte);
+        Movement newmove(physics_object, stancebyte);
         bool needupdate = lastmove.hasmoved(newmove);
 
         if (needupdate) {
@@ -287,10 +287,10 @@ namespace ms {
     }
 
     void Player::rush(double targetx) {
-        if (phobj.onground) {
+        if (physics_object.is_on_ground) {
             uint16_t delay = get_attackdelay(1);
-            phobj.movexuntil(targetx, delay);
-            phobj.set_flag(PhysicsObject::Flag::TURNATEDGES);
+            physics_object.move_x_until(targetx, delay);
+            physics_object.set_flag(PhysicsObject::Flag::TURN_AT_EDGES);
         }
     }
 
@@ -308,15 +308,15 @@ namespace ms {
         int32_t damage = stats.calculate_damage(attack.watk);
         show_damage(damage);
 
-        bool fromleft = attack.origin.x() > phobj.get_x();
+        bool fromleft = attack.origin.x() > physics_object.get_x();
 
         bool missed = damage <= 0;
         bool immovable = ladder || state == DIED;
         bool knockback = !missed && !immovable;
 
         if (knockback && randomizer.above(stats.get_stance())) {
-            phobj.hspeed = fromleft ? -1.5 : 1.5;
-            phobj.vforce -= 3.5;
+            physics_object.h_speed = fromleft ? -1.5 : 1.5;
+            physics_object.v_force -= 3.5;
         }
 
         uint8_t direction = fromleft ? 0 : 1;
@@ -390,11 +390,11 @@ namespace ms {
         ladder = ldr;
 
         if (ladder) {
-            phobj.set_x(ldr->get_x());
+            physics_object.set_x(ldr->get_x());
 
-            phobj.hspeed = 0.0;
-            phobj.vspeed = 0.0;
-            phobj.fhlayer = 7;
+            physics_object.h_speed = 0.0;
+            physics_object.v_speed = 0.0;
+            physics_object.fh_layer = 7;
 
             set_state(ldr->is_ladder() ? LADDER : ROPE);
         }
@@ -408,20 +408,20 @@ namespace ms {
         return !climb_cooldown;
     }
 
-    float Player::get_walkforce() const {
+    float Player::get_walk_force() const {
         // Approximation based on direct comparison testing
         return 0.00431f + 0.19653f * static_cast<float>(stats.get_total(EquipStat::Id::SPEED)) / 100;
     }
 
-    float Player::get_jumpforce() const {
+    float Player::get_jump_force() const {
         return 1.0f + 3.5f * static_cast<float>(stats.get_total(EquipStat::Id::JUMP)) / 100;
     }
 
-    float Player::get_climbforce() const {
+    float Player::get_climb_force() const {
         return static_cast<float>(stats.get_total(EquipStat::Id::SPEED)) / 100;
     }
 
-    float Player::get_flyforce() const {
+    float Player::get_fly_force() const {
         return 0.25f;
     }
 

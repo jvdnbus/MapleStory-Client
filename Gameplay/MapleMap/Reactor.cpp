@@ -40,7 +40,7 @@ namespace ms {
     }
 
     void Reactor::draw(double viewx, double viewy, float alpha) const {
-        Point<int16_t> absp = phobj.get_absolute(viewx, viewy, alpha);
+        Point<int16_t> absp = physics_object.get_absolute(viewx, viewy, alpha);
         auto shift = Point<int16_t>(0, normal.get_origin().y());
 
         if (animation_ended) {
@@ -52,7 +52,7 @@ namespace ms {
     }
 
     int8_t Reactor::update(const Physics& physics) {
-        physics.move_object(phobj);
+        physics.move_object(physics_object);
 
         if (!animation_ended)
             animation_ended = animations.at(state - 1).update();
@@ -60,7 +60,7 @@ namespace ms {
         if (animation_ended && dead)
             deactivate();
 
-        return phobj.fhlayer;
+        return physics_object.fh_layer;
     }
 
     void Reactor::set_state(int8_t state) {

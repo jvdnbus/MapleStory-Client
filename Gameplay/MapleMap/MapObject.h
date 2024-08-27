@@ -34,7 +34,7 @@ namespace ms {
         // Updates the object and returns the updated layer.
         virtual int8_t update(const Physics& physics);
         // Reactivates the object.
-        virtual void makeactive();
+        virtual void activate();
         // Deactivates the object.
         virtual void deactivate();
         // Checks whether this object is active.
@@ -48,15 +48,15 @@ namespace ms {
         void set_position(Point<int16_t> position);
 
         // Returns the object id unique to every object on one map.
-        int32_t get_oid() const;
+        int32_t get_object_id() const;
         // Returns the current position.
         Point<int16_t> get_position() const;
 
     protected:
         MapObject(int32_t oid, Point<int16_t> position = {});
 
-        PhysicsObject phobj;
-        int32_t oid;
+        PhysicsObject physics_object;
+        int32_t object_id;
         bool active;
     };
 }

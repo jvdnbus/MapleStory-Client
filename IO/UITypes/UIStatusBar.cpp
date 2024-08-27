@@ -658,7 +658,7 @@ namespace ms {
         }
         case BT_CHARACTER_INFO: {
             UI::get().emplace<UICharInfo>(
-                Stage::get().get_player().get_oid()
+                Stage::get().get_player().get_object_id()
             );
 
             remove_menus();

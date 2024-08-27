@@ -103,13 +103,13 @@ namespace ms {
         int8_t get_integer_attackspeed() const override;
 
         // Returns the current walking force, calculated from the total ES_SPEED stat.
-        float get_walkforce() const;
+        float get_walk_force() const;
         // Returns the current jumping force, calculated from the total ES_JUMP stat.
-        float get_jumpforce() const;
+        float get_jump_force() const;
         // Returns the climbing force, calculated from the total ES_SPEED stat.
-        float get_climbforce() const;
+        float get_climb_force() const;
         // Returns the flying force
-        float get_flyforce() const;
+        float get_fly_force() const;
 
         // Return whether the player is underwater
         bool is_underwater() const;

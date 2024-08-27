@@ -63,7 +63,7 @@ namespace ms {
 
         moveobj.set_x(x);
         moveobj.set_y(starty);
-        moveobj.vspeed = -0.25;
+        moveobj.v_speed = -0.25;
         opacity.set(1.5f);
     }
 

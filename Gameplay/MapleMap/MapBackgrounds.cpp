@@ -83,11 +83,11 @@ namespace ms {
         switch (type) {
         case HMOVEA:
         case HMOVEB:
-            moveobj.hspeed = rx / 16;
+            moveobj.h_speed = rx / 16;
             break;
         case VMOVEA:
         case VMOVEB:
-            moveobj.vspeed = ry / 16;
+            moveobj.v_speed = ry / 16;
             break;
         }
     }
@@ -95,7 +95,7 @@ namespace ms {
     void Background::draw(double viewx, double viewy, float alpha) const {
         double x;
 
-        if (moveobj.hmobile()) {
+        if (moveobj.is_moving_horizontally()) {
             x = moveobj.get_absolute_x(viewx, alpha);
         } else {
             double shift_x = rx * (WOFFSET - viewx) / 100 + WOFFSET;
@@ -104,7 +104,7 @@ namespace ms {
 
         double y;
 
-        if (moveobj.vmobile()) {
+        if (moveobj.is_moving_vertically()) {
             y = moveobj.get_absolute_y(viewy, alpha);
         } else {
             double shift_y = ry * (HOFFSET - viewy) / 100 + HOFFSET;

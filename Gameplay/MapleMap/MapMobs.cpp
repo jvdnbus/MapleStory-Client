@@ -37,7 +37,7 @@ namespace ms {
                 if (mode > 0)
                     mob->set_control(mode);
 
-                mob->makeactive();
+                mob->activate();
             } else {
                 mobs.add(spawn.instantiate());
             }
@@ -129,7 +129,7 @@ namespace ms {
         if (iter == mobs.end())
             return 0;
 
-        return iter->second->get_oid();
+        return iter->second->get_object_id();
     }
 
     MobAttack MapMobs::create_attack(int32_t oid) const {

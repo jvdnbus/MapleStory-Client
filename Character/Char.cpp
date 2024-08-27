@@ -24,17 +24,16 @@
 #endif
 
 namespace ms {
-    Char::Char(int32_t o, const CharLook& lk, const std::string& name) : MapObject(o), look(lk), look_preview(lk),
-                                                                         namelabel(Text(
-                                                                             Text::Font::A13M, Text::Alignment::CENTER,
-                                                                             Color::Name::WHITE,
-                                                                             Text::Background::NAMETAG, name)) {
+    Char::Char(int32_t o, const CharLook& lk, const std::string& name)
+        : MapObject(o), look(lk), look_preview(lk),
+          namelabel(Text(Text::Font::A13M, Text::Alignment::CENTER,
+                         Color::Name::WHITE, Text::Background::NAMETAG, name)) {
     }
 
     void Char::draw(double viewx, double viewy, float alpha) const {
-        Point<int16_t> absp = phobj.get_absolute(viewx, viewy, alpha);
+        Point<int16_t> absp = physics_object.get_absolute(viewx, viewy, alpha);
 
-        effects.drawbelow(absp, alpha);
+        effects.draw_below(absp, alpha);
 
         Color color;
 
@@ -126,10 +125,10 @@ namespace ms {
 
         switch (state) {
         case WALK:
-            return static_cast<float>(std::abs(phobj.hspeed));
+            return static_cast<float>(std::abs(physics_object.h_speed));
         case LADDER:
         case ROPE:
-            return static_cast<float>(std::abs(phobj.vspeed));
+            return static_cast<float>(std::abs(physics_object.v_speed));
         default:
             return 1.0f;
         }
@@ -156,7 +155,7 @@ namespace ms {
     }
 
     int8_t Char::get_layer() const {
-        return is_climbing() ? 7 : phobj.fhlayer;
+        return is_climbing() ? 7 : physics_object.fh_layer;
     }
 
     void Char::show_attack_effect(Animation toshow, int8_t z) {
@@ -174,8 +173,8 @@ namespace ms {
     }
 
     void Char::show_damage(int32_t damage) {
-        int16_t start_y = phobj.get_y() - 60;
-        int16_t x = phobj.get_x() - 10;
+        int16_t start_y = physics_object.get_y() - 60;
+        int16_t x = physics_object.get_x() - 10;
 
         damagenumbers.emplace_back(DamageNumber::Type::TOPLAYER, damage, start_y, x);
 
@@ -331,8 +330,8 @@ namespace ms {
         return look;
     }
 
-    PhysicsObject& Char::get_phobj() {
-        return phobj;
+    PhysicsObject& Char::get_physics_object() {
+        return physics_object;
     }
 
     void Char::init() {

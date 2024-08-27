@@ -82,14 +82,14 @@ namespace ms {
         flyspeed *= 0.0005f;
 
         if (canfly)
-            phobj.type = PhysicsObject::Type::FLYING;
+            physics_object.type = PhysicsObject::Type::FLYING;
 
         id = mid;
         team = tm;
         set_position(position);
         set_control(mode);
-        phobj.fhid = fh;
-        phobj.set_flag(PhysicsObject::Flag::TURNATEDGES);
+        physics_object.fh_id = fh;
+        physics_object.set_flag(PhysicsObject::Flag::TURN_AT_EDGES);
 
         hppercent = 0;
         dying = false;
@@ -136,7 +136,7 @@ namespace ms {
 
     int8_t Mob::update(const Physics& physics) {
         if (!active)
-            return phobj.fhlayer;
+            return physics_object.fh_layer;
 
         bool aniend = animations.at(stance).update();
 
@@ -171,9 +171,9 @@ namespace ms {
 
         if (!dying) {
             if (!canfly) {
-                if (phobj.is_flag_not_set(PhysicsObject::Flag::TURNATEDGES)) {
+                if (physics_object.is_flag_not_set(PhysicsObject::Flag::TURN_AT_EDGES)) {
                     flip = !flip;
-                    phobj.set_flag(PhysicsObject::Flag::TURNATEDGES);
+                    physics_object.set_flag(PhysicsObject::Flag::TURN_AT_EDGES);
 
                     if (stance == HIT)
                         set_stance(STAND);
@@ -183,34 +183,34 @@ namespace ms {
             switch (stance) {
             case MOVE:
                 if (canfly) {
-                    phobj.hforce = flip ? flyspeed : -flyspeed;
+                    physics_object.h_force = flip ? flyspeed : -flyspeed;
 
                     switch (flydirection) {
                     case UPWARDS:
-                        phobj.vforce = -flyspeed;
+                        physics_object.v_force = -flyspeed;
                         break;
                     case DOWNWARDS:
-                        phobj.vforce = flyspeed;
+                        physics_object.v_force = flyspeed;
                         break;
                     }
                 } else {
-                    phobj.hforce = flip ? speed : -speed;
+                    physics_object.h_force = flip ? speed : -speed;
                 }
 
                 break;
             case HIT:
                 if (canmove) {
-                    double KBFORCE = phobj.onground ? 0.2 : 0.1;
-                    phobj.hforce = flip ? -KBFORCE : KBFORCE;
+                    double KBFORCE = physics_object.is_on_ground ? 0.2 : 0.1;
+                    physics_object.h_force = flip ? -KBFORCE : KBFORCE;
                 }
 
                 break;
             case JUMP:
-                phobj.vforce = -5.0;
+                physics_object.v_force = -5.0;
                 break;
             }
 
-            physics.move_object(phobj);
+            physics.move_object(physics_object);
 
             if (control) {
                 counter++;
@@ -222,7 +222,7 @@ namespace ms {
                     next = counter > 200;
                     break;
                 case JUMP:
-                    next = phobj.onground;
+                    next = physics_object.is_on_ground;
                     break;
                 default:
                     next = aniend && counter > 200;
@@ -236,11 +236,11 @@ namespace ms {
                 }
             }
         } else {
-            phobj.normalize();
-            physics.get_fht().update_fh(phobj);
+            physics_object.normalize();
+            physics.get_fht().update_fh(physics_object);
         }
 
-        return phobj.fhlayer;
+        return physics_object.fh_layer;
     }
 
     void Mob::next_move() {
@@ -253,7 +253,7 @@ namespace ms {
                 break;
             case MOVE:
             case JUMP:
-                if (canjump && phobj.onground && randomizer.below(0.25f)) {
+                if (canjump && physics_object.is_on_ground && randomizer.below(0.25f)) {
                     set_stance(JUMP);
                 } else {
                     switch (randomizer.next_int(3)) {
@@ -283,17 +283,17 @@ namespace ms {
 
     void Mob::update_movement() {
         MoveMobPacket(
-            oid, 1, 0, 0, 0, 0, 0, 0,
-            get_position(),
-            Movement(phobj, value_of(stance, flip))
+                object_id, 1, 0, 0, 0, 0, 0, 0,
+                get_position(),
+                Movement(physics_object, value_of(stance, flip))
         ).dispatch();
     }
 
     void Mob::draw(double viewx, double viewy, float alpha) const {
-        Point<int16_t> absp = phobj.get_absolute(viewx, viewy, alpha);
+        Point<int16_t> absp = physics_object.get_absolute(viewx, viewy, alpha);
         Point<int16_t> headpos = get_head_position(absp);
 
-        effects.drawbelow(absp, alpha);
+        effects.draw_below(absp, alpha);
 
         if (!dead) {
             float interopc = opacity.get(alpha);
@@ -332,7 +332,7 @@ namespace ms {
         uint8_t laststance = lastmove.newstate;
         set_stance(laststance);
 
-        phobj.fhid = lastmove.fh;
+        physics_object.fh_id = lastmove.fh;
     }
 
     Point<int16_t> Mob::get_head_position(Point<int16_t> position) const {
@@ -516,7 +516,7 @@ namespace ms {
         int32_t maxattack = watk;
         int32_t attack = randomizer.next_int(minattack, maxattack);
 
-        return MobAttack(attack, get_position(), id, oid);
+        return MobAttack(attack, get_position(), id, object_id);
     }
 
     void Mob::apply_death() {

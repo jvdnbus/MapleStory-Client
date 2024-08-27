@@ -27,8 +27,8 @@ namespace ms {
     struct MovingObject {
         Linear<double> x;
         Linear<double> y;
-        double hspeed = 0.0;
-        double vspeed = 0.0;
+        double h_speed = 0.0;
+        double v_speed = 0.0;
 
         void normalize() {
             x.normalize();
@@ -36,8 +36,8 @@ namespace ms {
         }
 
         void move() {
-            x += hspeed;
-            y += vspeed;
+            x += h_speed;
+            y += v_speed;
         }
 
         void set_x(double d) {
@@ -48,56 +48,56 @@ namespace ms {
             y.set(d);
         }
 
-        void limitx(double d) {
+        void limit_x(double d) {
             x = d;
-            hspeed = 0.0;
+            h_speed = 0.0;
         }
 
-        void limity(double d) {
+        void limit_y(double d) {
             y = d;
-            vspeed = 0.0;
+            v_speed = 0.0;
         }
 
-        void movexuntil(double d, uint16_t delay) {
+        void move_x_until(double d, uint16_t delay) {
             if (delay) {
                 double hdelta = d - x.get();
-                hspeed = Constants::TIMESTEP * hdelta / delay;
+                h_speed = Constants::TIMESTEP * hdelta / delay;
             }
         }
 
-        void moveyuntil(double d, uint16_t delay) {
+        void move_y_until(double d, uint16_t delay) {
             if (delay) {
                 double vdelta = d - y.get();
-                vspeed = Constants::TIMESTEP * vdelta / delay;
+                v_speed = Constants::TIMESTEP * vdelta / delay;
             }
         }
 
-        bool hmobile() const {
-            return hspeed != 0.0;
+        bool is_moving_horizontally() const {
+            return h_speed != 0.0;
         }
 
-        bool vmobile() const {
-            return vspeed != 0.0;
+        bool is_moving_vertically() const {
+            return v_speed != 0.0;
         }
 
-        bool mobile() const {
-            return hmobile() || vmobile();
+        bool is_moving() const {
+            return is_moving_horizontally() || is_moving_vertically();
         }
 
-        double crnt_x() const {
+        double current_x() const {
             return x.get();
         }
 
-        double crnt_y() const {
+        double current_y() const {
             return y.get();
         }
 
         double next_x() const {
-            return x + hspeed;
+            return x + h_speed;
         }
 
         double next_y() const {
-            return y + vspeed;
+            return y + v_speed;
         }
 
         int16_t get_x() const {
@@ -157,24 +157,24 @@ namespace ms {
         };
 
         enum Flag {
-            NOGRAVITY = 0x0001,
-            TURNATEDGES = 0x0002,
-            CHECKBELOW = 0x0004
+            NO_GRAVITY = 0x0001,
+            TURN_AT_EDGES = 0x0002,
+            CHECK_BELOW = 0x0004
         };
 
         Type type = NORMAL;
         int32_t flags = 0;
-        uint16_t fhid = 0;
-        double fhslope = 0.0;
-        int8_t fhlayer = 0;
-        double groundbelow = 0.0;
-        bool onground = true;
-        bool enablejd = false;
+        uint16_t fh_id = 0;
+        double fh_slope = 0.0;
+        int8_t fh_layer = 0;
+        double ground_below_y = 0.0;
+        bool is_on_ground = true;
+        bool is_jump_down_enabled = false;
 
-        double hforce = 0.0;
-        double vforce = 0.0;
-        double hacc = 0.0;
-        double vacc = 0.0;
+        double h_force = 0.0;
+        double v_force = 0.0;
+        double h_acceleration = 0.0;
+        double v_acceleration = 0.0;
 
         bool is_flag_set(Flag f) {
             return (flags & f) != 0;

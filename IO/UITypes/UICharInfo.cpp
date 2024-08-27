@@ -330,7 +330,7 @@ namespace ms {
 
     void UICharInfo::update_stats(int32_t character_id, int16_t job_id, uint16_t lv, int16_t f, std::string g,
                                   std::string a) {
-        int32_t player_id = Stage::get().get_player().get_oid();
+        int32_t player_id = Stage::get().get_player().get_object_id();
 
         if (character_id == player_id) {
             buttons[BtParty]->set_state(Button::State::DISABLED);

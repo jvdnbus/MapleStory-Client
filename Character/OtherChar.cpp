@@ -50,11 +50,11 @@ namespace ms {
             set_state(laststate);
         }
 
-        phobj.hspeed = lastmove.xpos - phobj.crnt_x();
-        phobj.vspeed = lastmove.ypos - phobj.crnt_y();
-        phobj.move();
+        physics_object.h_speed = lastmove.xpos - physics_object.current_x();
+        physics_object.v_speed = lastmove.ypos - physics_object.current_y();
+        physics_object.move();
 
-        physics.get_fht().update_fh(phobj);
+        physics.get_fht().update_fh(physics_object);
 
         bool aniend = Char::update(physics, get_stancespeed());
 

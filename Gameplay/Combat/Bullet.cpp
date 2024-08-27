@@ -32,29 +32,29 @@ namespace ms {
     }
 
     bool Bullet::settarget(Point<int16_t> target) {
-        double xdelta = target.x() - moveobj.crnt_x();
-        double ydelta = target.y() - moveobj.crnt_y();
+        double xdelta = target.x() - moveobj.current_x();
+        double ydelta = target.y() - moveobj.current_y();
 
         if (std::abs(xdelta) < 10.0)
             return true;
 
         flip = xdelta > 0.0;
 
-        moveobj.hspeed = xdelta / 32;
+        moveobj.h_speed = xdelta / 32;
 
         if (xdelta > 0.0) {
-            if (moveobj.hspeed < 3.0)
-                moveobj.hspeed = 3.0;
-            else if (moveobj.hspeed > 6.0)
-                moveobj.hspeed = 6.0;
+            if (moveobj.h_speed < 3.0)
+                moveobj.h_speed = 3.0;
+            else if (moveobj.h_speed > 6.0)
+                moveobj.h_speed = 6.0;
         } else if (xdelta < 0.0) {
-            if (moveobj.hspeed > -3.0)
-                moveobj.hspeed = -3.0;
-            else if (moveobj.hspeed < -6.0)
-                moveobj.hspeed = -6.0;
+            if (moveobj.h_speed > -3.0)
+                moveobj.h_speed = -3.0;
+            else if (moveobj.h_speed < -6.0)
+                moveobj.h_speed = -6.0;
         }
 
-        moveobj.vspeed = moveobj.hspeed * ydelta / xdelta;
+        moveobj.v_speed = moveobj.h_speed * ydelta / xdelta;
 
         return false;
     }
@@ -64,6 +64,6 @@ namespace ms {
         moveobj.move();
 
         int16_t xdelta = target.x() - moveobj.get_x();
-        return moveobj.hspeed > 0.0 ? xdelta < 10 : xdelta > 10;
+        return moveobj.h_speed > 0.0 ? xdelta < 10 : xdelta > 10;
     }
 }

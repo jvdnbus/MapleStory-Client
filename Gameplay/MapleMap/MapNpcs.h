@@ -35,7 +35,7 @@ namespace ms {
 
         // Add an NPC to the spawn queue
         void spawn(NpcSpawn&& spawn);
-        // Remove the NPC with the specified oid
+        // Remove the NPC with the specified object_id
         void remove(int32_t oid);
         // Remove all NPCs
         void clear();

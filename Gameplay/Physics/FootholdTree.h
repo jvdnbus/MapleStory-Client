@@ -32,7 +32,7 @@ namespace ms {
 
         // Takes an accelerated PhysicsObject and limits its movement based on the platforms in this tree
         void limit_movement(PhysicsObject& touse) const;
-        // Updates a PhysicsObject's fhid based on it's position
+        // Updates a PhysicsObject's fh_id based on it's position
         void update_fh(PhysicsObject& touse) const;
         // Determine the point on the ground below the specified position
         int16_t get_y_below(Point<int16_t> position) const;

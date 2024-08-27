@@ -85,119 +85,119 @@ namespace ms {
     }
 
     void FootholdTree::limit_movement(PhysicsObject& phobj) const {
-        if (phobj.hmobile()) {
-            double crnt_x = phobj.crnt_x();
+        if (phobj.is_moving_horizontally()) {
+            double crnt_x = phobj.current_x();
             double next_x = phobj.next_x();
 
-            bool left = phobj.hspeed < 0.0f;
-            double wall = get_wall(phobj.fhid, left, phobj.next_y());
+            bool left = phobj.h_speed < 0.0f;
+            double wall = get_wall(phobj.fh_id, left, phobj.next_y());
             bool collision = left ? crnt_x >= wall && next_x <= wall : crnt_x <= wall && next_x >= wall;
 
-            if (!collision && phobj.is_flag_set(PhysicsObject::Flag::TURNATEDGES)) {
-                wall = get_edge(phobj.fhid, left);
+            if (!collision && phobj.is_flag_set(PhysicsObject::Flag::TURN_AT_EDGES)) {
+                wall = get_edge(phobj.fh_id, left);
                 collision = left ? crnt_x >= wall && next_x <= wall : crnt_x <= wall && next_x >= wall;
             }
 
             if (collision) {
-                phobj.limitx(wall);
-                phobj.clear_flag(PhysicsObject::Flag::TURNATEDGES);
+                phobj.limit_x(wall);
+                phobj.clear_flag(PhysicsObject::Flag::TURN_AT_EDGES);
             }
         }
 
-        if (phobj.vmobile()) {
-            double crnt_y = phobj.crnt_y();
+        if (phobj.is_moving_vertically()) {
+            double crnt_y = phobj.current_y();
             double next_y = phobj.next_y();
 
             auto ground = Range<double>(
-                get_fh(phobj.fhid).ground_below(phobj.crnt_x()),
-                get_fh(phobj.fhid).ground_below(phobj.next_x())
+                get_fh(phobj.fh_id).ground_below(phobj.current_x()),
+                get_fh(phobj.fh_id).ground_below(phobj.next_x())
             );
 
             bool collision = crnt_y <= ground.first() && next_y >= ground.second();
 
             if (collision) {
-                phobj.limity(ground.second());
+                phobj.limit_y(ground.second());
 
                 limit_movement(phobj);
             } else {
                 if (next_y < borders.first())
-                    phobj.limity(borders.first());
+                    phobj.limit_y(borders.first());
                 else if (next_y > borders.second())
-                    phobj.limity(borders.second());
+                    phobj.limit_y(borders.second());
             }
         }
     }
 
     void FootholdTree::update_fh(PhysicsObject& phobj) const {
-        if (phobj.type == PhysicsObject::Type::FIXATED && phobj.fhid > 0)
+        if (phobj.type == PhysicsObject::Type::FIXATED && phobj.fh_id > 0)
             return;
 
-        const Foothold& curfh = get_fh(phobj.fhid);
+        const Foothold& curfh = get_fh(phobj.fh_id);
         bool checkslope = false;
 
-        double x = phobj.crnt_x();
-        double y = phobj.crnt_y();
+        double x = phobj.current_x();
+        double y = phobj.current_y();
 
-        if (phobj.onground) {
+        if (phobj.is_on_ground) {
             if (std::floor(x) > curfh.r())
-                phobj.fhid = curfh.next();
+                phobj.fh_id = curfh.next();
             else if (std::ceil(x) < curfh.l())
-                phobj.fhid = curfh.prev();
+                phobj.fh_id = curfh.prev();
 
-            if (phobj.fhid == 0)
-                phobj.fhid = get_fhid_below(x, y);
+            if (phobj.fh_id == 0)
+                phobj.fh_id = get_fhid_below(x, y);
             else
                 checkslope = true;
         } else {
-            phobj.fhid = get_fhid_below(x, y);
+            phobj.fh_id = get_fhid_below(x, y);
 
-            if (phobj.fhid == 0)
+            if (phobj.fh_id == 0)
                 return;
         }
 
-        const Foothold& nextfh = get_fh(phobj.fhid);
-        phobj.fhslope = nextfh.slope();
+        const Foothold& nextfh = get_fh(phobj.fh_id);
+        phobj.fh_slope = nextfh.slope();
 
         double ground = nextfh.ground_below(x);
 
-        if (phobj.vspeed == 0.0 && checkslope) {
-            double vdelta = abs(phobj.fhslope);
+        if (phobj.v_speed == 0.0 && checkslope) {
+            double vdelta = abs(phobj.fh_slope);
 
-            if (phobj.fhslope < 0.0)
+            if (phobj.fh_slope < 0.0)
                 vdelta *= (ground - y);
-            else if (phobj.fhslope > 0.0)
+            else if (phobj.fh_slope > 0.0)
                 vdelta *= (y - ground);
 
             if (curfh.slope() != 0.0 || nextfh.slope() != 0.0) {
-                if (phobj.hspeed > 0.0 && vdelta <= phobj.hspeed)
+                if (phobj.h_speed > 0.0 && vdelta <= phobj.h_speed)
                     phobj.y = ground;
-                else if (phobj.hspeed < 0.0 && vdelta >= phobj.hspeed)
+                else if (phobj.h_speed < 0.0 && vdelta >= phobj.h_speed)
                     phobj.y = ground;
             }
         }
 
-        phobj.onground = phobj.y == ground;
+        phobj.is_on_ground = phobj.y == ground;
 
-        if (phobj.enablejd || phobj.is_flag_set(PhysicsObject::Flag::CHECKBELOW)) {
+        if (phobj.is_jump_down_enabled || phobj.is_flag_set(PhysicsObject::Flag::CHECK_BELOW)) {
             uint16_t belowid = get_fhid_below(x, nextfh.ground_below(x) + 1.0);
 
             if (belowid > 0) {
                 double nextground = get_fh(belowid).ground_below(x);
-                phobj.enablejd = (nextground - ground) < 600.0;
-                phobj.groundbelow = ground + 1.0;
+                phobj.is_jump_down_enabled = (nextground - ground) < 600.0;
+                phobj.ground_below_y = ground + 1.0;
             } else {
-                phobj.enablejd = false;
+                phobj.is_jump_down_enabled = false;
             }
 
-            phobj.clear_flag(PhysicsObject::Flag::CHECKBELOW);
+            phobj.clear_flag(PhysicsObject::Flag::CHECK_BELOW);
         }
 
-        if (phobj.fhlayer == 0 || phobj.onground)
-            phobj.fhlayer = nextfh.layer();
+        if (phobj.fh_layer == 0 || phobj.is_on_ground)
+            phobj.fh_layer = nextfh.layer();
 
-        if (phobj.fhid == 0) {
-            phobj.fhid = curfh.id();
-            phobj.limitx(curfh.x1());
+        if (phobj.fh_id == 0) {
+            phobj.fh_id = curfh.id();
+            phobj.limit_x(curfh.x1());
         }
     }
 

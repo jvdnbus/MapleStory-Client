@@ -34,7 +34,7 @@ namespace ms {
             Optional<MapObject> npc = npcs.get(oid);
 
             if (npc)
-                npc->makeactive();
+                npc->activate();
             else
                 npcs.add(spawn.instantiate(physics));
         }
@@ -66,7 +66,7 @@ namespace ms {
             if (npc && npc->is_active() && npc->inrange(position, viewpos)) {
                 if (pressed) {
                     // TODO: Try finding dialog first
-                    TalkToNPCPacket(npc->get_oid()).dispatch();
+                    TalkToNPCPacket(npc->get_object_id()).dispatch();
 
                     return Cursor::State::IDLE;
                 }

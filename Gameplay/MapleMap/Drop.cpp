@@ -36,28 +36,28 @@ namespace ms {
         case 1:
             state = DROPPED;
             basey = static_cast<double>(dest.y() - 4);
-            phobj.vspeed = -5.0f;
-            phobj.hspeed = static_cast<double>(dest.x() - start.x()) / 48;
+                physics_object.v_speed = -5.0f;
+                physics_object.h_speed = static_cast<double>(dest.x() - start.x()) / 48;
             break;
         case 2:
             state = FLOATING;
-            basey = phobj.crnt_y();
-            phobj.type = PhysicsObject::Type::FIXATED;
+            basey = physics_object.current_y();
+                physics_object.type = PhysicsObject::Type::FIXATED;
             break;
         case 3:
             state = PICKEDUP;
-            phobj.vspeed = -5.0f;
+                physics_object.v_speed = -5.0f;
             break;
         }
     }
 
     int8_t Drop::update(const Physics& physics) {
-        physics.move_object(phobj);
+        physics.move_object(physics_object);
 
         if (state == DROPPED) {
-            if (phobj.onground) {
-                phobj.hspeed = 0.0;
-                phobj.type = PhysicsObject::Type::FIXATED;
+            if (physics_object.is_on_ground) {
+                physics_object.h_speed = 0.0;
+                physics_object.type = PhysicsObject::Type::FIXATED;
                 state = FLOATING;
                 angle.set(0.0f);
                 set_position(dest.x(), dest.y() - 4);
@@ -68,7 +68,7 @@ namespace ms {
         }
 
         if (state == FLOATING) {
-            phobj.y = basey + 5.0f + (cos(moved) - 1.0f) * 2.5f;
+            physics_object.y = basey + 5.0f + (cos(moved) - 1.0f) * 2.5f;
             moved = (moved < 360.0f) ? moved + 0.025f : 0.0f;
         }
 
@@ -77,8 +77,8 @@ namespace ms {
             static constexpr float OPCSTEP = 1.0f / PICKUPTIME;
 
             if (looter) {
-                double hdelta = looter->x - phobj.x;
-                phobj.hspeed = looter->hspeed / 2.0 + (hdelta - 16.0) / PICKUPTIME;
+                double hdelta = looter->x - physics_object.x;
+                physics_object.h_speed = looter->h_speed / 2.0 + (hdelta - 16.0) / PICKUPTIME;
             }
 
             opacity -= OPCSTEP;
@@ -91,7 +91,7 @@ namespace ms {
             }
         }
 
-        return phobj.fhlayer;
+        return physics_object.fh_layer;
     }
 
     void Drop::expire(int8_t type, const PhysicsObject* lt) {
@@ -106,8 +106,8 @@ namespace ms {
             angle.set(0.0f);
             state = PICKEDUP;
             looter = lt;
-            phobj.vspeed = -4.5f;
-            phobj.type = PhysicsObject::Type::NORMAL;
+                physics_object.v_speed = -4.5f;
+                physics_object.type = PhysicsObject::Type::NORMAL;
             break;
         }
     }

@@ -79,7 +79,7 @@ namespace ms {
                 recv.read_int();
                 recv.read_point(); // pos
                 recv.read_byte(); // stance
-                recv.read_int(); // fhid
+                recv.read_int(); // fh_id
             } else {
                 break;
             }
@@ -133,7 +133,8 @@ namespace ms {
             uint8_t stance = recv.read_byte();
             int32_t fhid = recv.read_int();
 
-            character->add_pet(petindex, itemid, name, uniqueid, pos, stance, fhid);
+            // TODO temporarily disabled (spams move packets)
+//            character->add_pet(petindex, itemid, name, uniqueid, pos, stance, fhid);
         } else if (mode == 0) {
             bool hunger = recv.read_bool();
 
@@ -368,7 +369,7 @@ namespace ms {
             if (recv.length() > 0)
                 recv.read_byte(); // pet
             else if (auto character = Stage::get().get_character(cid))
-                looter = character->get_phobj();
+                looter = character->get_physics_object();
 
             Sound(Sound::Name::PICKUP).play();
         }
@@ -394,7 +395,7 @@ namespace ms {
         Point<int16_t> point = recv.read_point();
 
         // TODO: Unused, Check this!
-        // uint16_t fhid = recv.read_short();
+        // uint16_t fh_id = recv.read_short();
         // recv.read_byte()
 
         Stage::get().get_reactors().spawn(

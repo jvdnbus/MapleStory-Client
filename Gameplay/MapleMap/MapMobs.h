@@ -55,7 +55,7 @@ namespace ms {
         // Applies damage to a mob.
         void apply_damage(int32_t oid, int32_t damage, bool toleft, const AttackUser& user, const SpecialMove& move);
 
-        // Check if the mob with the specified oid exists.
+        // Check if the mob with the specified object_id exists.
         bool contains(int32_t oid) const;
         // Return the id of the first mob who collides with the object.
         int32_t find_colliding(const MovingObject& moveobj) const;

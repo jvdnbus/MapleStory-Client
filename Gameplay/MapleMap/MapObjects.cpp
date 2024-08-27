@@ -65,7 +65,7 @@ namespace ms {
     }
 
     void MapObjects::add(std::unique_ptr<MapObject> toadd) {
-        int32_t oid = toadd->get_oid();
+        int32_t oid = toadd->get_object_id();
         int8_t layer = toadd->get_layer();
         objects[oid] = std::move(toadd);
         layers[layer].insert(oid);
