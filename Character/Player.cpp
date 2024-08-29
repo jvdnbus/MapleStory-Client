@@ -418,7 +418,7 @@ namespace ms {
     }
 
     float Player::get_climb_force() const {
-        return static_cast<float>(stats.get_total(EquipStat::Id::SPEED)) / 100;
+        return 0.8f * static_cast<float>(stats.get_total(EquipStat::Id::SPEED)) / 100;
     }
 
     float Player::get_fly_force() const {
