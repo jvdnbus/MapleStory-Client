@@ -105,11 +105,11 @@ namespace ms {
             return;
 
         Point<int16_t> viewpos = camera.position(alpha);
-        Point<double> viewrpos = camera.realposition(alpha);
+        Point<double> viewrpos = camera.real_position(alpha);
         double viewx = viewrpos.x();
         double viewy = viewrpos.y();
 
-        backgrounds.drawbackgrounds(viewx, viewy, alpha);
+        backgrounds.draw_backgrounds(viewx, viewy, alpha);
 
         for (auto id : Layer::IDs) {
             tilesobjs.draw(id, viewpos, alpha);
@@ -123,7 +123,7 @@ namespace ms {
 
         combat.draw(viewx, viewy, alpha);
         portals.draw(viewpos, alpha);
-        backgrounds.drawforegrounds(viewx, viewy, alpha);
+        backgrounds.draw_foregrounds(viewx, viewy, alpha);
         effect.draw();
     }
 

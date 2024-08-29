@@ -129,8 +129,8 @@ namespace ms {
         if (skill_id == 0)
             return;
 
-        int16_t max_width = Constants::Constants::get().get_viewwidth();
-        int16_t max_height = Constants::Constants::get().get_viewheight();
+        int16_t max_width = Constants::Constants::get().get_view_width();
+        int16_t max_height = Constants::Constants::get().get_view_height();
         int16_t cur_width = pos.x() + width + 45;
         int16_t cur_height = pos.y() + height + 35;
 

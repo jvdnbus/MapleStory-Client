@@ -65,7 +65,7 @@ namespace ms {
         input_origin_x = input_origin.x();
         input_origin_y = input_origin.y();
 
-        min_view_y = Constants::Constants::get().get_viewheight() - input_bg_y;
+        min_view_y = Constants::Constants::get().get_view_height() - input_bg_y;
         user_view_x = Setting<ChatViewX>::get().load();
 
         if (user_view_x == 0)
@@ -347,8 +347,8 @@ namespace ms {
         auto bounds = Rectangle<int16_t>(
             Point<int16_t>(0, 0),
             Point<int16_t>(
-                Constants::Constants::get().get_viewwidth(),
-                Constants::Constants::get().get_viewheight()
+                Constants::Constants::get().get_view_width(),
+                Constants::Constants::get().get_view_height()
             )
         );
 
@@ -378,7 +378,7 @@ namespace ms {
                     if (new_pos_y < min_y)
                         new_pos.set_y(min_y);
 
-                    int16_t max_x = Constants::Constants::get().get_viewwidth() - user_view_x;
+                    int16_t max_x = Constants::Constants::get().get_view_width() - user_view_x;
 
                     if (new_pos_x > max_x)
                         new_pos.set_x(max_x);

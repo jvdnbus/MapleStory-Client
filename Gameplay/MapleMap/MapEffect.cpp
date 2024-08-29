@@ -29,7 +29,7 @@ namespace ms {
 
         effect = Effect.resolve(path);
 
-        int16_t width = Constants::Constants::get().get_viewwidth();
+        int16_t width = Constants::Constants::get().get_view_width();
 
         position = Point<int16_t>(width / 2, 250);
     }

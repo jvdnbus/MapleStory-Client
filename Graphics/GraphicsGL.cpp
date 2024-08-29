@@ -23,8 +23,8 @@ namespace ms {
     GraphicsGL::GraphicsGL() {
         locked = false;
 
-        VWIDTH = Constants::Constants::get().get_viewwidth();
-        VHEIGHT = Constants::Constants::get().get_viewheight();
+        VWIDTH = Constants::Constants::get().get_view_width();
+        VHEIGHT = Constants::Constants::get().get_view_height();
         SCREEN = Rectangle<int16_t>(0, VWIDTH, 0, VHEIGHT);
     }
 
@@ -293,8 +293,8 @@ namespace ms {
     }
 
     void GraphicsGL::reinit() {
-        int32_t new_width = Constants::Constants::get().get_viewwidth();
-        int32_t new_height = Constants::Constants::get().get_viewheight();
+        int32_t new_width = Constants::Constants::get().get_view_width();
+        int32_t new_height = Constants::Constants::get().get_view_height();
 
         if (VWIDTH != new_width || VHEIGHT != new_height) {
             VWIDTH = new_width;

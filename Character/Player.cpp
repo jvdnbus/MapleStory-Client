@@ -401,7 +401,7 @@ namespace ms {
     }
 
     void Player::set_climb_cooldown() {
-        climb_cooldown.set_for(1000);
+        climb_cooldown.set_for(10);
     }
 
     bool Player::can_climb() {

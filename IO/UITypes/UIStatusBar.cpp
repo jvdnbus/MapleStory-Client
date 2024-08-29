@@ -49,8 +49,8 @@ namespace ms {
     UIStatusBar::UIStatusBar(const CharStats& st) : stats(st) {
         quickslot_active = false;
         quickslot_adj = Point<int16_t>(QUICKSLOT_MAX, 0);
-        VWIDTH = Constants::Constants::get().get_viewwidth();
-        VHEIGHT = Constants::Constants::get().get_viewheight();
+        VWIDTH = Constants::Constants::get().get_view_width();
+        VHEIGHT = Constants::Constants::get().get_view_height();
 
         menu_active = false;
         setting_active = false;

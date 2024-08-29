@@ -25,8 +25,8 @@
 
 namespace ms {
     Background::Background(nl::node src) {
-        VWIDTH = Constants::Constants::get().get_viewwidth();
-        VHEIGHT = Constants::Constants::get().get_viewheight();
+        VWIDTH = Constants::Constants::get().get_view_width();
+        VHEIGHT = Constants::Constants::get().get_view_height();
         WOFFSET = VWIDTH / 2;
         HOFFSET = VHEIGHT / 2;
 
@@ -46,10 +46,10 @@ namespace ms {
 
         Type type = typebyid(src["type"]);
 
-        settype(type);
+        set_type(type);
     }
 
-    void Background::settype(Type type) {
+    void Background::set_type(Type type) {
         int16_t dim_x = animation.get_dimensions().x();
         int16_t dim_y = animation.get_dimensions().y();
 
@@ -83,11 +83,11 @@ namespace ms {
         switch (type) {
         case HMOVEA:
         case HMOVEB:
-            moveobj.h_speed = rx / 16;
+            moveobj.h_speed = rx / 21;
             break;
         case VMOVEA:
         case VMOVEB:
-            moveobj.v_speed = ry / 16;
+            moveobj.v_speed = ry / 21;
             break;
         }
     }
@@ -165,7 +165,7 @@ namespace ms {
     MapBackgrounds::MapBackgrounds() {
     }
 
-    void MapBackgrounds::drawbackgrounds(double viewx, double viewy, float alpha) const {
+    void MapBackgrounds::draw_backgrounds(double viewx, double viewy, float alpha) const {
         if (black)
             GraphicsGL::get().drawscreenfill(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -173,7 +173,7 @@ namespace ms {
             background.draw(viewx, viewy, alpha);
     }
 
-    void MapBackgrounds::drawforegrounds(double viewx, double viewy, float alpha) const {
+    void MapBackgrounds::draw_foregrounds(double viewx, double viewy, float alpha) const {
         for (auto& foreground : foregrounds)
             foreground.draw(viewx, viewy, alpha);
     }

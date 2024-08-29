@@ -52,7 +52,7 @@ namespace ms {
             return NORMAL;
         }
 
-        void settype(Type type);
+        void set_type(Type type);
 
         int16_t VWIDTH;
         int16_t VHEIGHT;
@@ -78,8 +78,8 @@ namespace ms {
         MapBackgrounds(nl::node src);
         MapBackgrounds();
 
-        void drawbackgrounds(double viewx, double viewy, float alpha) const;
-        void drawforegrounds(double viewx, double viewy, float alpha) const;
+        void draw_backgrounds(double viewx, double viewy, float alpha) const;
+        void draw_foregrounds(double viewx, double viewy, float alpha) const;
         void update();
 
     private:

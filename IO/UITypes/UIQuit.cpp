@@ -104,8 +104,8 @@ namespace ms {
 
         exp_adj = Point<int16_t>(0, 4);
 
-        int16_t width = Constants::Constants::get().get_viewwidth();
-        int16_t height = Constants::Constants::get().get_viewheight();
+        int16_t width = Constants::Constants::get().get_view_width();
+        int16_t height = Constants::Constants::get().get_view_height();
 
         background = ColorBox(width, height, Color::Name::BLACK, 0.5f);
         position = Point<int16_t>(width / 2, height / 2);

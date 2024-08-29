@@ -32,8 +32,8 @@ namespace ms {
         glwnd = nullptr;
         opacity = 1.0f;
         opcstep = 0.0f;
-        width = Constants::Constants::get().get_viewwidth();
-        height = Constants::Constants::get().get_viewheight();
+        width = Constants::Constants::get().get_view_width();
+        height = Constants::Constants::get().get_view_height();
     }
 
     Window::~Window() {
@@ -92,8 +92,8 @@ namespace ms {
         );
 
         auto screen = Point<int16_t>(
-            Constants::Constants::get().get_viewwidth(),
-            Constants::Constants::get().get_viewheight()
+            Constants::Constants::get().get_view_width(),
+            Constants::Constants::get().get_view_height()
         );
 
         if (cursor_position.x() > 0 && cursor_position.y() > 0)
@@ -221,8 +221,8 @@ namespace ms {
     void Window::check_events() {
         int16_t max_width = Configuration::get().get_max_width();
         int16_t max_height = Configuration::get().get_max_height();
-        int16_t new_width = Constants::Constants::get().get_viewwidth();
-        int16_t new_height = Constants::Constants::get().get_viewheight();
+        int16_t new_width = Constants::Constants::get().get_view_width();
+        int16_t new_height = Constants::Constants::get().get_view_height();
 
         if (width != new_width || height != new_height) {
             width = new_width;

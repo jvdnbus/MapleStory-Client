@@ -18,7 +18,7 @@
 #include "Physics.h"
 
 namespace ms {
-    constexpr double GRAVFORCE = 0.14;
+    constexpr double GRAVFORCE = 0.13;
     constexpr double SWIMGRAVFORCE = 0.03;
     constexpr double FRICTION = 0.5;
     constexpr double SLOPEFACTOR = 0.1;

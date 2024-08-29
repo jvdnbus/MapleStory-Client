@@ -37,7 +37,7 @@ namespace ms {
             }
 
             // Get the window and screen width
-            int16_t get_viewwidth() {
+            int16_t get_view_width() {
                 return VIEWWIDTH;
             }
 
@@ -47,7 +47,7 @@ namespace ms {
             }
 
             // Get the window and screen height
-            int16_t get_viewheight() {
+            int16_t get_view_height() {
                 return VIEWHEIGHT;
             }
 

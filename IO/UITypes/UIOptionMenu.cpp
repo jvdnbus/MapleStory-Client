@@ -73,8 +73,8 @@ namespace ms {
             resolutions.emplace_back("1920 x 1200 ( 16 : 10 ) - Beta");
 
         uint16_t default_option = 0;
-        int16_t screen_width = Constants::Constants::get().get_viewwidth();
-        int16_t screen_height = Constants::Constants::get().get_viewheight();
+        int16_t screen_width = Constants::Constants::get().get_view_width();
+        int16_t screen_height = Constants::Constants::get().get_view_height();
 
         switch (screen_width) {
         case 800:
@@ -141,8 +141,8 @@ namespace ms {
             case TAB0: {
                 uint16_t selected_value = buttons[SELECT_RES]->get_selected();
 
-                int16_t width = Constants::Constants::get().get_viewwidth();
-                int16_t height = Constants::Constants::get().get_viewheight();
+                int16_t width = Constants::Constants::get().get_view_width();
+                int16_t height = Constants::Constants::get().get_view_height();
 
                 switch (selected_value) {
                 case 0:

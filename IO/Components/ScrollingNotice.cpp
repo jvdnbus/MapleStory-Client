@@ -45,7 +45,7 @@ namespace ms {
 
     void ScrollingNotice::update() {
         if (active) {
-            int16_t new_width = Constants::Constants::get().get_viewwidth();
+            int16_t new_width = Constants::Constants::get().get_view_width();
 
             if (new_width != width) {
                 width = new_width;

@@ -42,8 +42,8 @@ namespace ms {
         if (title_label.empty())
             return;
 
-        int16_t max_width = Constants::Constants::get().get_viewwidth();
-        int16_t max_height = Constants::Constants::get().get_viewheight();
+        int16_t max_width = Constants::Constants::get().get_view_width();
+        int16_t max_height = Constants::Constants::get().get_view_height();
         int16_t cur_width = position.x() + fillwidth + 14 + 9 + 17;
         int16_t cur_height = position.y() + fillheight + 14 + 4 + 6;
         int16_t adj_x = cur_width - max_width;

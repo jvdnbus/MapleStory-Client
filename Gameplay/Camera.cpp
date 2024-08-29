@@ -19,66 +19,66 @@
 
 #include "../Constants.h"
 
+#define EASY_IN_OUT_CUBIC(x) std::fmin(1.0, std::fmax(0.0, x < 0.5 ? 4 * x * x * x : 1 - std::pow(-2 * x + 2, 3) / 2))
+
 namespace ms {
     Camera::Camera() {
         x.set(0.0);
         y.set(0.0);
 
-        VWIDTH = Constants::Constants::get().get_viewwidth();
-        VHEIGHT = Constants::Constants::get().get_viewheight();
+        v_width = Constants::Constants::get().get_view_width();
+        v_height = Constants::Constants::get().get_view_height();
     }
 
     void Camera::update(Point<int16_t> position) {
-        int32_t new_width = Constants::Constants::get().get_viewwidth();
-        int32_t new_height = Constants::Constants::get().get_viewheight();
+        int32_t new_width = Constants::Constants::get().get_view_width();
+        int32_t new_height = Constants::Constants::get().get_view_height();
 
-        if (VWIDTH != new_width || VHEIGHT != new_height) {
-            VWIDTH = new_width;
-            VHEIGHT = new_height;
+        if (v_width != new_width || v_height != new_height) {
+            v_width = new_width;
+            v_height = new_height;
         }
 
         double next_x = x.get();
-        double hdelta = VWIDTH / 2 - position.x() - next_x;
-
-        if (std::abs(hdelta) >= 5.0)
-            next_x += hdelta * (12.0 / VWIDTH);
+        double hdelta = v_width / 2.0 - position.x() - next_x;
+        next_x += hdelta * H_LERP_MULT * EASY_IN_OUT_CUBIC(std::abs(hdelta - LAZY_ZONE) / H_LERP_MAX) / v_width;
 
         double next_y = y.get();
-        double vdelta = VHEIGHT / 2 - position.y() - next_y;
+        double vdelta = (v_height * V_OFFSET) + (v_height / 2.0) - position.y() - next_y;
+        next_y += vdelta * V_LERP_MULT * EASY_IN_OUT_CUBIC(std::abs(vdelta - LAZY_ZONE) / V_LERP_MAX) / v_height;
 
-        if (std::abs(vdelta) >= 5.0)
-            next_y += vdelta * (12.0 / VHEIGHT);
+        if (next_x > h_bounds.first() || h_bounds.length() < v_width) {
+            next_x = h_bounds.first();
+        } else if (next_x < h_bounds.second() + v_width) {
+            next_x = h_bounds.second() + v_width;
+        }
 
-        if (next_x > hbounds.first() || hbounds.length() < VWIDTH)
-            next_x = hbounds.first();
-        else if (next_x < hbounds.second() + VWIDTH)
-            next_x = hbounds.second() + VWIDTH;
-
-        if (next_y > vbounds.first() || vbounds.length() < VHEIGHT)
-            next_y = vbounds.first();
-        else if (next_y < vbounds.second() + VHEIGHT)
-            next_y = vbounds.second() + VHEIGHT;
+        if (next_y > v_bounds.first() || v_bounds.length() < v_height) {
+            next_y = v_bounds.first();
+        } else if (next_y < v_bounds.second() + v_height) {
+            next_y = v_bounds.second() + v_height;
+        }
 
         x = next_x;
         y = next_y;
     }
 
     void Camera::set_position(Point<int16_t> position) {
-        int32_t new_width = Constants::Constants::get().get_viewwidth();
-        int32_t new_height = Constants::Constants::get().get_viewheight();
+        int32_t new_width = Constants::Constants::get().get_view_width();
+        int32_t new_height = Constants::Constants::get().get_view_height();
 
-        if (VWIDTH != new_width || VHEIGHT != new_height) {
-            VWIDTH = new_width;
-            VHEIGHT = new_height;
+        if (v_width != new_width || v_height != new_height) {
+            v_width = new_width;
+            v_height = new_height;
         }
 
-        x.set(VWIDTH / 2 - position.x());
-        y.set(VHEIGHT / 2 - position.y());
+        x.set(v_width / 2.0 - position.x());
+        y.set((v_height * V_OFFSET) + (v_height / 2.0) - position.y());
     }
 
     void Camera::set_view(Range<int16_t> mapwalls, Range<int16_t> mapborders) {
-        hbounds = -mapwalls;
-        vbounds = -mapborders;
+        h_bounds = -mapwalls;
+        v_bounds = -mapborders;
     }
 
     Point<int16_t> Camera::position() const {
@@ -95,7 +95,7 @@ namespace ms {
         return {interx, intery};
     }
 
-    Point<double> Camera::realposition(float alpha) const {
+    Point<double> Camera::real_position(float alpha) const {
         return {x.get(alpha), y.get(alpha)};
     }
 }

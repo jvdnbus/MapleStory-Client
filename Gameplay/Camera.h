@@ -41,7 +41,7 @@ namespace ms {
         // Return the interpolated position.
         Point<int16_t> position(float alpha) const;
         // Return the interpolated position.
-        Point<double> realposition(float alpha) const;
+        Point<double> real_position(float alpha) const;
 
     private:
         // Movement variables.
@@ -49,10 +49,20 @@ namespace ms {
         Linear<double> y;
 
         // View limits.
-        Range<int16_t> hbounds;
-        Range<int16_t> vbounds;
+        Range<int16_t> h_bounds;
+        Range<int16_t> v_bounds;
 
-        int16_t VWIDTH;
-        int16_t VHEIGHT;
+        int16_t v_width;
+        int16_t v_height;
+
+        // Vertical shift offset % of window height
+        const double V_OFFSET = 1.0 / 8;
+
+        // Easing camera config
+        const double H_LERP_MULT = 45;
+        const double V_LERP_MULT = 30;
+        const double LAZY_ZONE = 25;
+        const double H_LERP_MAX = 200;
+        const double V_LERP_MAX = 150;
     };
 }

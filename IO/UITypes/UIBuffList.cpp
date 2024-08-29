@@ -64,8 +64,8 @@ namespace ms {
     }
 
     UIBuffList::UIBuffList() {
-        int16_t height = Constants::Constants::get().get_viewheight();
-        int16_t width = Constants::Constants::get().get_viewwidth();
+        int16_t height = Constants::Constants::get().get_view_height();
+        int16_t width = Constants::Constants::get().get_view_width();
 
         update_screen(width, height);
     }

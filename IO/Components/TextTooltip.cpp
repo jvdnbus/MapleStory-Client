@@ -43,8 +43,8 @@ namespace ms {
         if (fillheight < 18)
             fillheight = 18;
 
-        int16_t max_width = Constants::Constants::get().get_viewwidth();
-        int16_t max_height = Constants::Constants::get().get_viewheight();
+        int16_t max_width = Constants::Constants::get().get_view_width();
+        int16_t max_height = Constants::Constants::get().get_view_height();
         int16_t cur_width = pos.x() + fillwidth + 21;
         int16_t cur_height = pos.y() + fillheight + 40;
 
