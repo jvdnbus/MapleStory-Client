@@ -119,7 +119,7 @@ namespace ms {
         return look.update(stancespeed);
     }
 
-    float Char::get_stancespeed() const {
+    float Char::get_stance_speed() const {
         if (attacking)
             return get_real_attackspeed();
 

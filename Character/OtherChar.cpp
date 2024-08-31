@@ -56,7 +56,7 @@ namespace ms {
 
         physics.get_fht().update_fh(physics_object);
 
-        bool aniend = Char::update(physics, get_stancespeed());
+        bool aniend = Char::update(physics, get_stance_speed());
 
         if (aniend && attacking)
             attacking = false;

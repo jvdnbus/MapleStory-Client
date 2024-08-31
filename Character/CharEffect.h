@@ -28,6 +28,7 @@ namespace ms {
             SCROLL_SUCCESS,
             SCROLL_FAILURE,
             MONSTER_CARD,
+            TELEPORT,
             LENGTH
         };
 

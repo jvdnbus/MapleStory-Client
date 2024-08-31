@@ -43,6 +43,10 @@ namespace ms {
             move_normal(phobj);
             fht.limit_movement(phobj);
             break;
+        case PhysicsObject::Type::FALLING:
+            move_falling(phobj);
+            fht.limit_movement(phobj);
+            break;
         case PhysicsObject::Type::FLYING:
             move_flying(phobj);
             fht.limit_movement(phobj);
@@ -79,7 +83,8 @@ namespace ms {
                 else if (slopef < -0.5)
                     slopef = -0.5;
 
-                phobj.h_acceleration -= (FRICTION + SLOPEFACTOR * (1.0 + slopef * -inertia)) * inertia;
+                double inertia_mult = FRICTION + SLOPEFACTOR * (1.0 + slopef * -inertia);
+                phobj.h_acceleration -= inertia_mult * inertia;
             }
         } else if (phobj.is_flag_not_set(PhysicsObject::Flag::NO_GRAVITY)) {
             phobj.v_acceleration += GRAVFORCE;
@@ -89,6 +94,19 @@ namespace ms {
         phobj.v_force = 0.0;
 
         phobj.h_speed += phobj.h_acceleration;
+        phobj.v_speed += phobj.v_acceleration;
+    }
+
+    void Physics::move_falling(PhysicsObject& phobj) const {
+        phobj.v_acceleration = 0.0;
+        phobj.h_acceleration = 0.0;
+
+        if (phobj.is_flag_not_set(PhysicsObject::Flag::NO_GRAVITY)) {
+            phobj.v_acceleration += GRAVFORCE;
+        }
+
+        phobj.h_force = 0.0;
+        phobj.v_force = 0.0;
         phobj.v_speed += phobj.v_acceleration;
     }
 

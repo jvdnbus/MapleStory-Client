@@ -193,7 +193,10 @@ namespace ms {
             Point<int16_t> spawnpoint = portals.get_portal_by_name(warpinfo.toname);
             Point<int16_t> startpos = physics.get_y_below(spawnpoint);
 
-            player.respawn(startpos, mapinfo.is_underwater());
+            player.teleport(startpos, mapinfo.is_underwater());
+            player.show_effect_id(CharEffect::Id::TELEPORT);
+
+            Sound(Sound::Name::PORTAL).play();
         } else if (warpinfo.valid) {
             ChangeMapPacket(false, -1, warpinfo.name, false).dispatch();
 
@@ -209,7 +212,7 @@ namespace ms {
         if (player.is_sitting() || player.is_attacking())
             return;
 
-        Optional<const Seat> seat = mapinfo.findseat(player.get_position());
+        Optional<const Seat> seat = mapinfo.find_seat(player.get_position());
         player.set_seat(seat);
     }
 
@@ -217,7 +220,7 @@ namespace ms {
         if (!player.can_climb() || player.is_climbing() || player.is_attacking())
             return;
 
-        Optional<const Ladder> ladder = mapinfo.findladder(player.get_position(), up);
+        Optional<const Ladder> ladder = mapinfo.find_ladder(player.get_position(), up);
         player.set_ladder(ladder);
     }
 
@@ -235,6 +238,7 @@ namespace ms {
 
         switch (type) {
         case KeyType::Id::ACTION:
+//            LOG(LOG_DEBUG, "Key(" << action << ")" << (down ? "Down" : "Up"));
             playable->send_action(KeyAction::actionbyid(action), down);
             break;
         case KeyType::Id::SKILL:

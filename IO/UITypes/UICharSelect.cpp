@@ -247,7 +247,7 @@ namespace ms {
                     int8_t lvy = 19;
                     int16_t lvx = levelset.draw(levelstr, levelPos + Point<int16_t>(-1, lvy));
 
-                    levelset.draw('l', levelPos + Point<int16_t>(-lvx - 3, lvy - 1));
+                    levelset.draw('l', levelPos + Point<int16_t>(-lvx - levelstr.size(), lvy - 1));
                     namelabel.draw(namePos);
 
                     for (size_t i = 0; i < InfoLabel::NUM_LABELS; i++) {

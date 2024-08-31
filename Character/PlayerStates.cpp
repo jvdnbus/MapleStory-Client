@@ -104,8 +104,9 @@ namespace ms {
     }
 
     void PlayerStandState::update_state(Player& player) const {
-        if (!player.get_physics_object().is_on_ground)
+        if (!player.get_physics_object().is_on_ground) {
             player.set_state(Char::State::FALL);
+        }
     }
 #pragma endregion
 
@@ -163,7 +164,7 @@ namespace ms {
 
 #pragma region Falling
     void PlayerFallState::initialize(Player& player) const {
-        player.get_physics_object().type = PhysicsObject::Type::NORMAL;
+        player.get_physics_object().type = PhysicsObject::Type::FALLING;
     }
 
     void PlayerFallState::update(Player& player) const {
@@ -172,23 +173,29 @@ namespace ms {
 
         auto& hspeed = player.get_physics_object().h_speed;
 
-        if (has_left_input(player) && hspeed > 0.0)
+        if (has_left_input(player) && hspeed > 0.0) {
             hspeed -= 0.025;
-        else if (has_right_input(player) && hspeed < 0.0)
+        } else if (has_right_input(player) && hspeed < 0.0) {
             hspeed += 0.025;
+        }
 
-        if (has_left_input(player))
+        if (has_left_input(player)) {
             player.set_direction(false);
-        else if (has_right_input(player))
+        } else if (has_right_input(player)) {
             player.set_direction(true);
+        }
     }
 
     void PlayerFallState::update_state(Player& player) const {
         if (player.get_physics_object().is_on_ground) {
-            if (player.is_key_down(KeyAction::Id::DOWN) && !has_walk_input(player))
+            bool walking = has_walk_input(player);
+            if (player.is_key_down(KeyAction::Id::DOWN) && !walking) {
                 player.set_state(Char::State::PRONE);
-            else
+            } else if (walking) {
+                player.set_state(Char::State::WALK);
+            } else {
                 player.set_state(Char::State::STAND);
+            }
         } else if (player.is_underwater()) {
             player.set_state(Char::State::SWIM);
         }
@@ -196,6 +203,10 @@ namespace ms {
 #pragma endregion
 
 #pragma region Prone
+    void PlayerProneState::initialize(Player& player) const {
+        player.get_physics_object().type = PhysicsObject::Type::NORMAL;
+    }
+
     void PlayerProneState::send_action(Player& player, KeyAction::Id ka, bool down) const {
         if (down && ka == KeyAction::Id::JUMP) {
             if (player.get_physics_object().is_jump_down_enabled && player.is_key_down(KeyAction::Id::DOWN)) {
@@ -319,12 +330,10 @@ namespace ms {
         if (player.is_key_down(KeyAction::Id::JUMP) && has_walk_input(player)) {
             play_jump_sound();
 
-            const auto& walk_force = player.get_walk_force() * 8.0;
-
+            const auto& walk_force = player.get_walk_force() * 6.6;
             player.set_direction(player.is_key_down(KeyAction::Id::RIGHT));
-
             player.get_physics_object().h_speed = player.is_key_down(KeyAction::Id::LEFT) ? -walk_force : walk_force;
-            player.get_physics_object().v_speed = -player.get_jump_force() / 1.5;
+            player.get_physics_object().v_speed = -player.get_jump_force() / 1.85;
 
             cancel_ladder(player);
         }
@@ -335,7 +344,7 @@ namespace ms {
         bool downwards = player.is_key_down(KeyAction::Id::DOWN);
         auto ladder = player.get_ladder();
 
-        if (ladder && ladder->felloff(y, downwards))
+        if (ladder && ladder->fell_off(y, downwards))
             cancel_ladder(player);
     }
 

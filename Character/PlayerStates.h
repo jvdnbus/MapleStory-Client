@@ -94,8 +94,7 @@ namespace ms {
     // The prone state (Lying down)
     class PlayerProneState : public PlayerState {
     public:
-        void initialize(Player&) const override {
-        }
+        void initialize(Player& player) const override;
 
         void send_action(Player& player, KeyAction::Id ka, bool down) const override;
         void update(Player&) const override;

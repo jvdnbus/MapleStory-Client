@@ -66,17 +66,17 @@ namespace ms {
         return mapborders;
     }
 
-    Optional<const Seat> MapInfo::findseat(Point<int16_t> position) const {
+    Optional<const Seat> MapInfo::find_seat(Point<int16_t> position) const {
         for (auto& seat : seats)
-            if (seat.inrange(position))
+            if (seat.in_range(position))
                 return seat;
 
         return nullptr;
     }
 
-    Optional<const Ladder> MapInfo::findladder(Point<int16_t> position, bool upwards) const {
+    Optional<const Ladder> MapInfo::find_ladder(Point<int16_t> position, bool upwards) const {
         for (auto& ladder : ladders)
-            if (ladder.inrange(position, upwards))
+            if (ladder.in_range(position, upwards))
                 return ladder;
 
         return nullptr;
@@ -86,7 +86,7 @@ namespace ms {
         pos = src;
     }
 
-    bool Seat::inrange(Point<int16_t> position) const {
+    bool Seat::in_range(Point<int16_t> position) const {
         auto hor = Range<int16_t>::symmetric(position.x(), 10);
         auto ver = Range<int16_t>::symmetric(position.y(), 10);
 
@@ -108,7 +108,7 @@ namespace ms {
         return ladder;
     }
 
-    bool Ladder::inrange(Point<int16_t> position, bool upwards) const {
+    bool Ladder::in_range(Point<int16_t> position, bool upwards) const {
         auto hor = Range<int16_t>::symmetric(position.x(), 10);
         auto ver = Range<int16_t>(y1, y2);
 
@@ -117,10 +117,10 @@ namespace ms {
         return hor.contains(x) && ver.contains(y);
     }
 
-    bool Ladder::felloff(int16_t y, bool downwards) const {
-        int16_t dy = downwards ? y + 5 : y - 5;
+    bool Ladder::fell_off(int16_t y, bool downwards) const {
+        int16_t dy = downwards ? y + 5 : y;
 
-        return dy > y2 || y + 5 < y1;
+        return dy > y2 || dy < y1;
     }
 
     int16_t Ladder::get_x() const {

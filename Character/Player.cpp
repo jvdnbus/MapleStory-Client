@@ -79,6 +79,13 @@ namespace ms {
         nullstate.update_state(*this);
     }
 
+    void Player::teleport(Point<int16_t> pos, bool uw) {
+        set_position(pos.x(), pos.y());
+        underwater = uw;
+        attacking = false;
+        ladder = nullptr;
+    }
+
     void Player::send_action(KeyAction::Id action, bool down) {
         const PlayerState* pst = get_state(state);
 
@@ -147,9 +154,9 @@ namespace ms {
             pst->update(*this);
             physics.move_object(physics_object);
 
-            bool aniend = Char::update(physics, get_stancespeed());
+            bool ani_end = Char::update(physics, get_stance_speed());
 
-            if (aniend && attacking) {
+            if (ani_end && attacking) {
                 attacking = false;
                 nullstate.update_state(*this);
             } else {
@@ -159,7 +166,7 @@ namespace ms {
 
         uint8_t stancebyte = facing_right ? state : state + 1;
         Movement newmove(physics_object, stancebyte);
-        bool needupdate = lastmove.hasmoved(newmove);
+        bool needupdate = lastmove.has_moved(newmove);
 
         if (needupdate) {
             MovePlayerPacket(newmove).dispatch();
@@ -418,7 +425,9 @@ namespace ms {
     }
 
     float Player::get_climb_force() const {
+        // As far as I can tell, speed/jump do not actually affect climb speed in v83 client
         return 0.8f * static_cast<float>(stats.get_total(EquipStat::Id::SPEED)) / 100;
+//        return 0.8f;
     }
 
     float Player::get_fly_force() const {
@@ -430,7 +439,7 @@ namespace ms {
     }
 
     bool Player::is_key_down(KeyAction::Id action) const {
-        return keysdown.count(action) ? keysdown.at(action) : false;
+        return keysdown.count(action) > 0 && keysdown.at(action);
     }
 
     CharStats& Player::get_stats() {

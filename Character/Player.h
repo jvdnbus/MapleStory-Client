@@ -50,6 +50,8 @@ namespace ms {
 
         // Respawn the player at the given position
         void respawn(Point<int16_t> position, bool underwater);
+        // Teleport the player to the given position
+        void teleport(Point<int16_t> position, bool underwater);
         // Sends a Keyaction to the player's state, to apply forces, change the state and other behavior.
         void send_action(KeyAction::Id action, bool pressed) override;
         // Recalculates the total stats from base stats, inventories and skills.

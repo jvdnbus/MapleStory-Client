@@ -35,6 +35,7 @@ namespace ms {
 
     private:
         void move_normal(PhysicsObject&) const;
+        void move_falling(PhysicsObject&) const;
         void move_flying(PhysicsObject&) const;
         void move_swimming(PhysicsObject&) const;
 

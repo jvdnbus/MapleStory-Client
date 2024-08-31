@@ -150,6 +150,7 @@ namespace ms {
         // Determines which physics engine to use
         enum Type {
             NORMAL,
+            FALLING,
             ICE,
             SWIMMING,
             FLYING,

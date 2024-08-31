@@ -28,7 +28,7 @@ namespace ms {
     public:
         Seat(nl::node source);
 
-        bool inrange(Point<int16_t> position) const;
+        bool in_range(Point<int16_t> position) const;
         Point<int16_t> getpos() const;
 
     private:
@@ -40,8 +40,8 @@ namespace ms {
         Ladder(nl::node source);
 
         bool is_ladder() const;
-        bool inrange(Point<int16_t> position, bool upwards) const;
-        bool felloff(int16_t y, bool downwards) const;
+        bool in_range(Point<int16_t> position, bool upwards) const;
+        bool fell_off(int16_t y, bool downwards) const;
         int16_t get_x() const;
 
     private:
@@ -62,10 +62,10 @@ namespace ms {
         Range<int16_t> get_borders() const;
 
         // Find a seat the player's position
-        Optional<const Seat> findseat(Point<int16_t> position) const;
+        Optional<const Seat> find_seat(Point<int16_t> position) const;
         // Find a ladder at the player's position
         // !upwards - implies downwards
-        Optional<const Ladder> findladder(Point<int16_t> position, bool upwards) const;
+        Optional<const Ladder> find_ladder(Point<int16_t> position, bool upwards) const;
 
     private:
         int32_t fieldlimit;

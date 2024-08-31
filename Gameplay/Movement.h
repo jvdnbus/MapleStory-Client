@@ -45,7 +45,7 @@ namespace ms {
         Movement() : Movement(NONE, 0, 0, 0, 0, 0) {
         }
 
-        bool hasmoved(const Movement& newmove) const {
+        bool has_moved(const Movement& newmove) const {
             return newmove.newstate != newstate || newmove.xpos != xpos || newmove.ypos != ypos || newmove.lastx !=
                 lastx || newmove.lasty != lasty;
         }
