@@ -18,6 +18,7 @@
 #include "Physics.h"
 
 namespace ms {
+    constexpr double TERMINAL_VELOCITY = 6.0;
     constexpr double GRAVFORCE = 0.13;
     constexpr double SWIMGRAVFORCE = 0.03;
     constexpr double FRICTION = 0.5;
@@ -95,6 +96,8 @@ namespace ms {
 
         phobj.h_speed += phobj.h_acceleration;
         phobj.v_speed += phobj.v_acceleration;
+
+        phobj.v_speed = std::fmin(phobj.v_speed, TERMINAL_VELOCITY);
     }
 
     void Physics::move_falling(PhysicsObject& phobj) const {
@@ -110,6 +113,8 @@ namespace ms {
         phobj.h_force = 0.0;
         phobj.v_force = 0.0;
         phobj.v_speed += phobj.v_acceleration;
+
+        phobj.v_speed = std::fmin(phobj.v_speed, TERMINAL_VELOCITY);
     }
 
     void Physics::move_flying(PhysicsObject& phobj) const {

@@ -173,9 +173,9 @@ namespace ms {
         auto& hspeed = player.get_physics_object().h_speed;
 
         if (has_left_input(player) && hspeed > 0.0) {
-            hspeed -= 0.015;
+            hspeed -= 0.01;
         } else if (has_right_input(player) && hspeed < 0.0) {
-            hspeed += 0.015;
+            hspeed += 0.01;
         }
 
         if (has_left_input(player)) {
