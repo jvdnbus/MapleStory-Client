@@ -127,7 +127,7 @@ namespace ms {
         // Change players x-position to the ladder x and change stance to Char::State::LADDER or Char::State::ROPE
         void set_ladder(Optional<const Ladder> ladder);
         // Sets a quick cooldown on climbing so when jumping off a ladder or rope, it doesn't start climb again.
-        void set_climb_cooldown();
+        void set_climb_cooldown(int64_t millis);
         // Checks if the player can climb
         bool can_climb();
         // Jump down the current foothold

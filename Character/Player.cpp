@@ -416,8 +416,8 @@ namespace ms {
         set_state(Char::State::FALL);
     }
 
-    void Player::set_climb_cooldown() {
-        climb_cooldown.set_for(10);
+    void Player::set_climb_cooldown(int64_t millis) {
+        climb_cooldown.set_for(millis);
     }
 
     bool Player::can_climb() {

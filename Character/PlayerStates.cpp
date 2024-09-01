@@ -335,7 +335,7 @@ namespace ms {
             player.get_physics_object().h_speed = player.is_key_down(KeyAction::Id::LEFT) ? -walk_force : walk_force;
             player.get_physics_object().v_speed = -player.get_jump_force() / 1.85;
 
-            cancel_ladder(player);
+            cancel_ladder(player, true);
         }
     }
 
@@ -344,14 +344,15 @@ namespace ms {
         bool downwards = player.is_key_down(KeyAction::Id::DOWN);
         auto ladder = player.get_ladder();
 
-        if (ladder && ladder->fell_off(y, downwards))
-            cancel_ladder(player);
+        if (ladder && ladder->fell_off(y, downwards)) {
+            cancel_ladder(player, false);
+        }
     }
 
-    void PlayerClimbState::cancel_ladder(Player& player) const {
+    void PlayerClimbState::cancel_ladder(Player& player, bool sideways) const {
         player.set_state(Char::State::FALL);
         player.set_ladder(nullptr);
-        player.set_climb_cooldown();
+        player.set_climb_cooldown(sideways ? 100 : 10);
     }
 #pragma endregion
 }

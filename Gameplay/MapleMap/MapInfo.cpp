@@ -124,6 +124,7 @@ namespace ms {
     }
 
     int16_t Ladder::get_x() const {
-        return x;
+        // For some reason x is not perfectly aligned with body origin when climbing
+        return x + 2;
     }
 }

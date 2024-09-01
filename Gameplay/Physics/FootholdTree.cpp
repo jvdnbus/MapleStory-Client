@@ -183,7 +183,8 @@ namespace ms {
             }
         }
 
-        phobj.is_on_ground = phobj.y == ground;
+        static const double GROUND_EPSILON = 0.25; // px
+        phobj.is_on_ground = std::abs(phobj.y - ground) < GROUND_EPSILON;
 
         if (phobj.type == PhysicsObject::FALLING && phobj.jumping_down_from_fh_id > 0 && phobj.is_on_ground) {
             phobj.jumping_down_from_fh_id = 0;
