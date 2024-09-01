@@ -151,8 +151,15 @@ namespace ms {
         } else {
             phobj.fh_id = get_fhid_below(x, y);
 
-            if (phobj.fh_id == 0)
-                return;
+            if (phobj.fh_id == 0) return;
+        }
+
+        if (phobj.type == PhysicsObject::FALLING && phobj.fh_id > 0 && phobj.jumping_down_from_fh_id == phobj.fh_id) {
+            // We should ignore this foothold and move to the one below
+            uint16_t below_id = get_fhid_below(x, get_fh(phobj.fh_id).ground_below(x) + 1.0);
+            phobj.fh_id = below_id;
+
+            if (phobj.fh_id == 0) return;
         }
 
         const Foothold& nextfh = get_fh(phobj.fh_id);
@@ -177,6 +184,10 @@ namespace ms {
         }
 
         phobj.is_on_ground = phobj.y == ground;
+
+        if (phobj.type == PhysicsObject::FALLING && phobj.jumping_down_from_fh_id > 0 && phobj.is_on_ground) {
+            phobj.jumping_down_from_fh_id = 0;
+        }
 
         if (phobj.is_jump_down_enabled || phobj.is_flag_set(PhysicsObject::Flag::CHECK_BELOW)) {
             uint16_t belowid = get_fhid_below(x, nextfh.ground_below(x) + 1.0);

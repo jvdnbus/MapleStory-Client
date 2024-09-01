@@ -407,6 +407,15 @@ namespace ms {
         }
     }
 
+    void Player::jump_down(bool cancel_h_speed) {
+        auto &phobj = get_physics_object();
+        phobj.v_force -= get_jump_down_force();
+        if (cancel_h_speed) phobj.h_speed = 0;
+        phobj.y = phobj.ground_below_y;
+        phobj.jumping_down_from_fh_id = phobj.fh_id;
+        set_state(Char::State::FALL);
+    }
+
     void Player::set_climb_cooldown() {
         climb_cooldown.set_for(10);
     }
@@ -418,6 +427,10 @@ namespace ms {
     float Player::get_walk_force() const {
         // Approximation based on direct comparison testing
         return 0.00431f + 0.19653f * static_cast<float>(stats.get_total(EquipStat::Id::SPEED)) / 100;
+    }
+
+    float Player::get_jump_down_force() const {
+        return 1.5f;
     }
 
     float Player::get_jump_force() const {

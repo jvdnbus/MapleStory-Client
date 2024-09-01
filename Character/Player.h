@@ -106,6 +106,8 @@ namespace ms {
 
         // Returns the current walking force, calculated from the total ES_SPEED stat.
         float get_walk_force() const;
+        // Returns the force when jumping down a platform.
+        float get_jump_down_force() const;
         // Returns the current jumping force, calculated from the total ES_JUMP stat.
         float get_jump_force() const;
         // Returns the climbing force, calculated from the total ES_SPEED stat.
@@ -128,6 +130,8 @@ namespace ms {
         void set_climb_cooldown();
         // Checks if the player can climb
         bool can_climb();
+        // Jump down the current foothold
+        void jump_down(bool cancel_h_speed);
 
         // Obtain a reference to the player's stats
         CharStats& get_stats();

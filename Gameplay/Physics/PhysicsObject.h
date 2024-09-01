@@ -169,6 +169,7 @@ namespace ms {
         double fh_slope = 0.0;
         int8_t fh_layer = 0;
         double ground_below_y = 0.0;
+        uint16_t jumping_down_from_fh_id = 0;
         bool is_on_ground = true;
         bool is_jump_down_enabled = false;
 

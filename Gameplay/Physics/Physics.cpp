@@ -101,6 +101,8 @@ namespace ms {
         phobj.v_acceleration = 0.0;
         phobj.h_acceleration = 0.0;
 
+        phobj.v_acceleration += phobj.v_force;
+
         if (phobj.is_flag_not_set(PhysicsObject::Flag::NO_GRAVITY)) {
             phobj.v_acceleration += GRAVFORCE;
         }

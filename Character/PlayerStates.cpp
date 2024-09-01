@@ -85,11 +85,11 @@ namespace ms {
     }
 
     void PlayerStandState::update(Player& player) const {
-        if (!player.get_physics_object().is_jump_down_enabled)
+        if (!player.get_physics_object().is_jump_down_enabled) {
             player.get_physics_object().set_flag(PhysicsObject::Flag::CHECK_BELOW);
+        }
 
-        if (player.is_attacking())
-            return;
+        if (player.is_attacking()) return;
 
         if (has_right_input(player)) {
             player.set_direction(true);
@@ -116,27 +116,26 @@ namespace ms {
     }
 
     void PlayerWalkState::send_action(Player& player, KeyAction::Id ka, bool down) const {
-        if (player.is_attacking())
-            return;
+        if (player.is_attacking()) return;
 
         if (down && ka == KeyAction::Id::JUMP) {
             play_jump_sound();
 
-            if (player.is_key_down(KeyAction::Id::DOWN) && player.get_physics_object().is_jump_down_enabled) {
-                player.get_physics_object().y = player.get_physics_object().ground_below_y;
-                player.set_state(Char::State::FALL);
+            auto &phobj = player.get_physics_object();
+            if (player.is_key_down(KeyAction::Id::DOWN) && phobj.is_jump_down_enabled) {
+                player.jump_down(true);
             } else {
-                player.get_physics_object().v_force = -player.get_jump_force();
+                phobj.v_force = -player.get_jump_force();
             }
         }
     }
 
     void PlayerWalkState::update(Player& player) const {
-        if (!player.get_physics_object().is_jump_down_enabled)
+        if (!player.get_physics_object().is_jump_down_enabled) {
             player.get_physics_object().set_flag(PhysicsObject::Flag::CHECK_BELOW);
+        }
 
-        if (player.is_attacking())
-            return;
+        if (player.is_attacking()) return;
 
         if (has_walk_input(player)) {
             if (has_right_input(player)) {
@@ -147,8 +146,9 @@ namespace ms {
                 player.get_physics_object().h_force -= player.get_walk_force();
             }
         } else {
-            if (player.is_key_down(KeyAction::Id::DOWN))
+            if (player.is_key_down(KeyAction::Id::DOWN)) {
                 player.set_state(Char::State::PRONE);
+            }
         }
     }
 
@@ -168,15 +168,14 @@ namespace ms {
     }
 
     void PlayerFallState::update(Player& player) const {
-        if (player.is_attacking())
-            return;
+        if (player.is_attacking()) return;
 
         auto& hspeed = player.get_physics_object().h_speed;
 
         if (has_left_input(player) && hspeed > 0.0) {
-            hspeed -= 0.025;
+            hspeed -= 0.015;
         } else if (has_right_input(player) && hspeed < 0.0) {
-            hspeed += 0.025;
+            hspeed += 0.015;
         }
 
         if (has_left_input(player)) {
@@ -209,21 +208,22 @@ namespace ms {
 
     void PlayerProneState::send_action(Player& player, KeyAction::Id ka, bool down) const {
         if (down && ka == KeyAction::Id::JUMP) {
-            if (player.get_physics_object().is_jump_down_enabled && player.is_key_down(KeyAction::Id::DOWN)) {
+            auto &phobj = player.get_physics_object();
+            if (phobj.is_jump_down_enabled && player.is_key_down(KeyAction::Id::DOWN)) {
                 play_jump_sound();
-
-                player.get_physics_object().y = player.get_physics_object().ground_below_y;
-                player.set_state(Char::State::FALL);
+                player.jump_down(false);
             }
         }
     }
 
     void PlayerProneState::update(Player& player) const {
-        if (!player.get_physics_object().is_jump_down_enabled)
+        if (!player.get_physics_object().is_jump_down_enabled) {
             player.get_physics_object().set_flag(PhysicsObject::Flag::CHECK_BELOW);
+        }
 
-        if (player.is_key_down(KeyAction::Id::UP) || !player.is_key_down(KeyAction::Id::DOWN))
+        if (player.is_key_down(KeyAction::Id::UP) || !player.is_key_down(KeyAction::Id::DOWN)) {
             player.set_state(Char::State::STAND);
+        }
 
         if (player.is_key_down(KeyAction::Id::LEFT)) {
             player.set_direction(false);
