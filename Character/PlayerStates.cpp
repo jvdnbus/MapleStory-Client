@@ -81,6 +81,7 @@ namespace ms {
             play_jump_sound();
 
             player.get_physics_object().v_force = -player.get_jump_force();
+            player.set_climb_cooldown(300);
         }
     }
 
@@ -126,6 +127,7 @@ namespace ms {
                 player.jump_down(true);
             } else {
                 phobj.v_force = -player.get_jump_force();
+                player.set_climb_cooldown(300);
             }
         }
     }
@@ -335,7 +337,7 @@ namespace ms {
             player.get_physics_object().h_speed = player.is_key_down(KeyAction::Id::LEFT) ? -walk_force : walk_force;
             player.get_physics_object().v_speed = -player.get_jump_force() / 1.85;
 
-            cancel_ladder(player, true);
+            cancel_ladder(player, true, false);
         }
     }
 
@@ -345,12 +347,17 @@ namespace ms {
         auto ladder = player.get_ladder();
 
         if (ladder && ladder->fell_off(y, downwards)) {
-            cancel_ladder(player, false);
+            cancel_ladder(player, false, downwards);
         }
     }
 
-    void PlayerClimbState::cancel_ladder(Player& player, bool sideways) const {
-        player.set_state(Char::State::FALL);
+    void PlayerClimbState::cancel_ladder(Player& player, bool sideways, bool downwards) const {
+        if (!sideways && !downwards) {
+            // When climbing up off the top, go to walking or standing state
+            player.set_state(has_walk_input(player) ? Char::State::WALK : Char::STAND);
+        } else {
+            player.set_state(Char::State::FALL);
+        }
         player.set_ladder(nullptr);
         player.set_climb_cooldown(sideways ? 100 : 10);
     }

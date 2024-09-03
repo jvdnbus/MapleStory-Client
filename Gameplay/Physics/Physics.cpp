@@ -104,15 +104,18 @@ namespace ms {
         phobj.v_acceleration = 0.0;
         phobj.h_acceleration = 0.0;
 
-        phobj.v_acceleration += phobj.v_force;
+        if (!phobj.is_on_ground) {
+            phobj.v_acceleration += phobj.v_force;
 
-        if (phobj.is_flag_not_set(PhysicsObject::Flag::NO_GRAVITY)) {
-            phobj.v_acceleration += GRAVFORCE;
+            if (phobj.is_flag_not_set(PhysicsObject::Flag::NO_GRAVITY)) {
+                phobj.v_acceleration += GRAVFORCE;
+            }
+
+            phobj.v_speed += phobj.v_acceleration;
         }
 
         phobj.h_force = 0.0;
         phobj.v_force = 0.0;
-        phobj.v_speed += phobj.v_acceleration;
 
         phobj.v_speed = std::fmin(phobj.v_speed, TERMINAL_VELOCITY);
     }

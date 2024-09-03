@@ -132,17 +132,17 @@ namespace ms {
         if (phobj.type == PhysicsObject::Type::FIXATED && phobj.fh_id > 0)
             return;
 
-        const Foothold& curfh = get_fh(phobj.fh_id);
+        const Foothold& cur_fh = get_fh(phobj.fh_id);
         bool checkslope = false;
 
         double x = phobj.current_x();
         double y = phobj.current_y();
 
         if (phobj.is_on_ground) {
-            if (std::floor(x) > curfh.r())
-                phobj.fh_id = curfh.next();
-            else if (std::ceil(x) < curfh.l())
-                phobj.fh_id = curfh.prev();
+            if (std::floor(x) > cur_fh.r())
+                phobj.fh_id = cur_fh.next();
+            else if (std::ceil(x) < cur_fh.l())
+                phobj.fh_id = cur_fh.prev();
 
             if (phobj.fh_id == 0)
                 phobj.fh_id = get_fhid_below(x, y);
@@ -175,7 +175,7 @@ namespace ms {
             else if (phobj.fh_slope > 0.0)
                 vdelta *= (y - ground);
 
-            if (curfh.slope() != 0.0 || nextfh.slope() != 0.0) {
+            if (cur_fh.slope() != 0.0 || nextfh.slope() != 0.0) {
                 if (phobj.h_speed > 0.0 && vdelta <= phobj.h_speed)
                     phobj.y = ground;
                 else if (phobj.h_speed < 0.0 && vdelta >= phobj.h_speed)
@@ -208,8 +208,8 @@ namespace ms {
             phobj.fh_layer = nextfh.layer();
 
         if (phobj.fh_id == 0) {
-            phobj.fh_id = curfh.id();
-            phobj.limit_x(curfh.x1());
+            phobj.fh_id = cur_fh.id();
+            phobj.limit_x(cur_fh.x1());
         }
     }
 
