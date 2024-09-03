@@ -17,7 +17,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "Keyboard.h"
 
-#include <glfw3.h>
+#include <GLFW/glfw3.h>
 
 namespace ms {
     constexpr int32_t Keytable[90] =

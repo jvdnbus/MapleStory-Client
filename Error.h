@@ -40,6 +40,7 @@ namespace ms {
             AUDIO,
             MISSING_ICON,
             FONT_PATH,
+            IMGUI_GLFW,
             LENGTH
         };
 

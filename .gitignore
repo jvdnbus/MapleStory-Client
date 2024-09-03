@@ -11,5 +11,6 @@
 *.nx
 *.wz
 Settings
+imgui.ini
 
 /includes/WzLib

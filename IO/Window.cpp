@@ -37,6 +37,12 @@ namespace ms {
     }
 
     Window::~Window() {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+
+        glfwDestroyWindow(glwnd);
+        glfwDestroyWindow(context);
         glfwTerminate();
     }
 
@@ -45,12 +51,20 @@ namespace ms {
     }
 
     void key_callback(GLFWwindow*, int key, int, int action, int) {
+        if (ImGui::GetIO().WantCaptureKeyboard) {
+            return;
+        }
+
         UI::get().send_key(key, action != GLFW_RELEASE);
     }
 
     std::chrono::time_point<std::chrono::steady_clock> start = ContinuousTimer::get().start();
 
     void mousekey_callback(GLFWwindow*, int button, int action, int) {
+        if (ImGui::GetIO().WantCaptureMouse) {
+            return;
+        }
+
         switch (button) {
         case GLFW_MOUSE_BUTTON_LEFT: {
             switch (action) {
@@ -86,6 +100,10 @@ namespace ms {
     }
 
     void cursor_callback(GLFWwindow*, double xpos, double ypos) {
+        if (ImGui::GetIO().WantCaptureMouse) {
+            return;
+        }
+
         auto cursor_position = Point<int16_t>(
             static_cast<int16_t>(xpos),
             static_cast<int16_t>(ypos)
@@ -106,6 +124,10 @@ namespace ms {
     }
 
     void scroll_callback(GLFWwindow*, double xoffset, double yoffset) {
+        if (ImGui::GetIO().WantCaptureMouse) {
+            return;
+        }
+
         UI::get().send_scroll(yoffset);
     }
 
@@ -118,8 +140,7 @@ namespace ms {
     Error Window::init() {
         fullscreen = Setting<Fullscreen>::get().load();
 
-        if (!glfwInit())
-            return Error::Code::GLFW;
+        if (!glfwInit()) return Error::Code::GLFW;
 
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
         context = glfwCreateWindow(1, 1, "", nullptr, nullptr);
@@ -128,15 +149,17 @@ namespace ms {
         glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
         glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-        if (Error error = GraphicsGL::get().init())
-            return error;
+        if (Error error = GraphicsGL::get().init()) return error;
+        if (Error error = init_window()) return error;
+//#ifdef NDEBUG
+        if (Error error = init_imgui()) return error;
+//#endif
 
-        return initwindow();
+        return init_window_callbacks();
     }
 
-    Error Window::initwindow() {
-        if (glwnd)
-            glfwDestroyWindow(glwnd);
+    Error Window::init_window() {
+        if (glwnd) glfwDestroyWindow(glwnd);
 
         glwnd = glfwCreateWindow(
             width,
@@ -146,8 +169,7 @@ namespace ms {
             context
         );
 
-        if (!glwnd)
-            return Error::Code::WINDOW;
+        if (!glwnd) return Error::Code::WINDOW;
 
         glfwMakeContextCurrent(glwnd);
 
@@ -157,21 +179,6 @@ namespace ms {
         glViewport(0, 0, width, height);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-
-        glfwSetInputMode(glwnd, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-        double xpos, ypos;
-
-        glfwGetCursorPos(glwnd, &xpos, &ypos);
-        cursor_callback(glwnd, xpos, ypos);
-
-        glfwSetInputMode(glwnd, GLFW_STICKY_KEYS, GL_TRUE);
-        glfwSetKeyCallback(glwnd, key_callback);
-        glfwSetMouseButtonCallback(glwnd, mousekey_callback);
-        glfwSetCursorPosCallback(glwnd, cursor_callback);
-        glfwSetWindowFocusCallback(glwnd, focus_callback);
-        glfwSetScrollCallback(glwnd, scroll_callback);
-        glfwSetWindowCloseCallback(glwnd, close_callback);
 
         char buf[256];
         GetCurrentDirectoryA(256, buf);
@@ -190,6 +197,60 @@ namespace ms {
         stbi_image_free(images[0].pixels);
 
         GraphicsGL::get().reinit();
+
+        return Error::Code::NONE;
+    }
+
+    Error Window::init_imgui() {
+        const char* glsl_version = "#version 150";
+
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO &io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+        io.ConfigViewportsNoAutoMerge = true;
+
+        ImGui::StyleColorsDark();
+
+        ImGuiStyle &style = ImGui::GetStyle();
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+            style.WindowRounding = 0.0f;
+            style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+        }
+
+        ImGui_ImplGlfw_InitForOpenGL(glwnd, false);
+        ImGui_ImplOpenGL3_Init(glsl_version);
+
+        const std::string FONT_NORMAL = Setting<FontPathNormal>().get().load();
+        const std::string FONT_BOLD = Setting<FontPathBold>().get().load();
+
+        if (FONT_NORMAL.empty() || FONT_BOLD.empty())
+            return Error::Code::FONT_PATH;
+
+        const char* FONT_NORMAL_STR = FONT_NORMAL.c_str();
+        const char* FONT_BOLD_STR = FONT_BOLD.c_str();
+
+        io.Fonts->AddFontFromFileTTF(FONT_NORMAL_STR, 12.0f);
+        io.Fonts->AddFontFromFileTTF(FONT_BOLD_STR, 12.0f);
+    }
+
+    Error Window::init_window_callbacks() {
+        glfwSetInputMode(glwnd, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+        double xpos, ypos;
+
+        glfwGetCursorPos(glwnd, &xpos, &ypos);
+        cursor_callback(glwnd, xpos, ypos);
+
+        glfwSetInputMode(glwnd, GLFW_STICKY_KEYS, GL_TRUE);
+        glfwSetKeyCallback(glwnd, key_callback);
+        glfwSetMouseButtonCallback(glwnd, mousekey_callback);
+        glfwSetCursorPosCallback(glwnd, cursor_callback);
+        glfwSetWindowFocusCallback(glwnd, focus_callback);
+        glfwSetScrollCallback(glwnd, scroll_callback);
+        glfwSetWindowCloseCallback(glwnd, close_callback);
 
         return Error::Code::NONE;
     }
@@ -231,7 +292,8 @@ namespace ms {
             if (new_width >= max_width || new_height >= max_height)
                 fullscreen = true;
 
-            initwindow();
+            init_window();
+            init_window_callbacks();
         }
 
         glfwPollEvents();
@@ -243,6 +305,7 @@ namespace ms {
 
     void Window::end() const {
         GraphicsGL::get().flush(opacity);
+
         glfwSwapBuffers(glwnd);
     }
 
@@ -269,7 +332,8 @@ namespace ms {
             fullscreen = !fullscreen;
             Setting<Fullscreen>::get().save(fullscreen);
 
-            initwindow();
+            init_window();
+            init_window_callbacks();
             glfwPollEvents();
         }
     }

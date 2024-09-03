@@ -21,9 +21,13 @@
 
 #include "../Template/Singleton.h"
 
+#include "../imgui/imgui.h"
+#include "../imgui/backends/imgui_impl_glfw.h"
+#include "../imgui/backends/imgui_impl_opengl3.h"
+
 #define GLEW_STATIC
 #include <glew.h>
-#include <glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <functional>
 
@@ -34,7 +38,9 @@ namespace ms {
         ~Window() override;
 
         Error init();
-        Error initwindow();
+        Error init_window();
+        Error init_imgui();
+        Error init_window_callbacks();
 
         bool not_closed() const;
         void update();

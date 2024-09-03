@@ -22,6 +22,10 @@
 #include "Util/HardwareInfo.h"
 #include "Util/ScreenResolution.h"
 
+//#ifdef NDEBUG
+#include "IO/DebugUI.h"
+//#endif
+
 #ifdef USE_NX
 #include "Util/NxFiles.h"
 #else
@@ -55,6 +59,7 @@ namespace ms {
         MapPortals::init();
         Stage::get().init();
         UI::get().init();
+        DebugUI::get().init();
 
         return Error::NONE;
     }
@@ -64,6 +69,7 @@ namespace ms {
         Window::get().update();
         Stage::get().update();
         UI::get().update();
+        DebugUI::get().update();
         Session::get().read();
     }
 
@@ -71,6 +77,7 @@ namespace ms {
         Window::get().begin();
         Stage::get().draw(alpha);
         UI::get().draw(alpha);
+        DebugUI::get().draw();
         Window::get().end();
     }
 

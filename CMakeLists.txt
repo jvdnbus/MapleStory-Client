@@ -94,29 +94,6 @@ endif()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 set(PROJECT_NAME MapleStory)
 
 ################################################################################
@@ -246,6 +223,7 @@ set(Header_Files
     "IO/Components/Tooltip.h"
     "IO/Components/TwoSpriteButton.h"
     "IO/Cursor.h"
+    "IO/DebugUI.h"
     "IO/KeyAction.h"
     "IO/Keyboard.h"
     "IO/KeyConfig.h"
@@ -479,6 +457,7 @@ set(Source_Files
     "IO/Components/TextTooltip.cpp"
     "IO/Components/TwoSpriteButton.cpp"
     "IO/Cursor.cpp"
+    "IO/DebugUI.cpp"
     "IO/Keyboard.cpp"
     "IO/Messages.cpp"
     "IO/UI.cpp"
@@ -555,6 +534,9 @@ set(Source_Files
 )
 source_group("Source Files" FILES ${Source_Files})
 
+include_directories(${CMAKE_SOURCE_DIR}/imgui)
+add_subdirectory(imgui)
+
 set(ALL_FILES
     ${Header_Files}
     ${Source_Files}
@@ -601,7 +583,7 @@ if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
     target_include_directories(${PROJECT_NAME} PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/glew-2.1.0/include/GL;"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/freetype/include;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/includes/glfw-3.3.2.bin.WIN$ENV{PlatformArchitecture}/include/GLFW;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/glfw-3.3.2.bin.WIN$ENV{PlatformArchitecture}/include;"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/stb;"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/bass24/c;"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/NoLifeNx"
@@ -610,7 +592,7 @@ elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
     target_include_directories(${PROJECT_NAME} PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/glew-2.1.0/include/GL;"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/freetype/include;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/includes/glfw-3.3.2.bin.WIN$ENV{PlatformArchitecture}/include/GLFW;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/glfw-3.3.2.bin.WIN$ENV{PlatformArchitecture}/include;"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/stb;"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/bass24/c;"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/NoLifeNx"
@@ -748,6 +730,7 @@ if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
         "bass;"
         "OpenGL32;"
         "Iphlpapi"
+        "imgui"
     )
 elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
     set(ADDITIONAL_LIBRARY_DEPENDENCIES
@@ -759,6 +742,7 @@ elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
         "Iphlpapi;"
         "NoLifeNx;"
         "WzLib"
+        "imgui"
     )
 endif()
 target_link_libraries(${PROJECT_NAME} PRIVATE "${ADDITIONAL_LIBRARY_DEPENDENCIES}")
