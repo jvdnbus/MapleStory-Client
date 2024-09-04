@@ -56,6 +56,7 @@ namespace ms {
 
     private:
         void updateopc();
+        void reset_windows();
 
         GLFWwindow* glwnd;
         GLFWwindow* context;

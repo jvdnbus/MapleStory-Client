@@ -155,11 +155,17 @@ namespace ms {
         if (Error error = init_imgui()) return error;
 //#endif
 
+        // Callbacks are installed after ImGui because ImGui::GetIO() will not be ready
         return init_window_callbacks();
     }
 
     Error Window::init_window() {
-        if (glwnd) glfwDestroyWindow(glwnd);
+        if (glwnd) {
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
+            ImGui::DestroyContext();
+            glfwDestroyWindow(glwnd);
+        }
 
         glwnd = glfwCreateWindow(
             width,
@@ -207,9 +213,11 @@ namespace ms {
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO &io = ImGui::GetIO();
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+//        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+        io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+        io.MouseDrawCursor = true;
         io.ConfigViewportsNoAutoMerge = true;
 
         ImGui::StyleColorsDark();
@@ -220,7 +228,7 @@ namespace ms {
             style.Colors[ImGuiCol_WindowBg].w = 1.0f;
         }
 
-        ImGui_ImplGlfw_InitForOpenGL(glwnd, false);
+        ImGui_ImplGlfw_InitForOpenGL(glwnd, true);
         ImGui_ImplOpenGL3_Init(glsl_version);
 
         const std::string FONT_NORMAL = Setting<FontPathNormal>().get().load();
@@ -232,8 +240,10 @@ namespace ms {
         const char* FONT_NORMAL_STR = FONT_NORMAL.c_str();
         const char* FONT_BOLD_STR = FONT_BOLD.c_str();
 
-        io.Fonts->AddFontFromFileTTF(FONT_NORMAL_STR, 12.0f);
-        io.Fonts->AddFontFromFileTTF(FONT_BOLD_STR, 12.0f);
+        io.Fonts->AddFontFromFileTTF(FONT_NORMAL_STR, 14.0f);
+        io.Fonts->AddFontFromFileTTF(FONT_BOLD_STR, 14.0f);
+
+        return Error::NONE;
     }
 
     Error Window::init_window_callbacks() {
@@ -279,6 +289,17 @@ namespace ms {
         }
     }
 
+    void Window::reset_windows() {
+        // ImGui has overriden some of these, so reset
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
+        init_window();
+        init_imgui();
+        init_window_callbacks();
+    }
+
     void Window::check_events() {
         int16_t max_width = Configuration::get().get_max_width();
         int16_t max_height = Configuration::get().get_max_height();
@@ -292,8 +313,7 @@ namespace ms {
             if (new_width >= max_width || new_height >= max_height)
                 fullscreen = true;
 
-            init_window();
-            init_window_callbacks();
+            reset_windows();
         }
 
         glfwPollEvents();
@@ -332,8 +352,7 @@ namespace ms {
             fullscreen = !fullscreen;
             Setting<Fullscreen>::get().save(fullscreen);
 
-            init_window();
-            init_window_callbacks();
+            reset_windows();
             glfwPollEvents();
         }
     }
