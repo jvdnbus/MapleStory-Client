@@ -78,6 +78,8 @@ namespace ms {
 
         // Set if the character sprite is mirrored (true = facing right)
         virtual void set_direction(bool flipped);
+        // Returns the character's state
+        virtual Char::State get_state();
         // Change the character's state
         virtual void set_state(State newstate);
         // Change the character's stance to an attack action
@@ -114,8 +116,8 @@ namespace ms {
         // Remove a pet with the specified index and reason
         void remove_pet(uint8_t index, bool hunger);
 
-        // Return if the character is facing left
-        bool getflip() const;
+        // Return if the character is facing right
+        bool is_facing_right() const;
         // Return the name of this character
         std::string get_name() const;
 

@@ -15,7 +15,11 @@ namespace ms {
         void update();
         void draw();
 
+        void show();
+        void hide();
     private:
         bool is_shown;
+
+        void _draw();
     };
 }

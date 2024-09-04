@@ -200,6 +200,10 @@ namespace ms {
         }
     }
 
+    Char::State Char::get_state() {
+        return state;
+    }
+
     void Char::set_state(uint8_t statebyte) {
         if (statebyte % 2 == 1) {
             set_direction(false);
@@ -314,7 +318,7 @@ namespace ms {
         return WeaponData::get(weapon_id).get_type();
     }
 
-    bool Char::getflip() const {
+    bool Char::is_facing_right() const {
         return facing_right;
     }
 

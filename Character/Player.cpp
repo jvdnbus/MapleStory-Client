@@ -29,7 +29,7 @@
 namespace ms {
     const PlayerNullState nullstate;
 
-    const PlayerState* get_state(Char::State state) {
+    const PlayerState* get_player_state(Char::State state) {
         static PlayerStandState standing;
         static PlayerWalkState walking;
         static PlayerFallState falling;
@@ -87,7 +87,7 @@ namespace ms {
     }
 
     void Player::send_action(KeyAction::Id action, bool down) {
-        const PlayerState* pst = get_state(state);
+        const PlayerState* pst = get_player_state(state);
 
         if (pst)
             pst->send_action(*this, action, down);
@@ -148,7 +148,7 @@ namespace ms {
     }
 
     int8_t Player::update(const Physics& physics) {
-        const PlayerState* pst = get_state(state);
+        const PlayerState* pst = get_player_state(state);
 
         if (pst) {
             pst->update(*this);
@@ -201,7 +201,7 @@ namespace ms {
         if (!attacking) {
             Char::set_state(st);
 
-            const PlayerState* pst = get_state(st);
+            const PlayerState* pst = get_player_state(st);
 
             if (pst)
                 pst->initialize(*this);
