@@ -62,8 +62,8 @@ namespace ms {
     }
 
     void SetCashShopHandler::transition() const {
-        Constants::Constants::get().set_viewwidth(1024);
-        Constants::Constants::get().set_viewheight(768);
+        Constants::Constants::get().set_view_width(1024);
+        Constants::Constants::get().set_view_height(768);
 
         float fadestep = 0.025f;
 

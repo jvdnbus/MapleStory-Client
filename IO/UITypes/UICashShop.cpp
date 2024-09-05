@@ -282,8 +282,8 @@ namespace ms {
             uint16_t width = Setting<Width>::get().load();
             uint16_t height = Setting<Height>::get().load();
 
-            Constants::Constants::get().set_viewwidth(width);
-            Constants::Constants::get().set_viewheight(height);
+            Constants::Constants::get().set_view_width(width);
+            Constants::Constants::get().set_view_height(height);
 
             float fadestep = 0.025f;
 

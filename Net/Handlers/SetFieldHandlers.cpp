@@ -54,8 +54,8 @@ namespace ms {
     }
 
     void SetFieldHandler::handle(InPacket& recv) {
-        Constants::Constants::get().set_viewwidth(Setting<Width>::get().load());
-        Constants::Constants::get().set_viewheight(Setting<Height>::get().load());
+        Constants::Constants::get().set_view_width(Setting<Width>::get().load());
+        Constants::Constants::get().set_view_height(Setting<Height>::get().load());
 
         int32_t channel = recv.read_int();
         int8_t mode1 = recv.read_byte();

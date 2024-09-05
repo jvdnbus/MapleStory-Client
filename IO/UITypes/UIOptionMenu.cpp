@@ -174,8 +174,8 @@ namespace ms {
                 Setting<Width>::get().save(width);
                 Setting<Height>::get().save(height);
 
-                Constants::Constants::get().set_viewwidth(width);
-                Constants::Constants::get().set_viewheight(height);
+                Constants::Constants::get().set_view_width(width);
+                Constants::Constants::get().set_view_height(height);
             }
             break;
             case TAB1:

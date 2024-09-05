@@ -42,7 +42,7 @@ namespace ms {
             }
 
             // Set the window and screen width
-            void set_viewwidth(int16_t width) {
+            void set_view_width(int16_t width) {
                 VIEWWIDTH = width;
             }
 
@@ -52,7 +52,7 @@ namespace ms {
             }
 
             // Set the window and screen height
-            void set_viewheight(int16_t height) {
+            void set_view_height(int16_t height) {
                 VIEWHEIGHT = height;
             }
 

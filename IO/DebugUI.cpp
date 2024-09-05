@@ -4,9 +4,13 @@
 
 #include <GLFW/glfw3.h>
 
+#define DEBUG_VALUE(key, str) const DebugValue DebugValue::key = DebugValue(str);
+
 namespace ms {
+    DEBUG_VALUE(FPS, "Framerate");
+
     DebugUI::DebugUI() {
-        is_shown = true;
+        _is_shown = true;
     }
 
     Player& get_player() {
@@ -17,12 +21,12 @@ namespace ms {
     void DebugUI::init() {
     }
 
-    void DebugUI::update() {
-        //
+    bool DebugUI::is_shown() const {
+        return _is_shown;
     }
 
     void DebugUI::draw() {
-        if (is_shown) {
+        if (_is_shown) {
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
@@ -46,10 +50,10 @@ namespace ms {
     }
 
     void DebugUI::_draw() {
-//        ImGui::ShowDemoWindow(&is_shown);
+//        ImGui::ShowDemoWindow(&_is_shown);
 
         ImGui::SetNextWindowSize({ 400, 480 }, ImGuiCond_FirstUseEver);
-        if (is_shown && ImGui::Begin("DebugUI###DebugUI", &is_shown, ImGuiWindowFlags_NoCollapse)) {
+        if (_is_shown && ImGui::Begin("DebugUI###DebugUI", &_is_shown, ImGuiWindowFlags_NoCollapse)) {
             if (ImGui::BeginTabBar("tabBar1", ImGuiTabBarFlags_None)) {
                 if (ImGui::BeginTabItem("Player", nullptr, ImGuiTabItemFlags_None)) {
                     ImGui::SetNextItemOpen(true, ImGuiCond_Appearing);
@@ -59,12 +63,10 @@ namespace ms {
                     if (ImGui::CollapsingHeader("Position")) {
                         Point<int16_t> pos = player.get_position();
                         ImGui::TextUnformatted("X:");
-
                         ImGui::SameLine(0, 1 * ImGui::GetStyle().ItemSpacing.x);
                         ImGui::Text("%d", pos.x());
 
                         ImGui::TextUnformatted("Y:");
-
                         ImGui::SameLine(0, 1 * ImGui::GetStyle().ItemSpacing.x);
                         ImGui::Text("%d", pos.y());
                     }
@@ -72,10 +74,11 @@ namespace ms {
                     ImGui::SetNextItemOpen(true, ImGuiCond_Appearing);
                     if (ImGui::CollapsingHeader("State")) {
                         ImGui::TextUnformatted("Facing:");
-
                         ImGui::SameLine(0, 1 * ImGui::GetStyle().ItemSpacing.x);
                         ImGui::Text("%s", player.is_facing_right() ? "RIGHT" : "LEFT");
 
+                        ImGui::TextUnformatted("State:");
+                        ImGui::SameLine(0, 1 * ImGui::GetStyle().ItemSpacing.x);
                         ImGui::Text("%d", static_cast<int>(player.get_state()));
                     }
 
@@ -91,6 +94,11 @@ namespace ms {
                 }
 
                 if (ImGui::BeginTabItem("System", nullptr, ImGuiTabItemFlags_None)) {
+                    auto fps = DebugValue::FPS;
+                    ImGui::Text("%s:", fps.to_string().c_str());
+                    ImGui::SameLine(0, 1 * ImGui::GetStyle().ItemSpacing.x);
+                    ImGui::Text("%lld", get_value(fps).get_int64());
+
                     ImGui::EndTabItem();
                 }
 
@@ -102,10 +110,10 @@ namespace ms {
     }
 
     void DebugUI::show() {
-        is_shown = true;
+        _is_shown = true;
     }
 
     void DebugUI::hide() {
-        is_shown = false;
+        _is_shown = false;
     }
 }

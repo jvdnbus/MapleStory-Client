@@ -19,7 +19,7 @@
 
 #include "../Constants.h"
 
-#define EASY_IN_OUT_CUBIC(x) std::fmin(1.0, std::fmax(0.0, x < 0.5 ? 4 * x * x * x : 1 - std::pow(-2 * x + 2, 3) / 2))
+#define EASY_IN_OUT_CUBIC(x) std::fmin(1.0, std::fmax(0.1, x < 0.5 ? 4 * x * x * x : 1 - std::pow(-2 * x + 2, 3) / 2))
 
 namespace ms {
     Camera::Camera() {

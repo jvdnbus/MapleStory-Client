@@ -69,7 +69,6 @@ namespace ms {
         Window::get().update();
         Stage::get().update();
         UI::get().update();
-        DebugUI::get().update();
         Session::get().read();
     }
 
@@ -109,14 +108,18 @@ namespace ms {
             float alpha = static_cast<float>(accumulator) / timestep;
             draw(alpha);
 
-            if (show_fps) {
+            if (show_fps || DebugUI::get().is_shown()) {
                 if (samples < 100) {
                     period += elapsed;
                     samples++;
                 } else if (period) {
                     int64_t fps = (samples * 1000000) / period;
 
-                    LOG(LOG_INFO, "FPS: " << fps);
+                    if (show_fps) {
+                        LOG(LOG_INFO, "FPS: " << fps);
+                    } else {
+                        DebugUI::get().update(DebugValue::FPS, fps);
+                    }
 
                     period = 0;
                     samples = 0;
