@@ -148,7 +148,7 @@ namespace ms {
     bool DamageNumber::update() {
         moveobj.move();
 
-        constexpr float FADE_STEP = Constants::TIMESTEP * 1.0f / FADE_TIME;
+        float FADE_STEP = Constants::TIMESTEP * 1.0f / FADE_TIME;
         opacity -= FADE_STEP;
 
         return opacity.last() <= 0.0f;

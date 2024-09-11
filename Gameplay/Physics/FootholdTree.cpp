@@ -139,21 +139,26 @@ namespace ms {
         double y = phobj.current_y();
 
         if (phobj.is_on_ground) {
-            if (std::floor(x) > cur_fh.r())
+            if (std::floor(x) > cur_fh.r()) {
+                // Move to the fh to the right of current one
                 phobj.fh_id = cur_fh.next();
-            else if (std::ceil(x) < cur_fh.l())
+            } else if (std::ceil(x) < cur_fh.l()) {
+                // Move to the fh to the left of current one
                 phobj.fh_id = cur_fh.prev();
+            }
 
-            if (phobj.fh_id == 0)
+            if (phobj.fh_id == 0) {
                 phobj.fh_id = get_fhid_below(x, y);
-            else
+            } else {
                 checkslope = true;
+            }
         } else {
             phobj.fh_id = get_fhid_below(x, y);
 
             if (phobj.fh_id == 0) return;
         }
 
+        // Jumped down and currently above the fh we jumped down from (small upwards hop)
         if (phobj.type == PhysicsObject::FALLING && phobj.fh_id > 0 && phobj.jumping_down_from_fh_id == phobj.fh_id) {
             // We should ignore this foothold and move to the one below
             uint16_t below_id = get_fhid_below(x, get_fh(phobj.fh_id).ground_below(x) + 1.0);
@@ -167,6 +172,7 @@ namespace ms {
 
         double ground = nextfh.ground_below(x);
 
+        // Walking on a slope
         if (phobj.v_speed == 0.0 && checkslope) {
             double vdelta = abs(phobj.fh_slope);
 
@@ -176,25 +182,36 @@ namespace ms {
                 vdelta *= (y - ground);
 
             if (cur_fh.slope() != 0.0 || nextfh.slope() != 0.0) {
-                if (phobj.h_speed > 0.0 && vdelta <= phobj.h_speed)
+                if (phobj.h_speed > 0.0 && vdelta <= phobj.h_speed) {
+                    // If we are moving to the right, and the slope speed required is below or equal to horizontal speed
+                    // i.e. we are able to move up/down this slope
+                    // adjust the y position to match the underlying ground so we walk across the gap
                     phobj.y = ground;
-                else if (phobj.h_speed < 0.0 && vdelta >= phobj.h_speed)
+                } else if (phobj.h_speed < 0.0 && vdelta >= phobj.h_speed) {
+                    // If we are moving to the left, and the slope speed required is below or equal to horizontal speed
+                    // ...idem...
                     phobj.y = ground;
+                }
             }
         }
 
-        static const double GROUND_EPSILON = 0.25; // px
+        // We allow a small error margin to be considered "on ground"
+        // to reduce probability of falling through the ground
+        static const double GROUND_EPSILON = 0.05;
         phobj.is_on_ground = std::abs(phobj.y - ground) < GROUND_EPSILON;
 
+        // Reset the id of the fh we jumped down from on touchdown
         if (phobj.type == PhysicsObject::FALLING && phobj.jumping_down_from_fh_id > 0 && phobj.is_on_ground) {
             phobj.jumping_down_from_fh_id = 0;
         }
 
+        // If we are able to jump down or ordered to calculate the ground below
         if (phobj.is_jump_down_enabled || phobj.is_flag_set(PhysicsObject::Flag::CHECK_BELOW)) {
             uint16_t belowid = get_fhid_below(x, nextfh.ground_below(x) + 1.0);
 
             if (belowid > 0) {
                 double nextground = get_fh(belowid).ground_below(x);
+                // Can only jump down if there is a ground below us within 600px
                 phobj.is_jump_down_enabled = (nextground - ground) < 600.0;
                 phobj.ground_below_y = ground + 1.0;
             } else {

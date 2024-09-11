@@ -127,6 +127,7 @@ namespace ms {
                 player.jump_down(true);
             } else {
                 phobj.v_force = -player.get_jump_force();
+                phobj.h_force += phobj.fh_slope * 0.3;
                 player.set_climb_cooldown(300);
             }
         }
@@ -189,6 +190,7 @@ namespace ms {
 
     void PlayerFallState::update_state(Player& player) const {
         if (player.get_physics_object().is_on_ground) {
+            // Go to prone, walk or stand state depending on input
             bool walking = has_walk_input(player);
             if (player.is_key_down(KeyAction::Id::DOWN) && !walking) {
                 player.set_state(Char::State::PRONE);

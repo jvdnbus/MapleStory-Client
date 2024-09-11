@@ -19,13 +19,18 @@
 
 namespace ms {
     constexpr double TERMINAL_VELOCITY = 6.0;
+    constexpr double MAX_SLOPE_H_SPEED = 2.5;
+    constexpr double VERT_TO_HOR_INERTIA_FACTOR = 35.0;
     constexpr double GRAVFORCE = 0.13;
     constexpr double SWIMGRAVFORCE = 0.03;
     constexpr double FRICTION = 0.5;
-    constexpr double SLOPEFACTOR = 0.1;
+    constexpr double FRICTION_FACTOR = 0.1;
+    constexpr double SLOPE_FRICTION_FACTOR = 0.75;
+    constexpr double SLOPE_INERTIA_FACTOR = 2.2;
     constexpr double GROUNDSLIP = 3.0;
     constexpr double FLYFRICTION = 0.05;
     constexpr double SWIMFRICTION = 0.08;
+    constexpr double PI = 3.14159265358979323846;
 
     Physics::Physics(nl::node src) {
         fht = src;
@@ -79,12 +84,18 @@ namespace ms {
                 double inertia = phobj.h_speed / GROUNDSLIP;
                 double slopef = phobj.fh_slope;
 
-                if (slopef > 0.5)
-                    slopef = 0.5;
-                else if (slopef < -0.5)
-                    slopef = -0.5;
+                // If the slope isn't steep we don't reduce or increase acceleration at all
+                if (slopef > -0.5 && slopef < 0.5)
+                    slopef = 0.0;
 
-                double inertia_mult = FRICTION + SLOPEFACTOR * (1.0 + slopef * -inertia);
+                double slope_friction = 1.0;
+                if ((slopef < 0.0 && phobj.h_speed > 0.0) || (slopef > 0.0 && phobj.h_speed < 0.0)) {
+                    // If going uphill, decrease inertia relative to angle of slope
+                    slope_friction = cos(slopef * SLOPE_FRICTION_FACTOR);
+                }
+                double inertia_mult = FRICTION;
+                inertia_mult += FRICTION_FACTOR * (1.0 + SLOPE_INERTIA_FACTOR * (slopef * -inertia));
+                inertia_mult /= slope_friction;
                 phobj.h_acceleration -= inertia_mult * inertia;
             }
         } else if (phobj.is_flag_not_set(PhysicsObject::Flag::NO_GRAVITY)) {
@@ -112,6 +123,50 @@ namespace ms {
             }
 
             phobj.v_speed += phobj.v_acceleration;
+        } else {
+            phobj.v_acceleration += phobj.v_force;
+            phobj.h_acceleration += phobj.h_force;
+
+            if (phobj.is_flag_not_set(PhysicsObject::Flag::NO_GRAVITY)) {
+                phobj.v_acceleration += GRAVFORCE;
+            }
+
+            double slopef = phobj.fh_slope;
+            if (slopef != 0.0) {
+                // Calculate angle at which we land on slope
+                // An acute angle should result in the most movement down the slope
+                // An obtuse angle should result in less movement down the slope
+                auto velo_vector = Point<double>(
+                    phobj.h_speed + phobj.h_acceleration,
+                    -(phobj.v_speed + phobj.v_acceleration) // Y is negated to match y axis (positive = top right quadrant)
+                );
+                velo_vector = velo_vector / velo_vector.length();
+                double theta = atan2(velo_vector.y(), velo_vector.x());
+                double ro = theta <= 0 ? theta + PI : theta - PI;
+                double slope_omega = -slopef;
+                double delta = std::abs(ro - slope_omega);
+                double transform_factor = (1 + cos(delta)) / 2;
+
+                // If the slope isn't steep we don't reduce or increase acceleration at all
+                if (slopef > -0.5 && slopef < 0.5) {
+                    transform_factor = 0.0;
+                }
+
+                double inertia = transform_factor * VERT_TO_HOR_INERTIA_FACTOR * phobj.v_acceleration;
+
+                if (slopef < 0.0)
+                    inertia *= -1;
+
+                double inertia_mult = FRICTION;
+                inertia_mult += FRICTION_FACTOR * (1.0 + SLOPE_INERTIA_FACTOR * (slopef * inertia));
+                phobj.h_acceleration += inertia_mult * inertia;
+                phobj.h_speed += phobj.h_acceleration;
+
+                // Don't get out of hand
+                double max_speed = MAX_SLOPE_H_SPEED;
+                if (phobj.h_acceleration > max_speed) phobj.h_speed = max_speed;
+                if (phobj.h_acceleration < -max_speed) phobj.h_speed = -max_speed;
+            }
         }
 
         phobj.h_force = 0.0;

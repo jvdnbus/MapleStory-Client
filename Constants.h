@@ -23,44 +23,64 @@
 
 namespace ms {
     namespace Constants {
-        // Timestep, i.e., the granularity in which the game advances.
-        constexpr uint16_t TIMESTEP = 8;
+        constexpr uint16_t TIMESTEP_DEFAULT = 8;
+#define TIMESTEP Constants::get().get_timestep()
 
         class Constants : public Singleton<Constants> {
         public:
             Constants() {
-                VIEWWIDTH = 1024;
-                VIEWHEIGHT = 768;
+                view_width = 1024;
+                view_height = 768;
+                timestep = TIMESTEP_DEFAULT;
             };
 
-            ~Constants() override {
-            }
+            ~Constants() override = default;
 
             // Get the window and screen width
-            int16_t get_view_width() {
-                return VIEWWIDTH;
+            int16_t get_view_width() const {
+                return view_width;
             }
 
             // Set the window and screen width
             void set_view_width(int16_t width) {
-                VIEWWIDTH = width;
+                view_width = width;
             }
 
             // Get the window and screen height
-            int16_t get_view_height() {
-                return VIEWHEIGHT;
+            int16_t get_view_height() const {
+                return view_height;
             }
 
             // Set the window and screen height
             void set_view_height(int16_t height) {
-                VIEWHEIGHT = height;
+                view_height = height;
+            }
+
+            uint16_t get_timestep() const {
+                return static_cast<uint16_t>(timestep);
+            }
+
+            int* get_timestep_ref() {
+                return &timestep;
+            }
+
+            void set_paused(bool p) {
+                paused = p;
+            }
+
+            bool is_paused() const {
+                return paused;
             }
 
         private:
             // Window and screen width
-            int16_t VIEWWIDTH;
+            int16_t view_width;
             // Window and screen height
-            int16_t VIEWHEIGHT;
+            int16_t view_height;
+            // Timestep, i.e., the granularity in which the game advances.
+            int timestep;
+            // Whether the game physics are paused
+            bool paused;
         };
     }
 }

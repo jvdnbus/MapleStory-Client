@@ -37,7 +37,7 @@ namespace ms {
     }
 
     void Cursor::draw(float alpha) const {
-        constexpr int64_t HIDE_AFTER = HIDE_TIME / Constants::TIMESTEP;
+        int64_t HIDE_AFTER = HIDE_TIME / Constants::TIMESTEP;
 
         if (hide_counter < HIDE_AFTER)
             animations[state].draw(position, alpha);

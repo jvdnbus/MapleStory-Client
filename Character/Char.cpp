@@ -111,8 +111,8 @@ namespace ms {
 
         uint16_t stancespeed = 0;
 
-        if (speed >= 1.0f / Constants::TIMESTEP)
-            stancespeed = static_cast<uint16_t>(Constants::TIMESTEP * speed);
+        if (speed >= 1.0f / Constants::TIMESTEP_DEFAULT)
+            stancespeed = static_cast<uint16_t>(Constants::TIMESTEP_DEFAULT * speed);
 
         afterimage.update(look.get_frame(), stancespeed);
 

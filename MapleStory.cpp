@@ -99,6 +99,7 @@ namespace ms {
 
         while (running()) {
             int64_t elapsed = Timer::get().stop();
+            timestep = Constants::TIMESTEP * 1000; // Timestep can be variable from now on
 
             // Update game with constant timestep as many times as possible.
             for (accumulator += elapsed; accumulator >= timestep; accumulator -= timestep)

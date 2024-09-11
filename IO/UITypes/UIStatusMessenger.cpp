@@ -35,7 +35,7 @@ namespace ms {
     }
 
     bool StatusInfo::update() {
-        constexpr float FADE_STEP = Constants::TIMESTEP * 1.0f / FADE_DURATION;
+        float FADE_STEP = Constants::TIMESTEP * 1.0f / FADE_DURATION;
         opacity -= FADE_STEP;
 
         return opacity.last() < FADE_STEP;
