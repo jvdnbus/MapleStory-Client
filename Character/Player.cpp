@@ -331,6 +331,18 @@ namespace ms {
         return {attack, damage, direction};
     }
 
+    void Player::fall_damage(double fell_from_height) {
+        int32_t damage = 0.035 * (fell_from_height - get_fall_damage_min_height()) + 7;
+        show_damage(damage);
+
+        physics_object.h_speed = is_facing_right() ? 2.5 : -2.5;
+        physics_object.v_force -= 2.0;
+    }
+
+    int16_t Player::get_fall_damage_min_height() const {
+        return 600;
+    };
+
     void Player::give_buff(Buff buff) {
         buffs[buff.stat] = buff;
     }

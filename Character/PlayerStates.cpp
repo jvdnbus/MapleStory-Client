@@ -167,13 +167,20 @@ namespace ms {
 
 #pragma region Falling
     void PlayerFallState::initialize(Player& player) const {
-        player.get_physics_object().type = PhysicsObject::Type::FALLING;
+        auto& phobj = player.get_physics_object();
+        phobj.type = PhysicsObject::Type::FALLING;
+        phobj.fell_from_y = phobj.current_y();
     }
 
     void PlayerFallState::update(Player& player) const {
+        auto& phobj = player.get_physics_object();
+        // If player is still going up (jump), raise height we fall from
+        if (phobj.current_y() < phobj.fell_from_y)
+            phobj.fell_from_y = phobj.current_y();
+
         if (player.is_attacking()) return;
 
-        auto& hspeed = player.get_physics_object().h_speed;
+        auto& hspeed = phobj.h_speed;
 
         if (has_left_input(player) && hspeed > 0.0) {
             hspeed -= 0.01;
@@ -189,7 +196,8 @@ namespace ms {
     }
 
     void PlayerFallState::update_state(Player& player) const {
-        if (player.get_physics_object().is_on_ground) {
+        auto &phobj = player.get_physics_object();
+        if (phobj.is_on_ground) {
             // Go to prone, walk or stand state depending on input
             bool walking = has_walk_input(player);
             if (player.is_key_down(KeyAction::Id::DOWN) && !walking) {
@@ -198,6 +206,13 @@ namespace ms {
                 player.set_state(Char::State::WALK);
             } else {
                 player.set_state(Char::State::STAND);
+            }
+
+            // Fall damage
+            double y = phobj.current_y();
+            double fell_from_height = y - phobj.fell_from_y;
+            if (fell_from_height > player.get_fall_damage_min_height()) {
+                player.fall_damage(fell_from_height);
             }
         } else if (player.is_underwater()) {
             player.set_state(Char::State::SWIM);

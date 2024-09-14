@@ -172,6 +172,7 @@ namespace ms {
         uint16_t jumping_down_from_fh_id = 0;
         bool is_on_ground = true;
         bool is_jump_down_enabled = false;
+        double fell_from_y = 0.0;
 
         double h_force = 0.0;
         double v_force = 0.0;

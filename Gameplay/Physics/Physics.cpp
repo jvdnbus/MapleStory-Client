@@ -133,23 +133,24 @@ namespace ms {
 
             double slopef = phobj.fh_slope;
             if (slopef != 0.0) {
-                // Calculate angle at which we land on slope
-                // An acute angle should result in the most movement down the slope
-                // An obtuse angle should result in less movement down the slope
-                auto velo_vector = Point<double>(
-                    phobj.h_speed + phobj.h_acceleration,
-                    -(phobj.v_speed + phobj.v_acceleration) // Y is negated to match y axis (positive = top right quadrant)
-                );
-                velo_vector = velo_vector / velo_vector.length();
-                double theta = atan2(velo_vector.y(), velo_vector.x());
-                double ro = theta <= 0 ? theta + PI : theta - PI;
-                double slope_omega = -slopef;
-                double delta = std::abs(ro - slope_omega);
-                double transform_factor = (1 + cos(delta)) / 2;
-
+                double transform_factor;
                 // If the slope isn't steep we don't reduce or increase acceleration at all
                 if (slopef > -0.5 && slopef < 0.5) {
                     transform_factor = 0.0;
+                } else {
+                    // Calculate angle at which we land on slope
+                    // An acute angle should result in the most movement down the slope
+                    // An obtuse angle should result in less movement down the slope
+                    auto velo_vector = Point<double>(
+                        phobj.h_speed + phobj.h_acceleration,
+                        -(phobj.v_speed + phobj.v_acceleration) // Y is negated to match y axis (positive = top right quadrant)
+                    );
+                    velo_vector = velo_vector / velo_vector.length();
+                    double theta = atan2(velo_vector.y(), velo_vector.x());
+                    double ro = theta <= 0 ? theta + PI : theta - PI;
+                    double slope_omega = -slopef;
+                    double delta = std::abs(ro - slope_omega);
+                    transform_factor = (1 + cos(delta)) / 2;
                 }
 
                 double inertia = transform_factor * VERT_TO_HOR_INERTIA_FACTOR * phobj.v_acceleration;

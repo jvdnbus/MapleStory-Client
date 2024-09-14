@@ -77,6 +77,10 @@ namespace ms {
         bool is_invincible() const override;
         // Handle an attack to the player
         MobAttackResult damage(const MobAttack& attack);
+        // Returns the minimum height to be affected by fall damage.
+        int16_t get_fall_damage_min_height() const;
+        // Apply fall damage
+        void fall_damage(double fell_from_y);
 
         // Apply a buff to the player
         void give_buff(Buff buff);
