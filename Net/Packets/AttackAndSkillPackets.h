@@ -88,23 +88,41 @@ namespace ms {
     class TakeDamagePacket : public OutPacket {
     public:
         enum From : int8_t {
-            TOUCH = -1
+            TOUCH = -1, // by monster
+            MAP_OBJECT = -2, // by a map object
+            ENVIRONMENT = -3, // e.g. fall damage or a general area mob attack
+            MIST = -4 // e.g. poison mist
         };
 
-        TakeDamagePacket(int8_t from, uint8_t element, int32_t damage, int32_t mobid, int32_t oid,
+        enum Element : int8_t {
+            NONE = 0,
+            ICE = 1,
+            FIRE = 2,
+            LIGHTNING = 3
+        };
+
+        TakeDamagePacket(int8_t from, Element element, int32_t damage, int32_t mobid, int32_t oid,
                          uint8_t direction) : OutPacket(TAKE_DAMAGE) {
             write_time();
             write_byte(from);
             write_byte(element);
             write_int(damage);
-            write_int(mobid);
-            write_int(oid);
-            write_byte(direction);
+            if (from == -1 || from == -2) {
+                write_int(mobid);
+                write_int(oid);
+                write_byte(direction);
+            } else {
+                write_byte(0);
+            }
         }
 
         // From mob attack result
         TakeDamagePacket(const MobAttackResult& result, From from) : TakeDamagePacket(
-            from, 0, result.damage, result.mobid, result.oid, result.direction) {
+            from, Element::NONE, result.damage, result.mobid, result.oid, result.direction) {
+        }
+
+        explicit TakeDamagePacket(int32_t fall_damage) : TakeDamagePacket(
+            From::ENVIRONMENT, Element::NONE, fall_damage, 0, 0, 0) {
         }
     };
 
