@@ -20,6 +20,11 @@
 #include <iostream>
 
 namespace ms {
+    constexpr int16_t L_OFFSET = 30;
+    constexpr int16_t R_OFFSET = -30;
+    constexpr int16_t T_OFFSET = -300;
+    constexpr int16_t B_OFFSET = 100;
+
     FootholdTree::FootholdTree(nl::node src) {
         int16_t leftw = 30000;
         int16_t rightw = -30000;
@@ -77,8 +82,8 @@ namespace ms {
             }
         }
 
-        walls = {leftw + 25, rightw - 25};
-        borders = {topb - 300, botb + 100};
+        walls = {leftw + L_OFFSET, rightw + R_OFFSET};
+        borders = {topb + T_OFFSET, botb + B_OFFSET};
     }
 
     FootholdTree::FootholdTree() {
@@ -197,7 +202,7 @@ namespace ms {
 
         // We allow a small error margin to be considered "on ground"
         // to reduce probability of falling through the ground
-        static const double GROUND_EPSILON = 0.05;
+        static const double GROUND_EPSILON = 0.2;
         phobj.is_on_ground = std::abs(phobj.y - ground) < GROUND_EPSILON;
 
         // Reset the id of the fh we jumped down from on touchdown
@@ -330,7 +335,10 @@ namespace ms {
         return borders.second();
     }
 
-    Range<int16_t> FootholdTree::get_walls() const {
+    Range<int16_t> FootholdTree::get_walls(bool camera) const {
+        if (camera) {
+            return walls - Range<int16_t>(L_OFFSET - 10, R_OFFSET + 10);
+        }
         return walls;
     }
 

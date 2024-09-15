@@ -198,5 +198,14 @@ namespace ms {
         void clear_flags() {
             flags = 0;
         }
+
+        void reset_movement() {
+            h_force = 0.0;
+            v_force = 0.0;
+            h_acceleration = 0.0;
+            v_acceleration = 0.0;
+            h_speed = 0.0;
+            v_speed = 0.0;
+        }
     };
 }

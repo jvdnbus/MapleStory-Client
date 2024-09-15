@@ -73,15 +73,18 @@ namespace ms {
 
     void Player::respawn(Point<int16_t> pos, bool uw) {
         set_position(pos.x(), pos.y());
+        set_portal_cooldown();
         underwater = uw;
-        keysdown.clear();
         attacking = false;
         ladder = nullptr;
-        nullstate.update_state(*this);
+        physics_object.reset_movement();
+        set_state(State::FALL);
+//        nullstate.update_state(*this);
     }
 
     void Player::teleport(Point<int16_t> pos, bool uw) {
         set_position(pos.x(), pos.y());
+        set_portal_cooldown();
         underwater = uw;
         attacking = false;
         ladder = nullptr;
@@ -175,6 +178,7 @@ namespace ms {
         }
 
         climb_cooldown.update();
+        portal_cooldown.update();
 
         return get_layer();
     }
@@ -436,6 +440,14 @@ namespace ms {
 
     bool Player::can_climb() {
         return !climb_cooldown;
+    }
+
+    void Player::set_portal_cooldown() {
+        portal_cooldown.set_for(1000);
+    }
+
+    bool Player::can_portal() {
+        return !portal_cooldown;
     }
 
     float Player::get_walk_force() const {

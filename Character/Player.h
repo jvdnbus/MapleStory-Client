@@ -136,6 +136,10 @@ namespace ms {
         bool can_climb();
         // Jump down the current foothold
         void jump_down(bool cancel_h_speed);
+        // Sets a quick cooldown on using a portal so we don't go back and forth while holding key "up"
+        void set_portal_cooldown();
+        // Checks if the player can take a portal
+        bool can_portal();
 
         // Obtain a reference to the player's stats
         CharStats& get_stats();
@@ -176,6 +180,7 @@ namespace ms {
 
         Optional<const Ladder> ladder;
         TimedBool climb_cooldown;
+        TimedBool portal_cooldown;
 
         bool underwater;
     };

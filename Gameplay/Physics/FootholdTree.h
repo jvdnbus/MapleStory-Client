@@ -37,7 +37,7 @@ namespace ms {
         // Determine the point on the ground below the specified position
         int16_t get_y_below(Point<int16_t> position) const;
         // Returns the leftmost and rightmost platform positions of the map
-        Range<int16_t> get_walls() const;
+        Range<int16_t> get_walls(bool camera) const;
         // Returns the topmost and bottommost platform positions of the map
         Range<int16_t> get_borders() const;
 

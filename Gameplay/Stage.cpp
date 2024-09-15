@@ -42,10 +42,11 @@ namespace ms {
         switch (state) {
         case INACTIVE:
             load_map(mapid);
-            respawn(portalid);
+            respawn(portalid, false);
             break;
         case TRANSITION:
-            respawn(portalid);
+            load_map(mapid);
+            respawn(portalid, true);
             break;
         }
 
@@ -63,8 +64,8 @@ namespace ms {
         expBefore = stats.get_exp();
     }
 
-    void Stage::clear() {
-        state = INACTIVE;
+    void Stage::clear(State new_state) {
+        state = new_state;
 
         chars.clear();
         npcs.clear();
@@ -86,15 +87,16 @@ namespace ms {
         tilesobjs = MapTilesObjs(src);
         backgrounds = MapBackgrounds(src["back"]);
         physics = Physics(src["foothold"]);
-        mapinfo = MapInfo(src, physics.get_fht().get_walls(), physics.get_fht().get_borders());
+        mapinfo = MapInfo(src, physics.get_fht().get_walls(true),
+                          physics.get_fht().get_borders());
         portals = MapPortals(src["portal"], mapid);
     }
 
-    void Stage::respawn(int8_t portalid) {
+    void Stage::respawn(int8_t portalid, bool transition) {
         Music(mapinfo.get_bgm()).play();
 
         Point<int16_t> spawnpoint = portals.get_portal_by_id(portalid);
-        Point<int16_t> startpos = physics.get_y_below(spawnpoint);
+        Point<int16_t> startpos = transition ? physics.get_y_below(spawnpoint) : spawnpoint;
         player.respawn(startpos, mapinfo.is_underwater());
         camera.set_position(startpos);
         camera.set_view(mapinfo.get_walls(), mapinfo.get_borders());
@@ -183,6 +185,8 @@ namespace ms {
     }
 
     void Stage::check_portals() {
+        if (!player.can_portal())
+            return;
         if (player.is_attacking())
             return;
 

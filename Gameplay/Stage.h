@@ -32,6 +32,12 @@
 namespace ms {
     class Stage : public Singleton<Stage> {
     public:
+        enum State {
+            INACTIVE,
+            TRANSITION,
+            ACTIVE
+        };
+    
         Stage();
 
         void init();
@@ -39,7 +45,7 @@ namespace ms {
         // Loads the map to display
         void load(int32_t mapid, int8_t portalid);
         // Remove all map objects and graphics
-        void clear();
+        void clear(State new_state);
 
         // Construct the player from a character entry
         void loadplayer(const CharEntry& entry);
@@ -95,17 +101,11 @@ namespace ms {
 
     private:
         void load_map(int32_t mapid);
-        void respawn(int8_t portalid);
+        void respawn(int8_t portalid, bool transition);
         void check_portals();
         void check_seats();
         void check_ladders(bool up);
         void check_drops();
-
-        enum State {
-            INACTIVE,
-            TRANSITION,
-            ACTIVE
-        };
 
         Camera camera;
         Physics physics;

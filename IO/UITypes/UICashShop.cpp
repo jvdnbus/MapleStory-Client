@@ -296,7 +296,7 @@ namespace ms {
             );
 
             GraphicsGL::get().lock();
-            Stage::get().clear();
+            Stage::get().clear(Stage::State::TRANSITION);
             Timer::get().start();
 
             return Button::State::NORMAL;
