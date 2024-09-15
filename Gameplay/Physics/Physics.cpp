@@ -20,7 +20,7 @@
 namespace ms {
     constexpr double TERMINAL_VELOCITY = 6.0;
     constexpr double MAX_SLOPE_H_SPEED = 2.5;
-    constexpr double VERT_TO_HOR_INERTIA_FACTOR = 35.0;
+    constexpr double VERT_TO_HOR_INERTIA_FACTOR = 12.0;
     constexpr double GRAVFORCE = 0.13;
     constexpr double SWIMGRAVFORCE = 0.03;
     constexpr double FRICTION = 0.5;
@@ -153,7 +153,8 @@ namespace ms {
                     transform_factor = (1 + cos(delta)) / 2;
                 }
 
-                double inertia = transform_factor * VERT_TO_HOR_INERTIA_FACTOR * phobj.v_acceleration;
+                double downwards_v_speed = phobj.v_speed < 0.0 ? 0.0 : phobj.v_speed;
+                double inertia = transform_factor * VERT_TO_HOR_INERTIA_FACTOR * downwards_v_speed;
 
                 if (slopef < 0.0)
                     inertia *= -1;
