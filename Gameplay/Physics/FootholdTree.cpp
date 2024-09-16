@@ -90,6 +90,8 @@ namespace ms {
     }
 
     void FootholdTree::limit_movement(PhysicsObject& phobj) const {
+        phobj.clear_flag(PhysicsObject::MOVING_AGAINST_WALL);
+
         if (phobj.is_moving_horizontally()) {
             double crnt_x = phobj.current_x();
             double next_x = phobj.next_x();
@@ -105,6 +107,7 @@ namespace ms {
 
             if (collision) {
                 phobj.limit_x(wall);
+                phobj.set_flag(PhysicsObject::MOVING_AGAINST_WALL);
                 phobj.clear_flag(PhysicsObject::Flag::TURN_AT_EDGES);
             }
         }

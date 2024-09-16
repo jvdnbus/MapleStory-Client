@@ -160,7 +160,8 @@ namespace ms {
         enum Flag {
             NO_GRAVITY = 0x0001,
             TURN_AT_EDGES = 0x0002,
-            CHECK_BELOW = 0x0004
+            CHECK_BELOW = 0x0004,
+            MOVING_AGAINST_WALL = 0x0008
         };
 
         Type type = NORMAL;
@@ -179,11 +180,11 @@ namespace ms {
         double h_acceleration = 0.0;
         double v_acceleration = 0.0;
 
-        bool is_flag_set(Flag f) {
+        bool is_flag_set(Flag f) const {
             return (flags & f) != 0;
         }
 
-        bool is_flag_not_set(Flag f) {
+        bool is_flag_not_set(Flag f) const {
             return !is_flag_set(f);
         }
 

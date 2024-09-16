@@ -64,7 +64,7 @@ namespace ms {
         attacking = false;
         underwater = false;
 
-        set_state(STAND);
+        set_state(State::FALL);
         set_direction(true);
     }
 
@@ -448,6 +448,13 @@ namespace ms {
 
     bool Player::can_portal() {
         return !portal_cooldown;
+    }
+
+    float Player::get_stance_speed() const {
+        if (!attacking && state == WALK && physics_object.is_flag_set(PhysicsObject::MOVING_AGAINST_WALL)) {
+            return static_cast<float>(stats.get_total(EquipStat::Id::SPEED)) / 100;
+        }
+        return Char::get_stance_speed();
     }
 
     float Player::get_walk_force() const {

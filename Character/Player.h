@@ -108,6 +108,7 @@ namespace ms {
         // Return the character's attacking speed
         int8_t get_integer_attackspeed() const override;
 
+        float get_stance_speed() const override;
         // Returns the current walking force, calculated from the total ES_SPEED stat.
         float get_walk_force() const;
         // Returns the force when jumping down a platform.

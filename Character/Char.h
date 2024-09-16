@@ -145,8 +145,9 @@ namespace ms {
 
         // Update the character's animation with the given speed
         bool update(const Physics& physics, float speed);
+
         // Get a speed modifier for the current stance
-        float get_stance_speed() const;
+        virtual float get_stance_speed() const;
 
         CharLook look;
         CharLook look_preview;

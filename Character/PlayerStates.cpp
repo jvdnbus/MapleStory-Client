@@ -157,7 +157,7 @@ namespace ms {
 
     void PlayerWalkState::update_state(Player& player) const {
         if (player.get_physics_object().is_on_ground) {
-            if (!has_walk_input(player) || player.get_physics_object().h_speed == 0.0f)
+            if (!has_walk_input(player))
                 player.set_state(Char::State::STAND);
         } else {
             player.set_state(Char::State::FALL);
