@@ -89,7 +89,9 @@ namespace ms {
         if (!player.get_physics_object().is_jump_down_enabled) {
             player.get_physics_object().set_flag(PhysicsObject::Flag::CHECK_BELOW);
         }
+    }
 
+    void PlayerStandState::update_state(Player& player) const {
         if (player.is_attacking()) return;
 
         if (has_right_input(player)) {
@@ -100,11 +102,11 @@ namespace ms {
             player.set_state(Char::State::WALK);
         }
 
-        if (player.is_key_down(KeyAction::Id::DOWN) && !player.is_key_down(KeyAction::Id::UP) && !has_walk_input(player))
+        if (player.is_key_down(KeyAction::Id::DOWN) && !player.is_key_down(KeyAction::Id::UP)
+            && !has_walk_input(player)) {
             player.set_state(Char::State::PRONE);
-    }
+        }
 
-    void PlayerStandState::update_state(Player& player) const {
         if (!player.get_physics_object().is_on_ground) {
             player.set_state(Char::State::FALL);
         }
@@ -148,17 +150,18 @@ namespace ms {
                 player.set_direction(false);
                 player.get_physics_object().h_force -= player.get_walk_force();
             }
-        } else {
-            if (player.is_key_down(KeyAction::Id::DOWN)) {
-                player.set_state(Char::State::PRONE);
-            }
         }
     }
 
     void PlayerWalkState::update_state(Player& player) const {
         if (player.get_physics_object().is_on_ground) {
-            if (!has_walk_input(player))
-                player.set_state(Char::State::STAND);
+            if (!has_walk_input(player)) {
+                if (player.is_key_down(KeyAction::Id::DOWN)) {
+                    player.set_state(Char::State::PRONE);
+                } else {
+                    player.set_state(Char::State::STAND);
+                }
+            }
         } else {
             player.set_state(Char::State::FALL);
         }
@@ -230,7 +233,7 @@ namespace ms {
             auto &phobj = player.get_physics_object();
             if (phobj.is_jump_down_enabled && player.is_key_down(KeyAction::Id::DOWN)) {
                 play_jump_sound();
-                player.jump_down(false);
+                player.jump_down(true);
             }
         }
     }
@@ -239,7 +242,9 @@ namespace ms {
         if (!player.get_physics_object().is_jump_down_enabled) {
             player.get_physics_object().set_flag(PhysicsObject::Flag::CHECK_BELOW);
         }
+    }
 
+    void PlayerProneState::update_state(ms::Player& player) const {
         if (player.is_key_down(KeyAction::Id::UP) || !player.is_key_down(KeyAction::Id::DOWN)) {
             player.set_state(Char::State::STAND);
         }
@@ -345,7 +350,9 @@ namespace ms {
         } else {
             player.get_physics_object().v_speed = 0.0;
         }
+    }
 
+    void PlayerClimbState::update_state(Player& player) const {
         if (player.is_key_down(KeyAction::Id::JUMP) && has_walk_input(player)) {
             play_jump_sound();
 
@@ -355,10 +362,9 @@ namespace ms {
             player.get_physics_object().v_speed = -player.get_jump_force() / 1.85;
 
             cancel_ladder(player, true, false);
+            return;
         }
-    }
 
-    void PlayerClimbState::update_state(Player& player) const {
         int16_t y = player.get_physics_object().get_y();
         bool downwards = player.is_key_down(KeyAction::Id::DOWN);
         auto ladder = player.get_ladder();

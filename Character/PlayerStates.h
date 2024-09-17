@@ -98,9 +98,7 @@ namespace ms {
 
         void send_action(Player& player, KeyAction::Id ka, bool down) const override;
         void update(Player&) const override;
-
-        void update_state(Player&) const override {
-        }
+        void update_state(Player&) const override;
     };
 
     // The sitting state

@@ -161,7 +161,7 @@ namespace ms {
             NO_GRAVITY = 0x0001,
             TURN_AT_EDGES = 0x0002,
             CHECK_BELOW = 0x0004,
-            MOVING_AGAINST_WALL = 0x0008
+            HUGGING_WALL = 0x0008
         };
 
         Type type = NORMAL;

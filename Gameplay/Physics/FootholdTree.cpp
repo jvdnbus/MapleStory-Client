@@ -90,7 +90,7 @@ namespace ms {
     }
 
     void FootholdTree::limit_movement(PhysicsObject& phobj) const {
-        phobj.clear_flag(PhysicsObject::MOVING_AGAINST_WALL);
+        phobj.clear_flag(PhysicsObject::HUGGING_WALL);
 
         if (phobj.is_moving_horizontally()) {
             double crnt_x = phobj.current_x();
@@ -107,7 +107,7 @@ namespace ms {
 
             if (collision) {
                 phobj.limit_x(wall);
-                phobj.set_flag(PhysicsObject::MOVING_AGAINST_WALL);
+                phobj.set_flag(PhysicsObject::HUGGING_WALL);
                 phobj.clear_flag(PhysicsObject::Flag::TURN_AT_EDGES);
             }
         }
@@ -181,7 +181,7 @@ namespace ms {
         double ground = nextfh.ground_below(x);
 
         // Walking on a slope
-        if (phobj.v_speed == 0.0 && checkslope) {
+        if (phobj.type == PhysicsObject::NORMAL && phobj.v_speed == 0.0 && checkslope) {
             double vdelta = abs(phobj.fh_slope);
 
             if (phobj.fh_slope < 0.0)
@@ -204,8 +204,7 @@ namespace ms {
         }
 
         // We allow a small error margin to be considered "on ground"
-        // to reduce probability of falling through the ground
-        static const double GROUND_EPSILON = 0.2;
+        static const double GROUND_EPSILON = 0.05;
         phobj.is_on_ground = std::abs(phobj.y - ground) < GROUND_EPSILON;
 
         // Reset the id of the fh we jumped down from on touchdown

@@ -93,9 +93,11 @@ namespace ms {
         ImGui::SameLine(0, 1 * ImGui::GetStyle().ItemSpacing.x);
         bool turn_at_edges = po.is_flag_set(PhysicsObject::TURN_AT_EDGES);
         ImGui::Checkbox("TURN_AT_EDGES", &turn_at_edges);
-        ImGui::SameLine(0, 1 * ImGui::GetStyle().ItemSpacing.x);
         bool check_below = po.is_flag_set(PhysicsObject::CHECK_BELOW);
         ImGui::Checkbox("CHECK_BELOW", &check_below);
+        ImGui::SameLine(0, 1 * ImGui::GetStyle().ItemSpacing.x);
+        bool hugging_wall = po.is_flag_set(PhysicsObject::HUGGING_WALL);
+        ImGui::Checkbox("HUGGING_WALL", &hugging_wall);
 
         ImGui::Dummy(ImVec2(0.0f, 4.0f));
 
