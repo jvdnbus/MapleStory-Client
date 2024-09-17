@@ -480,6 +480,10 @@ namespace ms {
         return 0.25f;
     }
 
+    bool Player::is_falling() const {
+        return state == State::FALL;
+    }
+
     bool Player::is_underwater() const {
         return underwater;
     }

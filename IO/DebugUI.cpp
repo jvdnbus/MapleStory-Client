@@ -155,7 +155,7 @@ namespace ms {
     void DebugUI::_draw() {
 //        ImGui::ShowDemoWindow(&_is_shown);
 
-        ImGui::SetNextWindowSize({ 400, 480 }, ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize({ 400, 520 }, ImGuiCond_FirstUseEver);
         if (_is_shown && ImGui::Begin("DebugUI###DebugUI", &_is_shown, ImGuiWindowFlags_NoCollapse)) {
             if (ImGui::BeginTabBar("tabBar1", ImGuiTabBarFlags_None)) {
                 if (ImGui::BeginTabItem("Player", nullptr, ImGuiTabItemFlags_None)) {

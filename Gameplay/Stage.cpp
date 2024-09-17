@@ -155,7 +155,7 @@ namespace ms {
             if (player.is_key_down(KeyAction::Id::UP))
                 check_portals();
 
-            if (player.is_key_down(KeyAction::Id::DOWN))
+            if (!player.is_falling() && player.is_key_down(KeyAction::Id::DOWN))
                 check_ladders(false);
 
             if (player.is_key_down(KeyAction::Id::SIT))

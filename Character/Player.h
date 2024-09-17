@@ -120,6 +120,8 @@ namespace ms {
         // Returns the flying force
         float get_fly_force() const;
 
+        // Return whether the player is falling (mid-jump or just falling)
+        bool is_falling() const;
         // Return whether the player is underwater
         bool is_underwater() const;
         // Returns if a Keyaction is currently active 
