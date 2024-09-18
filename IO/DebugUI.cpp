@@ -155,7 +155,7 @@ namespace ms {
     void DebugUI::_draw() {
 //        ImGui::ShowDemoWindow(&_is_shown);
 
-        ImGui::SetNextWindowSize({ 400, 520 }, ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize({ 400, 540 }, ImGuiCond_FirstUseEver);
         if (_is_shown && ImGui::Begin("DebugUI###DebugUI", &_is_shown, ImGuiWindowFlags_NoCollapse)) {
             if (ImGui::BeginTabBar("tabBar1", ImGuiTabBarFlags_None)) {
                 if (ImGui::BeginTabItem("Player", nullptr, ImGuiTabItemFlags_None)) {
@@ -190,6 +190,17 @@ namespace ms {
                 }
 
                 if (ImGui::BeginTabItem("Map", nullptr, ImGuiTabItemFlags_None)) {
+                    int32_t map_id = Stage::get().get_mapid();
+                    ImGui::TextUnformatted("Map ID:");
+                    ImGui::SameLine(0, 1 * ImGui::GetStyle().ItemSpacing.x);
+                    ImGui::Text("%d", map_id);
+
+                    MapMobs &mobs = Stage::get().get_mobs();
+                    size_t mob_count = mobs.get_mobs()->size();
+                    ImGui::TextUnformatted("Mobs:");
+                    ImGui::SameLine(0, 1 * ImGui::GetStyle().ItemSpacing.x);
+                    ImGui::Text("%zu", mob_count);
+
                     ImGui::EndTabItem();
                 }
 

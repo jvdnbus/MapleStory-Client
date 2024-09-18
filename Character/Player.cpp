@@ -77,6 +77,7 @@ namespace ms {
         underwater = uw;
         attacking = false;
         ladder = nullptr;
+        keysdown.clear();
         physics_object.reset_movement();
         set_state(State::FALL);
 //        nullstate.update_state(*this);

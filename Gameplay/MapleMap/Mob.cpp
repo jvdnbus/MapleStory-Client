@@ -28,8 +28,9 @@
 namespace ms {
     Mob::Mob(int32_t oi, int32_t mid, int8_t mode, int8_t st, uint16_t fh, bool newspawn, int8_t tm,
              Point<int16_t> position) : MapObject(oi) {
-        std::string strid = string_format::extend_id(mid, 7);
-        nl::node src = nl::nx::Mob[strid + ".img"];
+        nl::node src = NxHelper::Mob::get_mob_node(mid);
+//        std::string strid = string_format::extend_id(mid, 7);
+//        nl::node src = nl::nx::Mob[strid + ".img"];
 
         nl::node info = src["info"];
 
@@ -52,8 +53,14 @@ namespace ms {
         canmove = src["move"].size() > 0 || canfly;
 
         std::string linkid = info["link"];
-        nl::node link_src = nl::nx::Mob[linkid + ".img"];
-        nl::node link = link_src ? link_src : src;
+        nl::node link_src;
+        nl::node link = src;
+        if (linkid.size() > 1) {
+            link_src = NxHelper::Mob::get_mob_node(std::stoi(linkid));
+            link = link_src;
+        }
+//        nl::node link_src = nl::nx::Mob[linkid + ".img"];
+//        nl::node link = link_src ? link_src : src;
         nl::node fly = link["fly"];
 
         if (canfly) {
@@ -70,7 +77,8 @@ namespace ms {
 
         name = nl::nx::String["Mob.img"][std::to_string(mid)]["name"];
 
-        nl::node sndsrc = nl::nx::Sound["Mob.img"][strid];
+//        nl::node sndsrc = nl::nx::Sound["Mob.img"][strid];
+        nl::node sndsrc = nl::nx::Sound["Mob.img"][src.name()];
 
         hitsound = sndsrc["Damage"];
         diesound = sndsrc["Die"];
@@ -345,13 +353,14 @@ namespace ms {
     }
 
     void Mob::kill(int8_t animation) {
+        if (!active) return;
+
         switch (animation) {
         case 0:
             deactivate();
             break;
         case 1:
             dying = true;
-
             apply_death();
             break;
         case 2:

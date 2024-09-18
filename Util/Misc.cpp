@@ -163,8 +163,9 @@ namespace ms {
                             // Mob
                             nl::node life_name = nl::nx::String["Mob.img"][life_id]["name"];
 
-                            std::string life_id_str = string_format::extend_id(life_id, 7);
-                            nl::node life_level = nl::nx::Mob[life_id_str + ".img"]["info"]["level"];
+                            nl::node mob = NxHelper::Mob::get_mob_node(life_id);
+//                            std::string life_id_str = string_format::extend_id(life_id, 7);
+                            nl::node life_level = mob["info"]["level"];
 
                             if (life_name && life_level)
                                 map_life[life_id] = {life_type, life_name + "(Lv. " + life_level + ")"};
@@ -184,6 +185,17 @@ namespace ms {
                 std::string mapid_str = string_format::extend_id(mapid, 9);
 
                 return nl::nx::Map["Map"]["Map" + prefix][mapid_str + ".img"];
+            }
+        }
+
+        namespace Mob {
+            nl::node get_mob_node(int32_t mob_id) {
+                // TODO investigate Mob001 and Mob002 having empty sprites
+//                nl::node main = mob_id < 9402280 ? nl::nx::Mob001 : nl::nx::Mob002;
+                nl::node main = nl::nx::Mob;
+                std::string mob_id_str = string_format::extend_id(mob_id, 7);
+
+                return main[mob_id_str + ".img"];
             }
         }
     }

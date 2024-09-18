@@ -185,7 +185,7 @@ namespace ms {
         recv.read_byte(); // 5 if controller == null
         int32_t id = recv.read_int();
 
-        recv.skip(22);
+        recv.skip(16);
 
         Point<int16_t> position = recv.read_point();
         int8_t stance = recv.read_byte();
@@ -225,12 +225,12 @@ namespace ms {
 
         if (mode == 0) {
             Stage::get().get_mobs().set_control(oid, false);
-        } else {
+        } else { // 2 if aggro, 1 otherwise
             if (recv.available()) {
-                recv.skip(1);
-
+                recv.skip(1); // 5 if controller == null
                 int32_t id = recv.read_int();
 
+                // TODO decode temporary monster effects
                 recv.skip(22);
 
                 Point<int16_t> position = recv.read_point();
@@ -241,6 +241,23 @@ namespace ms {
                 uint16_t fh = recv.read_short();
                 int8_t effect = recv.read_byte();
 
+                // effect;
+                // -4: fake
+                // -3: appear after linked mob is dead
+                // -2: fade in
+                //  1: smoke
+                //  3: king slime spawn
+                //  4: summoning rock thing used for 3rd job
+                //  6: magic
+                //  7: smoke
+                //  8: 'The Boss'
+                //  9/10: grim phantom
+                //  11/12: ?
+                //  13: Frankenstein
+                //  14: Angry Frankenstein
+                //  15: Orb animation
+                //  16: ??
+                //  19: Mushroom castle boss
                 if (effect > 0) {
                     recv.read_byte();
                     recv.read_short();

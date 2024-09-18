@@ -85,6 +85,11 @@ namespace ms {
             // Returns the name of the node, under which the argument map id is in
             nl::node get_map_node_name(int32_t mapid);
         }
+
+        namespace Mob {
+            // Returns the node (<mobid>.img) under the appropriate Mob001.wz/nx or Mob002.wz/nx
+            nl::node get_mob_node(int32_t mob_id);
+        }
     }
 
     namespace single_console {
