@@ -164,7 +164,6 @@ namespace ms {
                             nl::node life_name = nl::nx::String["Mob.img"][life_id]["name"];
 
                             nl::node mob = NxHelper::Mob::get_mob_node(life_id);
-//                            std::string life_id_str = string_format::extend_id(life_id, 7);
                             nl::node life_level = mob["info"]["level"];
 
                             if (life_name && life_level)

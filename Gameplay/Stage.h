@@ -25,7 +25,7 @@
 #include "MapleMap/MapPortals.h"
 #include "MapleMap/MapTilesObjs.h"
 
-#include "../Timer.h"
+#include "../MeasurementTimer.h"
 
 #include "../IO/KeyType.h"
 
@@ -66,6 +66,7 @@ namespace ms {
         // Check if the specified id is the player's id
         bool is_player(int32_t cid) const;
 
+        MapInfo& get_map_info();
         // Returns a reference to the NPCs on the current map
         MapNpcs& get_npcs();
         // Returns a reference to the other characters on the current map
@@ -81,7 +82,7 @@ namespace ms {
         // Return a reference to the attack and buff component
         Combat& get_combat();
         // Returns the current map ID
-        int32_t get_mapid();
+        int32_t get_map_id() const;
 
         // Return a pointer to a character, possibly the player.
         Optional<Char> get_character(int32_t cid);
@@ -113,9 +114,9 @@ namespace ms {
 
         Optional<Playable> playable;
         State state;
-        int32_t mapid;
+        int32_t map_id;
 
-        MapInfo mapinfo;
+        MapInfo map_info;
         MapTilesObjs tilesobjs;
         MapBackgrounds backgrounds;
         MapPortals portals;

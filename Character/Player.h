@@ -31,6 +31,7 @@
 #include "../Gameplay/Combat/Skill.h"
 #include "../Gameplay/MapleMap/Layer.h"
 #include "../Gameplay/MapleMap/MapInfo.h"
+#include "../Util/Timer.h"
 
 namespace ms {
     class Player : public Playable, public Char {
@@ -104,7 +105,7 @@ namespace ms {
         // Return the character's level
         uint16_t get_level() const override;
         // Return the character's level of a skill
-        int32_t get_skilllevel(int32_t skillid) const override;
+        int32_t get_skill_level(int32_t skillid) const override;
         // Return the character's attacking speed
         int8_t get_integer_attackspeed() const override;
 
@@ -161,6 +162,15 @@ namespace ms {
         // Obtain a reference to the player's MonsterBook
         MonsterBook& get_monsterbook();
 
+        bool is_dead() const;
+        bool is_full_health() const;
+        bool is_full_mana() const;
+    private:
+        // Check if player stayed still and do HP recovery
+        void try_hp_recovery();
+        // Do MP recovery
+        void try_mp_recovery();
+
     private:
         CharStats stats;
         Inventory inventory;
@@ -184,6 +194,10 @@ namespace ms {
         Optional<const Ladder> ladder;
         TimedBool climb_cooldown;
         TimedBool portal_cooldown;
+
+        Timer hp_recovery_timer;
+        Timer mp_recovery_timer;
+        Timer hp_recovery_ladder_timer;
 
         bool underwater;
     };

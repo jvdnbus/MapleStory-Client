@@ -190,7 +190,7 @@ namespace ms {
                 }
 
                 if (ImGui::BeginTabItem("Map", nullptr, ImGuiTabItemFlags_None)) {
-                    int32_t map_id = Stage::get().get_mapid();
+                    int32_t map_id = Stage::get().get_map_id();
                     ImGui::TextUnformatted("Map ID:");
                     ImGui::SameLine(0, 1 * ImGui::GetStyle().ItemSpacing.x);
                     ImGui::Text("%d", map_id);

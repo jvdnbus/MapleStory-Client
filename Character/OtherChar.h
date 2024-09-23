@@ -50,7 +50,7 @@ namespace ms {
         // Return the character's level
         uint16_t get_level() const override;
         // Return the character's level of a skill
-        int32_t get_skilllevel(int32_t skillid) const override;
+        int32_t get_skill_level(int32_t skillid) const override;
 
     private:
         uint16_t level;

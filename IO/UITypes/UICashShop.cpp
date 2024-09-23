@@ -297,7 +297,7 @@ namespace ms {
 
             GraphicsGL::get().lock();
             Stage::get().clear(Stage::State::TRANSITION);
-            Timer::get().start();
+            MeasurementTimer::get().start();
 
             return Button::State::NORMAL;
         }
@@ -378,7 +378,7 @@ namespace ms {
         stage.transfer_player();
 
         ui.enable();
-        Timer::get().start();
+        MeasurementTimer::get().start();
         GraphicsGL::get().unlock();
     }
 

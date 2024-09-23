@@ -36,97 +36,97 @@ namespace ms {
     // Opcodes for InPackets
     enum Opcode : uint16_t {
         /// Login 1
-        LOGIN_RESULT = 0,
-        SERVERSTATUS = 3,
-        SELECT_CHARACTER_BY_VAC = 9,
-        SERVERLIST = 10,
-        CHARLIST = 11,
-        SERVER_IP = 12,
-        CHARNAME_RESPONSE = 13,
-        ADD_NEWCHAR_ENTRY = 14,
-        DELCHAR_RESPONSE = 15,
-        PING = 17,
+        LOGIN_RESULT = 0x0000,
+        SERVERSTATUS = 0x0003,
+        SELECT_CHARACTER_BY_VAC = 0x0009,
+        SERVERLIST = 0x000A,
+        CHARLIST = 0x000B,
+        SERVER_IP = 0x000C,
+        CHARNAME_RESPONSE = 0x000D,
+        ADD_NEWCHAR_ENTRY = 0x000E,
+        DELCHAR_RESPONSE = 0x000F,
+        PING = 0x0011,
 
         /// Login 2
-        CHECK_SPW_RESULT = 28,
+        CHECK_SPW_RESULT = 0x001C,
 
         /// Inventory 1
-        MODIFY_INVENTORY = 29,
+        MODIFY_INVENTORY = 0x001D,
 
         /// Player 2
-        CHANGE_CHANNEL = 16,
-        CHANGE_STATS = 31,
-        GIVE_BUFF = 32,
-        CANCEL_BUFF = 33,
-        RECALCULATE_STATS = 35,
-        UPDATE_SKILL = 36,
+        CHANGE_CHANNEL = 0x0010,
+        CHANGE_STATS = 0x001F,
+        GIVE_BUFF = 0x0020,
+        CANCEL_BUFF = 0x0021,
+        RECALCULATE_STATS = 0x0023,
+        UPDATE_SKILL = 0x0024,
 
         /// Messaging 1
-        SHOW_STATUS_INFO = 39,
+        SHOW_STATUS_INFO = 0x0027,
 
         /// Inventory 2
-        GATHER_RESULT = 52,
-        SORT_RESULT = 53,
+        GATHER_RESULT = 0x0034,
+        SORT_RESULT = 0x0035,
 
         /// Player 3
 
         /// Messaging 2
-        SERVER_MESSAGE = 68,
-        WEEK_EVENT_MESSAGE = 77,
+        SERVER_MESSAGE = 0x0044,
+        WEEK_EVENT_MESSAGE = 0x004D,
 
-        SKILL_MACROS = 124,
-        SET_FIELD = 125,
-        FIELD_EFFECT = 138,
+        SKILL_MACROS = 0x007C,
+        SET_FIELD = 0x007D,
+        FIELD_EFFECT = 0x008A,
 
         /// MapObject
-        SPAWN_CHAR = 160,
-        REMOVE_CHAR = 161,
+        SPAWN_CHAR = 0x00A0,
+        REMOVE_CHAR = 0x00A1,
 
         /// Messaging
-        CHAT_RECEIVED = 162,
-        SCROLL_RESULT = 167,
+        CHAT_RECEIVED = 0x00A2,
+        SCROLL_RESULT = 0x00A7,
 
         /// MapObject
-        SPAWN_PET = 168,
-        CHAR_MOVED = 185,
+        SPAWN_PET = 0x00A8,
+        CHAR_MOVED = 0x00B9,
 
         /// Attack
-        ATTACKED_CLOSE = 186,
-        ATTACKED_RANGED = 187,
-        ATTACKED_MAGIC = 188,
+        ATTACKED_CLOSE = 0x00BA,
+        ATTACKED_RANGED = 0x00BB,
+        ATTACKED_MAGIC = 0x00BC,
 
-        UPDATE_CHARLOOK = 197,
-        SHOW_FOREIGN_EFFECT = 198,
-        SHOW_ITEM_GAIN_INCHAT = 206, // TODO: Rename this (Terribly named)
+        UPDATE_CHARLOOK = 0x00C5,
+        SHOW_FOREIGN_EFFECT = 0x00C6,
+        SHOW_ITEM_GAIN_INCHAT = 0x00CE, // TODO: Rename this (Terribly named)
 
         /// Player
-        ADD_COOLDOWN = 234,
+        ADD_COOLDOWN = 0x00EA,
 
         /// MapObject
-        SPAWN_MOB = 236,
-        KILL_MOB = 237,
-        SPAWN_MOB_C = 238,
-        MOB_MOVED = 239,
-        SHOW_MOB_HP = 250,
-        SPAWN_NPC = 257,
-        SPAWN_NPC_C = 259,
-        DROP_LOOT = 268,
-        REMOVE_LOOT = 269,
-        HIT_REACTOR = 277,
-        SPAWN_REACTOR = 279,
-        REMOVE_REACTOR = 280,
+        SPAWN_MOB = 0x00EC,
+        KILL_MOB = 0x00ED,
+        SPAWN_MOB_C = 0x00EE,
+        MOB_MOVED = 0x00EF,
+        SHOW_MOB_HP = 0x00FA,
+        SPAWN_NPC = 0x0101,
+        SPAWN_NPC_C = 0x0103,
+        DROP_LOOT = 0x010C,
+        REMOVE_LOOT = 0x010D,
+        HIT_REACTOR = 0x0115,
+        SPAWN_REACTOR = 0x0117,
+        REMOVE_REACTOR = 0x0118,
 
         /// NPC Interaction
-        NPC_DIALOGUE = 304,
-        OPEN_NPC_SHOP = 305,
-        CONFIRM_SHOP_TRANSACTION = 306,
-        KEYMAP = 335,
+        NPC_DIALOGUE = 0x0130,
+        OPEN_NPC_SHOP = 0x0131,
+        CONFIRM_SHOP_TRANSACTION = 0x0132,
+        KEYMAP = 0x014F,
 
         /// Player Interaction
-        CHAR_INFO = 61,
+        CHAR_INFO = 0x003D,
 
         /// Cash Shop
-        SET_CASH_SHOP = 127
+        SET_CASH_SHOP = 0x007F
     };
 
     PacketSwitch::PacketSwitch() {

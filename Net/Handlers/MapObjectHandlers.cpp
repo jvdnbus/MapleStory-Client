@@ -162,14 +162,14 @@ namespace ms {
         int32_t cid = recv.read_int();
         int8_t effect = recv.read_byte();
 
-        if (effect == 10) // recovery
-        {
-            recv.read_byte(); // 'amount'
-        } else if (effect == 13) // card effect
-        {
+        if (effect == 10) { // recovery
+            int8_t amount = recv.read_byte();
+            if (auto character = Stage::get().get_character(cid)) {
+                character->show_heal(amount);
+            }
+        } else if (effect == 13) { // card effect
             Stage::get().show_character_effect(cid, CharEffect::MONSTER_CARD);
-        } else if (recv.available()) // skill
-        {
+        } else if (recv.available()) { // skill
             int32_t skillid = recv.read_int();
             recv.read_byte(); // 'direction'
             // 9 more bytes after this

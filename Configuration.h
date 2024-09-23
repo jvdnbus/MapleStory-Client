@@ -21,6 +21,7 @@
 #include "Template/Singleton.h"
 #include "Template/TypeMap.h"
 #include "Util/Misc.h"
+#include <memory>
 
 namespace ms {
     // Manages the 'Settings' file which contains configurations set by user behavior
@@ -219,10 +220,7 @@ namespace ms {
 
         const char* FILENAME = "Settings";
         const char* TITLE = "MapleStory";
-        const char* VERSION = "228.3"; // "252.2"; //"228.3";
-        const std::vector<std::shared_ptr<UIWorldSelectBackground>> LoginBackgrounds = {
-            std::make_shared<UINeoCityBackground>()
-        }; // { "ghostShip", "aran", "killing", "neoCity", "tema" };
+        const char* VERSION = "0.83"; // "252.2"; //"228.3";
         const char* LoginMusic = "BgmUI.img/Title";
         const char* LoginMusicSEA = "BgmGL.img/OldMaple";
         const char* LoginMusicNewtro = "BgmEvent2.img/Newtro_Login";
@@ -253,6 +251,7 @@ namespace ms {
         uint8_t channelid;
         bool admin;
         bool caps_lock_enabled;
+        std::vector<std::shared_ptr<UIWorldSelectBackground>> LoginBackgrounds;
         TypeMap<Entry> settings;
     };
 

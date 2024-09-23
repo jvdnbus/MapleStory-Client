@@ -49,7 +49,7 @@ namespace ms {
     private:
         struct DamageEffect {
             AttackUser user;
-            DamageNumber number;
+            FloatingNumber number;
             int32_t damage;
             bool toleft;
             int32_t target_oid;
@@ -72,7 +72,7 @@ namespace ms {
         void apply_bullet_effect(const BulletEffect& effect);
         void apply_damage_effect(const DamageEffect& effect);
         void extract_effects(const Char& user, const SpecialMove& move, const AttackResult& result);
-        std::vector<DamageNumber> place_numbers(int32_t oid, const std::vector<std::pair<int32_t, bool>>& damagelines);
+        std::vector<FloatingNumber> place_numbers(int32_t oid, const std::vector<std::pair<int32_t, bool>>& damagelines);
         const SpecialMove& get_move(int32_t move_id);
 
         Player& player;
@@ -88,6 +88,6 @@ namespace ms {
         TimedQueue<DamageEffect> damageeffects;
 
         std::list<BulletEffect> bullets;
-        std::list<DamageNumber> damagenumbers;
+        std::list<FloatingNumber> damagenumbers;
     };
 }

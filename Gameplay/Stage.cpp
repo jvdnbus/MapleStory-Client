@@ -57,7 +57,7 @@ namespace ms {
         player = entry;
         playable = player;
 
-        start = ContinuousTimer::get().start();
+        start = ContinuousMeasurementTimer::get().start();
 
         CharStats stats = player.get_stats();
         levelBefore = stats.get_stat(MapleStat::Id::LEVEL);
@@ -75,7 +75,7 @@ namespace ms {
     }
 
     void Stage::load_map(int32_t mapid) {
-        Stage::mapid = mapid;
+        Stage::map_id = mapid;
 
         std::string strid = string_format::extend_id(mapid, 9);
         std::string prefix = std::to_string(mapid / 100000000);
@@ -87,19 +87,19 @@ namespace ms {
         tilesobjs = MapTilesObjs(src);
         backgrounds = MapBackgrounds(src["back"]);
         physics = Physics(src["foothold"]);
-        mapinfo = MapInfo(src, physics.get_fht().get_walls(true),
-                          physics.get_fht().get_borders());
+        map_info = MapInfo(src, physics.get_fht().get_walls(true),
+                           physics.get_fht().get_borders());
         portals = MapPortals(src["portal"], mapid);
     }
 
     void Stage::respawn(int8_t portalid, bool transition) {
-        Music(mapinfo.get_bgm()).play();
+        Music(map_info.get_bgm()).play();
 
         Point<int16_t> spawnpoint = portals.get_portal_by_id(portalid);
         Point<int16_t> startpos = transition ? physics.get_y_below(spawnpoint) : spawnpoint;
-        player.respawn(startpos, mapinfo.is_underwater());
+        player.respawn(startpos, map_info.is_underwater());
         camera.set_position(startpos);
-        camera.set_view(mapinfo.get_walls(), mapinfo.get_borders());
+        camera.set_view(map_info.get_walls(), map_info.get_borders());
     }
 
     void Stage::draw(float alpha) const {
@@ -197,7 +197,7 @@ namespace ms {
             Point<int16_t> spawnpoint = portals.get_portal_by_name(warpinfo.toname);
             Point<int16_t> startpos = physics.get_y_below(spawnpoint);
 
-            player.teleport(startpos, mapinfo.is_underwater());
+            player.teleport(startpos, map_info.is_underwater());
             player.show_effect_id(CharEffect::Id::TELEPORT);
 
             Sound(Sound::Name::PORTAL).play();
@@ -216,7 +216,7 @@ namespace ms {
         if (player.is_sitting() || player.is_attacking())
             return;
 
-        Optional<const Seat> seat = mapinfo.find_seat(player.get_position());
+        Optional<const Seat> seat = map_info.find_seat(player.get_position());
         player.set_seat(seat);
     }
 
@@ -224,7 +224,7 @@ namespace ms {
         if (!player.can_climb() || player.is_climbing() || player.is_attacking())
             return;
 
-        Optional<const Ladder> ladder = mapinfo.find_ladder(player.get_position(), up);
+        Optional<const Ladder> ladder = map_info.find_ladder(player.get_position(), up);
         player.set_ladder(ladder);
     }
 
@@ -309,8 +309,12 @@ namespace ms {
         return chars.get_char(cid);
     }
 
-    int Stage::get_mapid() {
-        return mapid;
+    int32_t Stage::get_map_id() const {
+        return map_id;
+    }
+
+    MapInfo &Stage::get_map_info() {
+        return map_info;
     }
 
     void Stage::add_effect(std::string path) {
@@ -318,7 +322,7 @@ namespace ms {
     }
 
     int64_t Stage::get_uptime() {
-        return ContinuousTimer::get().stop(start);
+        return ContinuousMeasurementTimer::get().stop(start);
     }
 
     uint16_t Stage::get_uplevel() {

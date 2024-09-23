@@ -34,67 +34,68 @@ namespace ms {
         // Opcodes for OutPackets associated with version 83 of the game
         enum Opcode : uint16_t {
             /// Login
-            LOGIN = 1,
-            LOGIN_EMAIL = 3,
-            CHARLIST_REQUEST = 5,
-            SERVERSTATUS_REQUEST = 6,
-            ACCEPT_TOS = 7,
-            SET_GENDER = 8,
-            SERVERLIST_REQUEST = 11,
-            SELECT_CHAR = 19,
-            PLAYER_LOGIN = 20,
-            NAME_CHAR = 21,
-            CREATE_CHAR = 22,
-            DELETE_CHAR = 23,
-            PONG = 24,
-            REGISTER_PIC = 29,
-            SELECT_CHAR_PIC = 30,
+            LOGIN = 0x0001,
+            LOGIN_EMAIL = 0x0003,
+            CHARLIST_REQUEST = 0x0005,
+            SERVERSTATUS_REQUEST = 0x0006,
+            ACCEPT_TOS = 0x0007,
+            SET_GENDER = 0x0008,
+            SERVERLIST_REQUEST = 0x000B,
+            SELECT_CHAR = 0x0013,
+            PLAYER_LOGIN = 0x0014,
+            NAME_CHAR = 0x0015,
+            CREATE_CHAR = 0x0016,
+            DELETE_CHAR = 0x0017,
+            PONG = 0x0018,
+            REGISTER_PIC = 0x001D,
+            SELECT_CHAR_PIC = 0x001E,
 
             /// Gameplay 1
-            CHANGEMAP = 38,
-            ENTER_CASHSHOP = 40,
-            MOVE_PLAYER = 41,
-            CLOSE_ATTACK = 44,
-            RANGED_ATTACK = 45,
-            MAGIC_ATTACK = 46,
-            TAKE_DAMAGE = 48,
+            CHANGEMAP = 0x0026,
+            ENTER_CASHSHOP = 0x0028,
+            MOVE_PLAYER = 0x0029,
+            CLOSE_ATTACK = 0x002C,
+            RANGED_ATTACK = 0x002D,
+            MAGIC_ATTACK = 0x002E,
+            TAKE_DAMAGE = 0x0030,
 
             /// Messaging
-            GENERAL_CHAT = 49,
-            MULTI_CHAT = 119,
-            SPOUSE_CHAT = 121,
+            GENERAL_CHAT = 0x0031,
+            MULTI_CHAT = 0x0077,
+            SPOUSE_CHAT = 0x0079,
 
             /// NPC Interaction
-            TALK_TO_NPC = 58,
-            NPC_TALK_MORE = 60,
-            NPC_SHOP_ACTION = 61,
+            TALK_TO_NPC = 0x003A,
+            NPC_TALK_MORE = 0x003C,
+            NPC_SHOP_ACTION = 0x003D,
 
             /// Player Interaction
-            CHAR_INFO_REQUEST = 97,
+            CHAR_INFO_REQUEST = 0x0061,
 
             /// Inventory
-            GATHER_ITEMS = 69,
-            SORT_ITEMS = 70,
-            MOVE_ITEM = 71,
-            USE_ITEM = 72,
-            SCROLL_EQUIP = 86,
+            GATHER_ITEMS = 0x0045,
+            SORT_ITEMS = 0x0046,
+            MOVE_ITEM = 0x0047,
+            USE_ITEM = 0x0048,
+            SCROLL_EQUIP = 0x0056,
 
             /// Player
-            SPEND_AP = 87,
-            SPEND_SP = 90,
-            CHANGE_KEYMAP = 135,
+            SPEND_AP = 0x0057,
+            HP_MP_CHANGE_REQUEST = 0x0059,
+            SPEND_SP = 0x005A,
+            CHANGE_KEYMAP = 0x0087,
 
             /// Skill
-            USE_SKILL = 91,
+            USE_SKILL = 0x005B,
 
             /// Gameplay 2
-            PARTY_OPERATION = 124,
-            ADMIN_COMMAND = 128,
-            MOVE_MONSTER = 188,
-            PICKUP_ITEM = 202,
-            DAMAGE_REACTOR = 205,
-            PLAYER_MAP_TRANSFER = 207,
-            PLAYER_UPDATE = 223,
+            PARTY_OPERATION = 0x007C,
+            ADMIN_COMMAND = 0x0080,
+            MOVE_MONSTER = 0x00BC,
+            PICKUP_ITEM = 0x00CA,
+            DAMAGE_REACTOR = 0x00CD,
+            PLAYER_MAP_TRANSFER = 0x00CF,
+            PLAYER_UPDATE = 0x00DF,
 
             /// Custom
             CUSTOM_PACKET = 0x3713

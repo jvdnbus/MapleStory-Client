@@ -42,7 +42,7 @@ namespace ms {
                 Stage::get().load(mapid, portalid);
 
                 UI::get().enable();
-                Timer::get().start();
+                MeasurementTimer::get().start();
                 GraphicsGL::get().unlock();
 
                 Stage::get().transfer_player();
@@ -50,7 +50,7 @@ namespace ms {
 
         GraphicsGL::get().lock();
         Stage::get().clear(Stage::TRANSITION);
-        Timer::get().start();
+        MeasurementTimer::get().start();
     }
 
     void SetFieldHandler::handle(InPacket& recv) {

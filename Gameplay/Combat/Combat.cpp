@@ -68,7 +68,7 @@ namespace ms {
         );
 
         damagenumbers.remove_if(
-            [](DamageNumber& dn) {
+            [](FloatingNumber& dn) {
                 return dn.update();
             }
         );
@@ -268,9 +268,9 @@ namespace ms {
 
     void Combat::extract_effects(const Char& user, const SpecialMove& move, const AttackResult& result) {
         AttackUser attackuser = {
-            user.get_skilllevel(move.get_id()),
+            user.get_skill_level(move.get_id()),
             user.get_level(),
-            user.is_twohanded(),
+            user.is_two_handed(),
             !result.toleft
         };
 
@@ -285,7 +285,7 @@ namespace ms {
                 int32_t oid = line.first;
 
                 if (mobs.contains(oid)) {
-                    std::vector<DamageNumber> numbers = place_numbers(oid, line.second);
+                    std::vector<FloatingNumber> numbers = place_numbers(oid, line.second);
                     Point<int16_t> head = mobs.get_mob_head_position(oid);
 
                     size_t i = 0;
@@ -320,7 +320,7 @@ namespace ms {
                 int32_t oid = line.first;
 
                 if (mobs.contains(oid)) {
-                    std::vector<DamageNumber> numbers = place_numbers(oid, line.second);
+                    std::vector<FloatingNumber> numbers = place_numbers(oid, line.second);
 
                     size_t i = 0;
 
@@ -342,18 +342,18 @@ namespace ms {
         }
     }
 
-    std::vector<DamageNumber> Combat::place_numbers(int32_t oid,
-                                                    const std::vector<std::pair<int32_t, bool>>& damagelines) {
-        std::vector<DamageNumber> numbers;
+    std::vector<FloatingNumber> Combat::place_numbers(int32_t oid,
+                                                      const std::vector<std::pair<int32_t, bool>>& damagelines) {
+        std::vector<FloatingNumber> numbers;
         int16_t head = mobs.get_mob_head_position(oid).y();
 
         for (auto& line : damagelines) {
             int32_t amount = line.first;
             bool critical = line.second;
-            DamageNumber::Type type = critical ? DamageNumber::Type::CRITICAL : DamageNumber::Type::NORMAL;
+            FloatingNumber::Type type = critical ? FloatingNumber::Type::CRITICAL : FloatingNumber::Type::NORMAL;
             numbers.emplace_back(type, amount, head);
 
-            head -= DamageNumber::rowheight(critical);
+            head -= FloatingNumber::row_height(critical);
         }
 
         return numbers;

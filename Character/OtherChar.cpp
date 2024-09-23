@@ -96,7 +96,7 @@ namespace ms {
         return level;
     }
 
-    int32_t OtherChar::get_skilllevel(int32_t skillid) const {
+    int32_t OtherChar::get_skill_level(int32_t skillid) const {
         auto iter = skilllevels.find(skillid);
 
         if (iter == skilllevels.end())

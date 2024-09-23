@@ -21,7 +21,7 @@
 
 namespace ms {
     void RegularAction::apply(Char& target, Attack::Type atype) const {
-        Weapon::Type weapontype = target.get_weapontype();
+        Weapon::Type weapontype = target.get_weapon_type();
         bool degenerate;
 
         switch (weapontype) {
@@ -53,7 +53,7 @@ namespace ms {
     }
 
     void TwoHandedAction::apply(Char& target, Attack::Type) const {
-        bool twohanded = target.is_twohanded();
+        bool twohanded = target.is_two_handed();
         std::string action = actions[twohanded];
 
         target.attack(action);
@@ -69,7 +69,7 @@ namespace ms {
     }
 
     void ByLevelAction::apply(Char& target, Attack::Type) const {
-        int32_t level = target.get_skilllevel(skillid);
+        int32_t level = target.get_skill_level(skillid);
         auto iter = actions.find(level);
 
         if (iter != actions.end())

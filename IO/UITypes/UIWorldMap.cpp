@@ -131,7 +131,7 @@ namespace ms {
     }
 
     void UIWorldMap::update() {
-        int32_t mid = Stage::get().get_mapid();
+        int32_t mid = Stage::get().get_map_id();
 
         if (mid != mapid) {
             mapid = mid;

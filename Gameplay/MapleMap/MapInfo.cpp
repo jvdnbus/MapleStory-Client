@@ -35,6 +35,7 @@ namespace ms {
 
         cloud = info["cloud"].get_bool();
         fieldlimit = info["fieldLimit"];
+        recovery = info["recovery"].get_real(1.0);
         hideminimap = info["hideMinimap"].get_bool();
         mapmark = info["mapMark"];
         swim = info["swim"].get_bool();
@@ -48,6 +49,10 @@ namespace ms {
     }
 
     MapInfo::MapInfo() {
+    }
+
+    double MapInfo::get_recovery() const {
+        return recovery;
     }
 
     bool MapInfo::is_underwater() const {

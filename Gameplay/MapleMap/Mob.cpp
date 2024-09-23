@@ -29,8 +29,6 @@ namespace ms {
     Mob::Mob(int32_t oi, int32_t mid, int8_t mode, int8_t st, uint16_t fh, bool newspawn, int8_t tm,
              Point<int16_t> position) : MapObject(oi) {
         nl::node src = NxHelper::Mob::get_mob_node(mid);
-//        std::string strid = string_format::extend_id(mid, 7);
-//        nl::node src = nl::nx::Mob[strid + ".img"];
 
         nl::node info = src["info"];
 
@@ -59,8 +57,6 @@ namespace ms {
             link_src = NxHelper::Mob::get_mob_node(std::stoi(linkid));
             link = link_src;
         }
-//        nl::node link_src = nl::nx::Mob[linkid + ".img"];
-//        nl::node link = link_src ? link_src : src;
         nl::node fly = link["fly"];
 
         if (canfly) {

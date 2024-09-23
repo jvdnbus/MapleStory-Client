@@ -34,7 +34,7 @@ namespace ms {
         void update(Point<int16_t> position);
         // Set the position, changing the view immediately.
         void set_position(Point<int16_t> position);
-        // Updates the view's boundaries. Determined by mapinfo or footholds.
+        // Updates the view's boundaries. Determined by map_info or footholds.
         void set_view(Range<int16_t> hborders, Range<int16_t> vborders);
         // Return the current position.
         Point<int16_t> position() const;

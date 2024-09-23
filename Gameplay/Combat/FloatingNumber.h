@@ -24,38 +24,39 @@
 #include "../../IO/Components/Charset.h"
 
 namespace ms {
-    class DamageNumber {
+    class FloatingNumber {
     public:
-        static constexpr size_t NUM_TYPES = 3;
+        static constexpr size_t NUM_TYPES = 4;
 
         enum Type {
             NORMAL,
             CRITICAL,
-            TOPLAYER
+            TO_PLAYER,
+            HEAL
         };
 
-        DamageNumber(Type type, int32_t damage, int16_t starty, int16_t x = 0);
-        DamageNumber();
+        FloatingNumber(Type type, int32_t damage, int16_t starty, int16_t x = 0);
+        FloatingNumber();
 
         void draw(double viewx, double viewy, float alpha) const;
         void set_x(int16_t headx);
         bool update();
 
-        static int16_t rowheight(bool critical);
+        static int16_t row_height(bool critical);
         static void init();
 
     private:
-        int16_t getadvance(char c, bool first) const;
+        int16_t get_advance(char c, bool first) const;
 
         static constexpr uint16_t FADE_TIME = 500;
 
         Type type;
         bool miss;
         bool multiple;
-        int8_t firstnum;
-        std::string restnum;
+        int8_t first_num;
+        std::string rest_num;
         int16_t shift;
-        MovingObject moveobj;
+        MovingObject moving_object;
         Linear<float> opacity;
 
         static BoolPair<Charset> charsets[NUM_TYPES];

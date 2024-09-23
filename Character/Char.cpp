@@ -58,18 +58,21 @@ namespace ms {
             look.draw(DrawArgument(absp, scale, scale, opacity), alpha);
         }
 
-        for (auto& pet : pets)
-            if (pet.get_itemid())
+        for (auto& pet : pets) {
+            if (pet.get_itemid()) {
                 pet.draw(viewx, viewy, alpha);
+            }
+        }
 
         // If ever changing code for namelabel confirm placements with map 10000
         namelabel.draw(absp + Point<int16_t>(0, -4));
-        chatballoon.draw(absp - Point<int16_t>(0, 85));
+        chat_balloon.draw(absp - Point<int16_t>(0, 85));
 
         effects.drawabove(absp, alpha);
 
-        for (auto& number : damagenumbers)
+        for (auto& number : floating_numbers) {
             number.draw(viewx, viewy, alpha);
+        }
     }
 
     void Char::draw_preview(Point<int16_t> position, float alpha) const {
@@ -77,14 +80,14 @@ namespace ms {
     }
 
     bool Char::update(const Physics& physics, float speed) {
-        damagenumbers.remove_if(
-            [](DamageNumber& number) {
+        floating_numbers.remove_if(
+            [](FloatingNumber& number) {
                 return number.update();
             }
         );
 
         effects.update();
-        chatballoon.update();
+        chat_balloon.update();
         invincible.update();
         ironbody.update();
 
@@ -165,7 +168,7 @@ namespace ms {
     }
 
     void Char::show_effect_id(CharEffect::Id toshow) {
-        effects.add(chareffects[toshow]);
+        effects.add(char_effects[toshow]);
     }
 
     void Char::show_iron_body() {
@@ -176,14 +179,21 @@ namespace ms {
         int16_t start_y = physics_object.get_y() - 60;
         int16_t x = physics_object.get_x() - 10;
 
-        damagenumbers.emplace_back(DamageNumber::Type::TOPLAYER, damage, start_y, x);
+        floating_numbers.emplace_back(FloatingNumber::Type::TO_PLAYER, damage, start_y, x);
 
         look.set_alerted(5000);
         invincible.set_for(2000);
     }
 
+    void Char::show_heal(int32_t heal) {
+        int16_t start_y = physics_object.get_y() - 60;
+        int16_t x = physics_object.get_x() - 10;
+
+        floating_numbers.emplace_back(FloatingNumber::Type::HEAL, heal, start_y, x);
+    }
+
     void Char::speak(const std::string& line) {
-        chatballoon.change_text(line);
+        chat_balloon.change_text(line);
     }
 
     void Char::change_look(MapleStat::Id stat, int32_t id) {
@@ -305,11 +315,11 @@ namespace ms {
         return state == LADDER || state == ROPE;
     }
 
-    bool Char::is_twohanded() const {
+    bool Char::is_two_handed() const {
         return look.get_equips().is_twohanded();
     }
 
-    Weapon::Type Char::get_weapontype() const {
+    Weapon::Type Char::get_weapon_type() const {
         int32_t weapon_id = look.get_equips().get_weapon();
 
         if (weapon_id <= 0)
@@ -344,8 +354,8 @@ namespace ms {
         nl::node src = nl::nx::Effect["BasicEff.img"];
 
         for (auto iter : CharEffect::PATHS)
-            chareffects.emplace(iter.first, src.resolve(iter.second));
+            char_effects.emplace(iter.first, src.resolve(iter.second));
     }
 
-    EnumMap<CharEffect::Id, Animation> Char::chareffects;
+    EnumMap<CharEffect::Id, Animation> Char::char_effects;
 }

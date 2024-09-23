@@ -23,6 +23,9 @@
 
 namespace ms {
     Configuration::Configuration() {
+//        { "ghostShip", "aran", "killing", "neoCity", "tema" };
+        LoginBackgrounds.emplace_back(std::make_shared<UINeoCityBackground>());
+
         settings.emplace<ServerIP>();
         settings.emplace<ServerPort>();
         settings.emplace<Fullscreen>();

@@ -151,7 +151,7 @@ set(Header_Files
     "Gameplay/Combat/Attack.h"
     "Gameplay/Combat/Bullet.h"
     "Gameplay/Combat/Combat.h"
-    "Gameplay/Combat/DamageNumber.h"
+    "Gameplay/Combat/FloatingNumber.h"
     "Gameplay/Combat/RegularAttack.h"
     "Gameplay/Combat/Skill.h"
     "Gameplay/Combat/SkillAction.h"
@@ -332,7 +332,7 @@ set(Header_Files
     "Template/Singleton.h"
     "Template/TimedQueue.h"
     "Template/TypeMap.h"
-    "Timer.h"
+    "MeasurementTimer.h"
     "Util/HardwareInfo.h"
     "Util/Lerp.h"
     "Util/Misc.h"
@@ -342,6 +342,7 @@ set(Header_Files
     "Util/ScreenResolution.h"
     "Util/TimedBool.h"
     "Util/WzFiles.h"
+    "Util/Timer.h"
 )
 source_group("Header Files" FILES ${Header_Files})
 
@@ -392,7 +393,7 @@ set(Source_Files
     "Gameplay/Camera.cpp"
     "Gameplay/Combat/Bullet.cpp"
     "Gameplay/Combat/Combat.cpp"
-    "Gameplay/Combat/DamageNumber.cpp"
+    "Gameplay/Combat/FloatingNumber.cpp"
     "Gameplay/Combat/RegularAttack.cpp"
     "Gameplay/Combat/Skill.cpp"
     "Gameplay/Combat/SkillAction.cpp"
@@ -531,6 +532,7 @@ set(Source_Files
     "Util/Misc.cpp"
     "Util/NxFiles.cpp"
     "Util/WzFiles.cpp"
+    "Util/Timer.cpp"
 )
 source_group("Source Files" FILES ${Source_Files})
 

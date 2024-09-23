@@ -24,6 +24,18 @@
 #include "../../IO/UITypes/UIKeyConfig.h"
 
 namespace ms {
+    // Requests a heal over time from idling
+    // Opcode: HP_MP_CHANGE_REQUEST(0x59)
+    class HpMpChangeRequestPacket : public OutPacket {
+    public:
+        HpMpChangeRequestPacket(int16_t hpRecovery, int16_t mpRecovery) : OutPacket(HP_MP_CHANGE_REQUEST) {
+            write_time();
+            write_int(0x1400); // ??
+            write_short(hpRecovery);
+            write_short(mpRecovery);
+        }
+    };
+
     // Requests a stat increase by spending AP
     // Opcode: SPEND_AP(87)
     class SpendApPacket : public OutPacket {

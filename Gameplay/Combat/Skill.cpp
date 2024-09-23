@@ -138,7 +138,7 @@ namespace ms {
     void Skill::apply_stats(const Char& user, Attack& attack) const {
         attack.skill = skillid;
 
-        int32_t level = user.get_skilllevel(skillid);
+        int32_t level = user.get_skill_level(skillid);
         const SkillData::Stats stats = SkillData::get(skillid).get_stats(level);
 
         if (stats.fixdamage) {

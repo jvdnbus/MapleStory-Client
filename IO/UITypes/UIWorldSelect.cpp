@@ -71,7 +71,7 @@ namespace ms {
                 auto randomizer = Randomizer();
                 index = randomizer.next_int(backgrounds_size);
             }
-            auto& bg = backgrounds[index];
+            auto bg = backgrounds[index];
             nl::node bg_node = bg->get_background_node(WorldSelectMap);
             bg->init(bg_node, dimension, sprites);
         }

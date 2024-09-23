@@ -75,13 +75,13 @@ namespace ms {
                 Stage::get().load(-1, 0);
 
                 UI::get().enable();
-                Timer::get().start();
+                MeasurementTimer::get().start();
                 GraphicsGL::get().unlock();
             }
         );
 
         GraphicsGL::get().lock();
         Stage::get().clear(Stage::INACTIVE);
-        Timer::get().start();
+        MeasurementTimer::get().start();
     }
 }

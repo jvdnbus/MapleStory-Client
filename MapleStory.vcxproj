@@ -233,7 +233,7 @@ copy /y /d "$(ProjectDir)includes\NoLifeNx\nlnx\includes\lz4_v1_8_2_win$(Platfor
     <ClCompile Include="Gameplay\Camera.cpp" />
     <ClCompile Include="Gameplay\Combat\Bullet.cpp" />
     <ClCompile Include="Gameplay\Combat\Combat.cpp" />
-    <ClCompile Include="Gameplay\Combat\DamageNumber.cpp" />
+    <ClCompile Include="Gameplay\Combat\FloatingNumber.cpp" />
     <ClCompile Include="Gameplay\Combat\RegularAttack.cpp" />
     <ClCompile Include="Gameplay\Combat\Skill.cpp" />
     <ClCompile Include="Gameplay\Combat\SkillAction.cpp" />
@@ -424,7 +424,7 @@ copy /y /d "$(ProjectDir)includes\NoLifeNx\nlnx\includes\lz4_v1_8_2_win$(Platfor
     <ClInclude Include="Gameplay\Combat\Attack.h" />
     <ClInclude Include="Gameplay\Combat\Bullet.h" />
     <ClInclude Include="Gameplay\Combat\Combat.h" />
-    <ClInclude Include="Gameplay\Combat\DamageNumber.h" />
+    <ClInclude Include="Gameplay\Combat\FloatingNumber.h" />
     <ClInclude Include="Gameplay\Combat\RegularAttack.h" />
     <ClInclude Include="Gameplay\Combat\Skill.h" />
     <ClInclude Include="Gameplay\Combat\SkillAction.h" />

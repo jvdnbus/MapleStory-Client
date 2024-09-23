@@ -21,6 +21,7 @@
 #include "Net/Session.h"
 #include "Util/HardwareInfo.h"
 #include "Util/ScreenResolution.h"
+#include "Util/Timer.h"
 
 //#ifdef NDEBUG
 #include "IO/DebugUI.h"
@@ -55,7 +56,7 @@ namespace ms {
             return error;
 
         Char::init();
-        DamageNumber::init();
+        FloatingNumber::init();
         MapPortals::init();
         Stage::get().init();
         UI::get().init();
@@ -87,7 +88,7 @@ namespace ms {
     }
 
     void loop() {
-        Timer::get().start();
+        MeasurementTimer::get().start();
 
         int64_t timestep = Constants::TIMESTEP * 1000;
         int64_t accumulator = timestep;
@@ -98,7 +99,7 @@ namespace ms {
         bool show_fps = Configuration::get().get_show_fps();
 
         while (running()) {
-            int64_t elapsed = Timer::get().stop();
+            int64_t elapsed = MeasurementTimer::get().stop();
             timestep = Constants::TIMESTEP * 1000; // Timestep can be variable from now on
 
             // Update game with constant timestep as many times as possible.

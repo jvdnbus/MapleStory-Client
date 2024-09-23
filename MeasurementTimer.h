@@ -24,13 +24,13 @@
 
 namespace ms {
     // Small class for measuring elapsed time between game loops.
-    class Timer : public Singleton<Timer> {
+    class MeasurementTimer : public Singleton<MeasurementTimer> {
     public:
-        Timer() {
+        MeasurementTimer() {
             start();
         }
 
-        ~Timer() override {
+        ~MeasurementTimer() override {
         }
 
         // Start the timer by setting the last measurement to now.
@@ -54,15 +54,15 @@ namespace ms {
     };
 
     // Small class for measuring elapsed time given a specific start time.
-    class ContinuousTimer : public Singleton<ContinuousTimer> {
+    class ContinuousMeasurementTimer : public Singleton<ContinuousMeasurementTimer> {
     public:
         using point = std::chrono::time_point<std::chrono::steady_clock>;
 
-        ContinuousTimer() {
+        ContinuousMeasurementTimer() {
             start();
         }
 
-        ~ContinuousTimer() override {
+        ~ContinuousMeasurementTimer() override {
         }
 
         // Return now from the clock to be used to calculate elapsed time later.

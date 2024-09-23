@@ -56,6 +56,7 @@ namespace ms {
         MapInfo(nl::node src, Range<int16_t> walls, Range<int16_t> borders);
         MapInfo();
 
+        double get_recovery() const;
         bool is_underwater() const;
         std::string get_bgm() const;
         Range<int16_t> get_walls() const;
@@ -69,6 +70,7 @@ namespace ms {
 
     private:
         int32_t fieldlimit;
+        double recovery;
         bool cloud;
         std::string bgm;
         std::string mapdesc;

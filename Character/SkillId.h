@@ -33,7 +33,7 @@ namespace ms {
             // Swordman
             IMPROVED_HP_RECOVERY = 1000000,
             IMPROVED_MAX_HP = 1000001,
-            IMPROVED_LADDER_RECOVERY = 1000002,
+            ENDURE = 1000002,
             IRON_BODY = 1001003,
             POWER_STRIKE = 1001004,
             SLASH_BLAST = 1001005,
@@ -112,8 +112,8 @@ namespace ms {
             BEHOLDER = 1321007,
 
             // Magician
-            IMPROVE_HP_RECOVERY = 2000000,
-            IMPROVE_MAX_HP = 2000001,
+            IMPROVED_MP_RECOVERY = 2000000,
+            IMPROVED_MAX_MP = 2000001,
             MAGIC_GUARD = 2001002,
             MAGIC_ARMOR = 2001003,
             ENERGY_BOLT = 2001004,

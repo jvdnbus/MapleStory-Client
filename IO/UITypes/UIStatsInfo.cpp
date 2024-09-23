@@ -374,7 +374,7 @@ namespace ms {
             uint16_t autoint = 0;
             uint16_t autoluk = 0;
             uint16_t nowap = stats.get_stat(MapleStat::Id::AP);
-            EquipStat::Id id = player.get_stats().get_job().get_primary(player.get_weapontype());
+            EquipStat::Id id = player.get_stats().get_job().get_primary(player.get_weapon_type());
 
             switch (id) {
             case EquipStat::Id::STR:

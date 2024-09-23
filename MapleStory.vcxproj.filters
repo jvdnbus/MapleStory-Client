@@ -150,7 +150,7 @@
     <ClCompile Include="Gameplay\Combat\Combat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\Combat\DamageNumber.cpp">
+    <ClCompile Include="Gameplay\Combat\FloatingNumber.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Gameplay\Combat\RegularAttack.cpp">
@@ -728,7 +728,7 @@
     <ClInclude Include="Gameplay\Combat\Combat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\Combat\DamageNumber.h">
+    <ClInclude Include="Gameplay\Combat\FloatingNumber.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\Combat\RegularAttack.h">

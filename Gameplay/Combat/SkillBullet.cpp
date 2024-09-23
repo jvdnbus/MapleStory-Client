@@ -43,7 +43,7 @@ namespace ms {
     }
 
     Animation BySkillLevelBullet::get(const Char& user, int32_t) const {
-        int32_t level = user.get_skilllevel(skillid);
+        int32_t level = user.get_skill_level(skillid);
         auto iter = bullets.find(level);
 
         if (iter != bullets.end())

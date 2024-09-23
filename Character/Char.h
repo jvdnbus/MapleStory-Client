@@ -26,7 +26,7 @@
 
 #include "../Graphics/EffectLayer.h"
 
-#include "../Gameplay/Combat/DamageNumber.h"
+#include "../Gameplay/Combat/FloatingNumber.h"
 #include "../Gameplay/MapleMap/MapObject.h"
 #include "../IO/Components/ChatBalloon.h"
 
@@ -67,7 +67,7 @@ namespace ms {
         // Return the character's level
         virtual uint16_t get_level() const = 0;
         // Return the a skill's level from the character
-        virtual int32_t get_skilllevel(int32_t skillid) const = 0;
+        virtual int32_t get_skill_level(int32_t skillid) const = 0;
         // Return the character's base attacking speed
         virtual int8_t get_integer_attackspeed() const = 0;
 
@@ -101,6 +101,8 @@ namespace ms {
         void show_iron_body();
         // Display damage over the characters head
         void show_damage(int32_t damage);
+        // Display heal over the characters head
+        void show_heal(int32_t heal);
         // Display a chat bubble with the specified line in it
         void speak(const std::string& line);
         // Change a part of the character's look
@@ -126,9 +128,9 @@ namespace ms {
         // Return if the char is in the Char::State::LADDER or Char::State::ROPE state
         bool is_climbing() const;
         // Return whether the character sprite uses stances for two-handed weapons
-        bool is_twohanded() const;
+        bool is_two_handed() const;
         // Return the type of the currently equipped weapon
-        Weapon::Type get_weapontype() const;
+        Weapon::Type get_weapon_type() const;
 
         // Obtain a reference to this character's look
         CharLook& get_look();
@@ -159,13 +161,13 @@ namespace ms {
 
     private:
         Text namelabel;
-        ChatBalloon chatballoon;
+        ChatBalloon chat_balloon;
         EffectLayer effects;
         Afterimage afterimage;
         TimedBool invincible;
         TimedBool ironbody;
-        std::list<DamageNumber> damagenumbers;
+        std::list<FloatingNumber> floating_numbers;
 
-        static EnumMap<CharEffect::Id, Animation> chareffects;
+        static EnumMap<CharEffect::Id, Animation> char_effects;
     };
 }

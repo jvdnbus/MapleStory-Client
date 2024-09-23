@@ -31,7 +31,7 @@ namespace ms {
     }
 
     void TwoHandedUseEffect::apply(Char& target) const {
-        bool twohanded = target.is_twohanded();
+        bool twohanded = target.is_two_handed();
         effects[twohanded].apply(target);
     }
 

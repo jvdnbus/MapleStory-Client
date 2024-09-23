@@ -18,14 +18,16 @@
 #include "Player.h"
 
 #include "PlayerStates.h"
+#include "SkillId.h"
 
 #include "../Data/WeaponData.h"
 #include "../IO/UI.h"
-
 #include "../IO/UITypes/UIStatsInfo.h"
+#include "../Gameplay/Stage.h"
 #include "../Net/Packets/GameplayPackets.h"
 #include "../Net/Packets/InventoryPackets.h"
 #include "../Net/Packets/AttackAndSkillPackets.h"
+#include "../Net/Packets/PlayerPackets.h"
 
 namespace ms {
     const PlayerNullState nullstate;
@@ -60,9 +62,19 @@ namespace ms {
         }
     }
 
+    constexpr int64_t HP_RECOVERY_INTERVAL = 10000;
+    constexpr int64_t MP_RECOVERY_INTERVAL = 10000;
+    constexpr int64_t HP_RECOVERY_LADDER_INTERVAL = 31000;
+
     Player::Player(const CharEntry& entry) : Char(entry.id, entry.look, entry.stats.name), stats(entry.stats) {
         attacking = false;
         underwater = false;
+
+        auto &tm = TimerManager::get();
+        hp_recovery_timer = tm.create_timer(HP_RECOVERY_INTERVAL).start();
+        mp_recovery_timer = tm.create_timer(MP_RECOVERY_INTERVAL).start();
+        // Only start this if Endure (WARRIOR) skill is present
+        hp_recovery_ladder_timer = tm.create_timer(HP_RECOVERY_LADDER_INTERVAL);
 
         set_state(State::FALL);
         set_direction(true);
@@ -101,7 +113,7 @@ namespace ms {
     }
 
     void Player::recalc_stats(bool equipchanged) {
-        Weapon::Type weapontype = get_weapontype();
+        Weapon::Type weapontype = get_weapon_type();
 
         stats.set_weapontype(weapontype);
         stats.init_totalstats();
@@ -130,6 +142,14 @@ namespace ms {
 
         if (auto statsinfo = UI::get().get_element<UIStatsInfo>())
             statsinfo->update_all_stats();
+
+        int32_t endure_level = get_skill_level(SkillId::ENDURE);
+        if (endure_level > 0) {
+            hp_recovery_ladder_timer.set_duration(HP_RECOVERY_LADDER_INTERVAL - endure_level * 3 * 1000);
+            if (!hp_recovery_ladder_timer.is_active()) {
+                hp_recovery_ladder_timer.start();
+            }
+        }
     }
 
     void Player::change_equip(int16_t slot) {
@@ -174,12 +194,17 @@ namespace ms {
         bool needupdate = lastmove.has_moved(newmove);
 
         if (needupdate) {
+            hp_recovery_ladder_timer.reset();
+            hp_recovery_timer.reset();
+
             MovePlayerPacket(newmove).dispatch();
             lastmove = newmove;
         }
 
         climb_cooldown.update();
         portal_cooldown.update();
+        try_hp_recovery();
+        try_mp_recovery();
 
         return get_layer();
     }
@@ -233,7 +258,7 @@ namespace ms {
             return SpecialMove::ForbidReason::FBR_COOLDOWN;
 
         int32_t level = skillbook.get_level(move.get_id());
-        Weapon::Type weapon = get_weapontype();
+        Weapon::Type weapon = get_weapon_type();
         const Job& job = stats.get_job();
         uint16_t hp = stats.get_stat(MapleStat::Id::HP);
         uint16_t mp = stats.get_stat(MapleStat::Id::MP);
@@ -251,7 +276,7 @@ namespace ms {
             attacktype = Attack::Type::CLOSE;
         } else {
             Weapon::Type weapontype;
-            weapontype = get_weapontype();
+            weapontype = get_weapon_type();
 
             switch (weapontype) {
             case Weapon::Type::BOW:
@@ -317,19 +342,93 @@ namespace ms {
         return Char::is_invincible();
     }
 
+    void Player::try_hp_recovery() {
+        if (/*is_dead() || */is_full_health()) {
+            return;
+        }
+
+        bool ladder_recovery = is_climbing() && hp_recovery_ladder_timer.is_ready();
+        if (ladder_recovery) {
+            hp_recovery_ladder_timer.reset();
+        }
+
+        bool idle_recovery = hp_recovery_timer.is_ready();
+        if (idle_recovery) {
+            hp_recovery_timer.reset();
+        }
+
+        if (ladder_recovery || idle_recovery) {
+            int16_t hp = 10;
+
+            // Check if sitting
+            if (is_sitting()) {
+                // TODO Check if on portable chair and check their HP/MP stats
+            } else {
+                // Calculate HP recovery based on learned skills
+                // Swordman skill
+                int32_t hp_recovery_level = get_skill_level(SkillId::IMPROVED_HP_RECOVERY);
+                if (hp_recovery_level > 0) {
+                    hp += hp_recovery_level < 16 ? 3 * hp_recovery_level : 50;
+                }
+            }
+
+            // Check map recovery rate (e.g. sauna)
+            hp *= Stage::get().get_map_info().get_recovery();
+
+            // Send request packet
+            HpMpChangeRequestPacket(hp, 0).dispatch();
+            // Show heal
+            show_heal(hp);
+        }
+    }
+
+    void Player::try_mp_recovery() {
+        if (is_full_mana()) {
+            return;
+        }
+
+        if (mp_recovery_timer.is_ready()) {
+            int16_t mp = 3;
+
+            // Magician skill
+            int32_t mp_recovery_level = get_skill_level(SkillId::IMPROVED_MP_RECOVERY);
+            if (mp_recovery_level > 0) {
+                mp += (mp_recovery_level - 1) + std::ceil((get_level() - 9) / 2.0);
+            }
+
+            // Crusader skill
+            mp_recovery_level = get_skill_level(SkillId::IMPROVED_MP_RECOVERY_CRUSADER);
+            if (mp_recovery_level > 0 && mp_recovery_level <= 10) {
+                mp += mp_recovery_level * 2;
+            } else if (mp_recovery_level > 10) {
+                mp += mp_recovery_level + 10;
+            }
+
+            if (mp > 1000) mp = 1000;
+
+            // Send request packet
+            HpMpChangeRequestPacket(0, mp).dispatch();
+
+            mp_recovery_timer.reset();
+        }
+    }
+
     MobAttackResult Player::damage(const MobAttack& attack) {
         int32_t damage = stats.calculate_damage(attack.watk);
         show_damage(damage);
 
         bool fromleft = attack.origin.x() > physics_object.get_x();
-
         bool missed = damage <= 0;
         bool immovable = ladder || state == DIED;
         bool knockback = !missed && !immovable;
 
         if (knockback && randomizer.above(stats.get_stance())) {
-            physics_object.h_speed = fromleft ? -1.5 : 1.5;
-            physics_object.v_force -= 3.5;
+            physics_object.h_speed = fromleft ? -1.75 : 1.75;
+            double v_speed = physics_object.v_speed + physics_object.v_force;
+            double min_v_speed = -1.8;
+            if (v_speed > min_v_speed) {
+                physics_object.v_force += min_v_speed - v_speed;
+            }
         }
 
         uint8_t direction = fromleft ? 0 : 1;
@@ -396,7 +495,7 @@ namespace ms {
         return stats.get_stat(MapleStat::Id::LEVEL);
     }
 
-    int32_t Player::get_skilllevel(int32_t skillid) const {
+    int32_t Player::get_skill_level(int32_t skillid) const {
         return skillbook.get_level(skillid);
     }
 
@@ -499,6 +598,18 @@ namespace ms {
 
     const CharStats& Player::get_stats() const {
         return stats;
+    }
+
+    bool Player::is_dead() const {
+        return stats.get_stat(MapleStat::HP) == 0;
+    }
+
+    bool Player::is_full_health() const {
+        return stats.get_stat(MapleStat::HP) == stats.get_stat(MapleStat::MAXHP);
+    }
+
+    bool Player::is_full_mana() const {
+        return stats.get_stat(MapleStat::MP) == stats.get_stat(MapleStat::MAXMP);
     }
 
     Inventory& Player::get_inventory() {

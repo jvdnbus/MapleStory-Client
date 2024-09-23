@@ -20,7 +20,7 @@
 #include "UI.h"
 
 #include "../Configuration.h"
-#include "../Timer.h"
+#include "../MeasurementTimer.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -58,7 +58,7 @@ namespace ms {
         UI::get().send_key(key, action != GLFW_RELEASE);
     }
 
-    std::chrono::time_point<std::chrono::steady_clock> start = ContinuousTimer::get().start();
+    std::chrono::time_point<std::chrono::steady_clock> start = ContinuousMeasurementTimer::get().start();
 
     void mousekey_callback(GLFWwindow*, int button, int action, int) {
         if (ImGui::GetIO().WantCaptureMouse) {
@@ -73,9 +73,9 @@ namespace ms {
                 break;
             }
             case GLFW_RELEASE: {
-                auto diff_ms = ContinuousTimer::get().stop(start) / 1000;
+                auto diff_ms = ContinuousMeasurementTimer::get().stop(start) / 1000;
 
-                start = ContinuousTimer::get().start();
+                start = ContinuousMeasurementTimer::get().start();
 
                 if (diff_ms > 10 && diff_ms < 200)
                     UI::get().doubleclick();
@@ -155,7 +155,7 @@ namespace ms {
         if (Error error = init_imgui()) return error;
 //#endif
 
-        // Callbacks are installed after ImGui because ImGui::GetIO() will not be ready
+        // Callbacks are installed after ImGui because ImGui::GetIO() will not be is_ready
         return init_window_callbacks();
     }
 
