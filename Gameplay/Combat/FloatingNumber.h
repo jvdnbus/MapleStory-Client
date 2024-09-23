@@ -48,7 +48,7 @@ namespace ms {
     private:
         int16_t get_advance(char c, bool first) const;
 
-        static constexpr uint16_t FADE_TIME = 500;
+        static constexpr uint16_t FADE_TIME = 600;
 
         Type type;
         bool miss;

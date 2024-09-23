@@ -167,8 +167,8 @@ namespace ms {
         charsets[CRITICAL].set(true, BasicEff["NoCri0"], Charset::Alignment::LEFT);
         charsets[TO_PLAYER].set(false, BasicEff["NoViolet1"], Charset::Alignment::LEFT);
         charsets[TO_PLAYER].set(true, BasicEff["NoViolet0"], Charset::Alignment::LEFT);
-        charsets[HEAL].set(false, BasicEff["NoBlue0"], Charset::Alignment::LEFT);
-        charsets[HEAL].set(true, BasicEff["NoBlue1"], Charset::Alignment::LEFT);
+        charsets[HEAL].set(false, BasicEff["NoBlue1"], Charset::Alignment::LEFT);
+        charsets[HEAL].set(true, BasicEff["NoBlue0"], Charset::Alignment::LEFT);
     }
 
     BoolPair<Charset> FloatingNumber::charsets[NUM_TYPES];

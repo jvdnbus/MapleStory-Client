@@ -352,7 +352,7 @@ namespace ms {
             hp_recovery_ladder_timer.reset();
         }
 
-        bool idle_recovery = hp_recovery_timer.is_ready();
+        bool idle_recovery = !is_climbing() && hp_recovery_timer.is_ready();
         if (idle_recovery) {
             hp_recovery_timer.reset();
         }

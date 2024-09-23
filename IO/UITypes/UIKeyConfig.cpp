@@ -462,8 +462,7 @@ namespace ms {
 
                 if (mapping.type == KeyType::Id::ITEM) {
                     icon = item_icons.at(id).get();
-                } else if (mapping.type ==
-                    KeyType::Id::SKILL) {
+                } else if (mapping.type == KeyType::Id::SKILL) {
                     icon = skill_icons.at(id).get();
                 } else if (is_action_mapping(mapping)) {
                     KeyAction::Id action = KeyAction::actionbyid(mapping.action);
@@ -606,8 +605,7 @@ namespace ms {
 
                     if (mapping.type == KeyType::Id::ITEM) {
                         icon = item_icons[id].get();
-                    } else if (mapping.type ==
-                        KeyType::Id::SKILL) {
+                    } else if (mapping.type == KeyType::Id::SKILL) {
                         icon = skill_icons[id].get();
                     } else if (is_action_mapping(mapping)) {
                         KeyAction::Id action = KeyAction::actionbyid(mapping.action);
