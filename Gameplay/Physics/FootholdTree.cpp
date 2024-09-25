@@ -146,7 +146,9 @@ namespace ms {
         double x = phobj.current_x();
         double y = phobj.current_y();
 
-        if (phobj.is_on_ground) {
+        bool is_on_ground_or_close = phobj.is_on_ground || std::abs(y - cur_fh.ground_below(x)) < 0.5f;
+
+        if (is_on_ground_or_close) {
             if (std::floor(x) > cur_fh.r()) {
                 // Move to the fh to the right of current one
                 phobj.fh_id = cur_fh.next();

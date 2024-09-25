@@ -30,7 +30,7 @@ namespace ms {
                 int32_t intval = std::stoi(str);
                 return static_cast<T>(intval);
             } catch (const std::exception& ex) {
-                LOG(LOG_ERROR, __func__ << ": " << ex.what());
+                LOG(LOG_ERROR, __func__ << ": " << ex.what() << ": " << str);
 
                 return def;
             }

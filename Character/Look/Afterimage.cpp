@@ -40,6 +40,7 @@ namespace ms {
         displayed = false;
 
         for (nl::node sub : src) {
+            if (sub.name() == "lt" || sub.name() == "rb") continue;
             uint8_t frame = string_conversion::or_default<uint8_t>(sub.name(), 255);
 
             if (frame < 255) {
