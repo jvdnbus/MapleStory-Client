@@ -31,6 +31,7 @@
 #include "../Gameplay/Combat/Skill.h"
 #include "../Gameplay/MapleMap/Layer.h"
 #include "../Gameplay/MapleMap/MapInfo.h"
+#include "../Gameplay/MovementPath.h"
 #include "../Util/Timer.h"
 
 namespace ms {
@@ -170,6 +171,8 @@ namespace ms {
         void try_hp_recovery();
         // Do MP recovery
         void try_mp_recovery();
+        // Returns a vector of the player's movement velocity calculated to match original client packets
+        Point<int16_t> get_movement_velocity() const;
 
     private:
         CharStats stats;
@@ -187,7 +190,7 @@ namespace ms {
 
         std::map<KeyAction::Id, bool> keysdown;
 
-        Movement lastmove;
+        MovementPath move_path;
 
         Randomizer randomizer;
 

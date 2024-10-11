@@ -19,12 +19,13 @@
 
 #include "../../InPacket.h"
 
-#include "../../../Gameplay/Movement.h"
+#include "../../../Gameplay/MovementPath.h"
 
 #include <vector>
+#include <memory>
 
 namespace ms {
     namespace MovementParser {
-        std::vector<Movement> parse_movements(InPacket& recv);
+        std::unique_ptr<MovementPath> parse_movements(InPacket& recv);
     }
 }

@@ -30,7 +30,6 @@ namespace ms {
     constexpr double GROUNDSLIP = 3.0;
     constexpr double FLYFRICTION = 0.05;
     constexpr double SWIMFRICTION = 0.08;
-    constexpr double PI = 3.14159265358979323846;
 
     Physics::Physics(nl::node src) {
         fht = src;
@@ -147,9 +146,9 @@ namespace ms {
                     );
                     velo_vector = velo_vector / velo_vector.length();
                     double theta = atan2(velo_vector.y(), velo_vector.x());
-                    double ro = theta <= 0 ? theta + PI : theta - PI;
+                    double rho = theta <= 0 ? theta + Constants::PI : theta - Constants::PI;
                     double slope_omega = -slopef;
-                    double delta = std::abs(ro - slope_omega);
+                    double delta = std::abs(rho - slope_omega);
                     transform_factor = (1 + cos(delta)) / 2;
                 }
 

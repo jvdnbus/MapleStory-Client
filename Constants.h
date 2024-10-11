@@ -23,6 +23,7 @@
 
 namespace ms {
     namespace Constants {
+        constexpr double PI = 3.14159265358979323846;
         constexpr uint16_t TIMESTEP_DEFAULT = 8;
 #define TIMESTEP Constants::get().get_timestep()
 

@@ -145,9 +145,8 @@ namespace ms {
     void CharMovedHandler::handle(InPacket& recv) {
         int32_t cid = recv.read_int();
         recv.skip(4);
-        std::vector<Movement> movements = MovementParser::parse_movements(recv);
-
-        Stage::get().get_chars().send_movement(cid, movements);
+        std::unique_ptr<MovementPath> movements = MovementParser::parse_movements(recv);
+        Stage::get().get_chars().send_movement(cid, std::move(movements));
     }
 
     void UpdateCharLookHandler::handle(InPacket& recv) {
@@ -291,7 +290,7 @@ namespace ms {
         recv.read_byte(); // skill 4
 
         Point<int16_t> position = recv.read_point();
-        std::vector<Movement> movements = MovementParser::parse_movements(recv);
+        std::unique_ptr<MovementPath> movements = MovementParser::parse_movements(recv);
 
         Stage::get().get_mobs().send_movement(oid, position, std::move(movements));
     }

@@ -23,6 +23,7 @@
 
 #include "../Combat/Attack.h"
 #include "../Combat/SpecialMove.h"
+#include "../MovementPath.h"
 
 #include <queue>
 
@@ -47,7 +48,7 @@ namespace ms {
         // Update a mob's hp display.
         void send_mobhp(int32_t oid, int8_t percent, uint16_t playerlevel);
         // Update a mob's movements.
-        void send_movement(int32_t oid, Point<int16_t> start, std::vector<Movement>&& movements);
+        void send_movement(int32_t oid, Point<int16_t> start, std::unique_ptr<MovementPath> movements);
 
         // Calculate the results of an attack.
         void send_attack(AttackResult& result, const Attack& attack, const std::vector<int32_t>& targets,

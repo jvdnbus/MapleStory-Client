@@ -24,6 +24,7 @@
 #include "../IO/UI.h"
 #include "../IO/UITypes/UIStatsInfo.h"
 #include "../Gameplay/Stage.h"
+#include "../Gameplay/MovementSnapshot.h"
 #include "../Net/Packets/GameplayPackets.h"
 #include "../Net/Packets/InventoryPackets.h"
 #include "../Net/Packets/AttackAndSkillPackets.h"
@@ -172,6 +173,20 @@ namespace ms {
             Char::draw(viewx, viewy, alpha);
     }
 
+    Point<int16_t> Player::get_movement_velocity() const {
+        int32_t speed_stat = get_stats().get_total(EquipStat::Id::SPEED);
+
+        // Calculate angle at which we are moving
+        auto velo_vector = Point<double>(physics_object.h_speed, -physics_object.v_speed);
+        velo_vector = velo_vector / velo_vector.length();
+        double theta = atan2(velo_vector.y(), velo_vector.x());
+
+        return {
+            static_cast<int16_t>(speed_stat * std::cos(theta)),
+            static_cast<int16_t>(speed_stat * std::sin(theta))
+        };
+    }
+
     int8_t Player::update(const Physics& physics) {
         const PlayerState* pst = get_player_state(state);
 
@@ -189,16 +204,33 @@ namespace ms {
             }
         }
 
-        uint8_t stancebyte = facing_right ? state : state + 1;
-        Movement newmove(physics_object, stancebyte);
-        bool needupdate = lastmove.has_moved(newmove);
+        uint8_t stance_byte = facing_right ? state : state + 1;
+        auto velocity = get_movement_velocity();
+        auto snapshot = MovementSnapshot(
+            MovementSnapshot::NORMAL_MOVE,
+            physics_object, velocity.x(), velocity.y(), stance_byte
+        );
 
-        if (needupdate) {
+        auto last_move = move_path.last();
+        bool has_moved = last_move && last_move->has_moved(snapshot);
+        bool time_to_flush = move_path.is_time_for_flush();
+        bool added_snapshot = false;
+        if (has_moved) {
             hp_recovery_ladder_timer.reset();
             hp_recovery_timer.reset();
 
-            MovePlayerPacket(newmove).dispatch();
-            lastmove = newmove;
+            move_path.add_snapshot(snapshot);
+            added_snapshot = true;
+        } else if (!last_move) {
+            move_path.add_snapshot(snapshot);
+            added_snapshot = true;
+        }
+        if (time_to_flush) {
+            if (!added_snapshot) {
+                move_path.add_snapshot(snapshot);
+            }
+            MovePlayerPacket move_packet = MovePlayerPacket();
+            move_path.flush(move_packet);
         }
 
         climb_cooldown.update();

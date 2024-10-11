@@ -71,7 +71,7 @@ namespace ms {
             mob->show_hp(percent, playerlevel);
     }
 
-    void MapMobs::send_movement(int32_t oid, Point<int16_t> start, std::vector<Movement>&& movements) {
+    void MapMobs::send_movement(int32_t oid, Point<int16_t> start, std::unique_ptr<MovementPath> movements) {
         if (Optional<Mob> mob = mobs.get(oid))
             mob->send_movement(start, std::move(movements));
     }

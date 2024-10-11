@@ -95,7 +95,7 @@ namespace ms {
         physics_object.fh_id = fh;
         physics_object.set_flag(PhysicsObject::Flag::TURN_AT_EDGES);
 
-        hppercent = 0;
+        hp_percent = 0;
         dying = false;
         dead = false;
         fading = false;
@@ -103,8 +103,8 @@ namespace ms {
         flydirection = STRAIGHT;
         counter = 0;
 
-        namelabel = Text(Text::Font::A13M, Text::Alignment::CENTER, Color::Name::WHITE, Text::Background::NAMETAG,
-                         name);
+        name_label = Text(Text::Font::A13M, Text::Alignment::CENTER, Color::Name::WHITE, Text::Background::NAMETAG,
+                          name);
 
         if (newspawn) {
             fadein = true;
@@ -286,16 +286,16 @@ namespace ms {
     }
 
     void Mob::update_movement() {
-        MoveMobPacket(
-                object_id, 1, 0, 0, 0, 0, 0, 0,
-                get_position(),
-                Movement(physics_object, value_of(stance, flip))
-        ).dispatch();
+//        MoveMobPacket(
+//                object_id, 1, 0, 0, 0, 0, 0, 0,
+//                get_position(),
+//                Movement(physics_object, value_of(stance, flip))
+//        ).dispatch();
     }
 
     void Mob::draw(double viewx, double viewy, float alpha) const {
         Point<int16_t> absp = physics_object.get_absolute(viewx, viewy, alpha);
-        Point<int16_t> headpos = get_head_position(absp);
+        Point<int16_t> head_position = get_head_position(absp);
 
         effects.draw_below(absp, alpha);
 
@@ -305,10 +305,10 @@ namespace ms {
             animations.at(stance).draw(DrawArgument(absp, flip && !noflip, interopc), alpha);
 
             if (showhp) {
-                namelabel.draw(absp);
+                name_label.draw(absp);
 
-                if (!dying && hppercent > 0)
-                    hpbar.draw(headpos, hppercent);
+                if (!dying && hp_percent > 0)
+                    hpbar.draw(head_position, hp_percent);
             }
         }
 
@@ -320,23 +320,23 @@ namespace ms {
         aggro = mode == 2;
     }
 
-    void Mob::send_movement(Point<int16_t> start, std::vector<Movement>&& in_movements) {
+    void Mob::send_movement(Point<int16_t> start, std::unique_ptr<MovementPath> in_movements) {
         if (control)
             return;
 
         set_position(start);
 
-        movements = std::forward<decltype(in_movements)>(in_movements);
+        move_path = std::forward<decltype(in_movements)>(in_movements);
 
-        if (movements.empty())
+        if (move_path->empty())
             return;
 
-        const Movement& lastmove = movements.front();
-
-        uint8_t laststance = lastmove.newstate;
-        set_stance(laststance);
-
-        physics_object.fh_id = lastmove.fh;
+        auto last_move = move_path->first();
+        if (last_move) {
+            uint8_t last_stance = last_move->state;
+            set_stance(last_stance);
+            physics_object.fh_id = last_move->foothold;
+        }
     }
 
     Point<int16_t> Mob::get_head_position(Point<int16_t> position) const {
@@ -367,13 +367,13 @@ namespace ms {
     }
 
     void Mob::show_hp(int8_t percent, uint16_t playerlevel) {
-        if (hppercent == 0) {
+        if (hp_percent == 0) {
             int16_t delta = playerlevel - level;
 
             if (delta > 9)
-                namelabel.change_color(Color::Name::YELLOW);
+                name_label.change_color(Color::Name::YELLOW);
             else if (delta < -9)
-                namelabel.change_color(Color::Name::RED);
+                name_label.change_color(Color::Name::RED);
         }
 
         if (percent > 100)
@@ -381,7 +381,7 @@ namespace ms {
         else if (percent < 0)
             percent = 0;
 
-        hppercent = percent;
+        hp_percent = percent;
         showhp.set_for(2000);
     }
 

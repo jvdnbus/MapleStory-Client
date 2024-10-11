@@ -50,10 +50,8 @@ namespace ms {
     class MovePlayerPacket : public MovementPacket {
     public:
         // Updates the player's position with the server
-        MovePlayerPacket(const Movement& movement) : MovementPacket(MOVE_PLAYER) {
+        MovePlayerPacket() : MovementPacket(MOVE_PLAYER) {
             skip(9);
-            write_byte(1);
-            writemovement(movement);
         }
     };
 
@@ -152,7 +150,7 @@ namespace ms {
     public:
         // Updates a mob's position with the server
         MoveMobPacket(int32_t oid, int16_t type, int8_t skillb, int8_t skill0, int8_t skill1, int8_t skill2,
-                      int8_t skill3, int8_t skill4, Point<int16_t> startpos, const Movement& movement) : MovementPacket(
+                      int8_t skill3, int8_t skill4, Point<int16_t> startpos, const MovementPath& move_path) : MovementPacket(
             MOVE_MONSTER) {
             write_int(oid);
             write_short(type);
@@ -168,7 +166,7 @@ namespace ms {
             write_point(startpos);
 
             write_byte(1);
-            writemovement(movement);
+            write_movement(move_path.get_path());
         }
     };
 

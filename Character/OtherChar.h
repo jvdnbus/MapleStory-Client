@@ -21,45 +21,46 @@
 
 #include "Look/CharLook.h"
 
-#include "../Gameplay/Movement.h"
+#include "../Gameplay/MovementPath.h"
 
 #include <queue>
 #include <vector>
+#include <memory>
 
 namespace ms {
     // Other client players
     class OtherChar : public Char {
     public:
-        OtherChar(int32_t charid, const CharLook& look, uint16_t level, int16_t job, const std::string& name,
+        OtherChar(int32_t char_id, const CharLook& look, uint16_t level, int16_t job, const std::string& name,
                   int8_t stance, Point<int16_t> position);
 
         // Update the character
         int8_t update(const Physics& physics) override;
         // Add the movements which this character will go through next
-        void send_movement(const std::vector<Movement>& movements);
+        void send_movement(std::unique_ptr<MovementPath> movements);
 
         // Update a skill level
-        void update_skill(int32_t skillid, uint8_t skilllevel);
+        void update_skill(int32_t skill_id, uint8_t skill_level);
         // Update the attack speed
         void update_speed(uint8_t attackspeed);
-        // Update the character look
-        void update_look(const LookEntry& look);
+        // Update the character new_look
+        void update_look(const LookEntry& new_look);
 
         // Return the character's attacking speed
         int8_t get_integer_attackspeed() const override;
         // Return the character's level
         uint16_t get_level() const override;
         // Return the character's level of a skill
-        int32_t get_skill_level(int32_t skillid) const override;
+        int32_t get_skill_level(int32_t skill_id) const override;
 
     private:
         uint16_t level;
         int16_t job;
-        std::queue<Movement> movements;
-        Movement lastmove;
+        std::queue<MovementSnapshot> movements;
+        MovementSnapshot last_move;
         uint16_t timer;
 
-        std::unordered_map<int32_t, uint8_t> skilllevels;
+        std::unordered_map<int32_t, uint8_t> skill_levels;
         uint8_t attackspeed;
     };
 }

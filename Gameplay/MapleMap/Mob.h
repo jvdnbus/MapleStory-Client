@@ -19,8 +19,7 @@
 
 #include "MapObject.h"
 
-#include "../Movement.h"
-
+#include "../MovementPath.h"
 #include "../Combat/Attack.h"
 #include "../Combat/Bullet.h"
 
@@ -29,6 +28,8 @@
 #include "../../Graphics/Geometry.h"
 #include "../../Util/Randomizer.h"
 #include "../../Util/TimedBool.h"
+
+#include <memory>
 
 namespace ms {
     class Mob : public MapObject {
@@ -76,7 +77,7 @@ namespace ms {
         // 0 - no control, 1 - control, 2 - aggro
         void set_control(int8_t mode);
         // Send movement to the mob
-        void send_movement(Point<int16_t> start, std::vector<Movement>&& movements);
+        void send_movement(Point<int16_t> start, std::unique_ptr<MovementPath> movements);
         // Kill the mob with the appropriate type:
         // 0 - make inactive 1 - death animation 2 - fade out
         void kill(int8_t killtype);
@@ -155,13 +156,13 @@ namespace ms {
         bool canfly;
 
         EffectLayer effects;
-        Text namelabel;
+        Text name_label;
         MobHpBar hpbar;
         Randomizer randomizer;
 
         TimedBool showhp;
 
-        std::vector<Movement> movements;
+        std::unique_ptr<MovementPath> move_path;
         uint16_t counter;
 
         int32_t id;
@@ -175,7 +176,7 @@ namespace ms {
         bool flip;
         FlyDirection flydirection;
         float walkforce;
-        int8_t hppercent;
+        int8_t hp_percent;
         bool fading;
         bool fadein;
         Linear<float> opacity;

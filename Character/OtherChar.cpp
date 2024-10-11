@@ -20,13 +20,13 @@
 #include "../Constants.h"
 
 namespace ms {
-    OtherChar::OtherChar(int32_t charid, const CharLook& look, uint16_t level, int16_t job, const std::string& name,
-                         int8_t stance, Point<int16_t> position) : Char(charid, look, name), level(level), job(job) {
+    OtherChar::OtherChar(int32_t char_id, const CharLook& look, uint16_t level, int16_t job, const std::string& name,
+                         int8_t stance, Point<int16_t> position) : Char(char_id, look, name), level(level), job(job) {
         set_position(position);
 
-        lastmove.xpos = position.x();
-        lastmove.ypos = position.y();
-        lastmove.newstate = stance;
+        last_move.position_x = position.x();
+        last_move.position_y = position.y();
+        last_move.state = stance;
         timer = 0;
 
         attackspeed = 6;
@@ -38,7 +38,7 @@ namespace ms {
             timer--;
         } else if (timer == 1) {
             if (!movements.empty()) {
-                lastmove = movements.front();
+                last_move = movements.front();
                 movements.pop();
             } else {
                 timer = 0;
@@ -46,12 +46,12 @@ namespace ms {
         }
 
         if (!attacking) {
-            uint8_t laststate = lastmove.newstate;
-            set_state(laststate);
+            uint8_t last_state = last_move.state;
+            set_state(last_state);
         }
 
-        physics_object.h_speed = lastmove.xpos - physics_object.current_x();
-        physics_object.v_speed = lastmove.ypos - physics_object.current_y();
+        physics_object.h_speed = last_move.position_x - physics_object.current_x();
+        physics_object.v_speed = last_move.position_y - physics_object.current_y();
         physics_object.move();
 
         physics.get_fht().update_fh(physics_object);
@@ -64,8 +64,8 @@ namespace ms {
         return get_layer();
     }
 
-    void OtherChar::send_movement(const std::vector<Movement>& newmoves) {
-        movements.push(newmoves.back());
+    void OtherChar::send_movement(std::unique_ptr<MovementPath> new_moves) {
+        movements.push(*new_moves->last());
 
         if (timer == 0) {
             constexpr uint16_t DELAY = 50;
@@ -73,19 +73,19 @@ namespace ms {
         }
     }
 
-    void OtherChar::update_skill(int32_t skillid, uint8_t skilllevel) {
-        skilllevels[skillid] = skilllevel;
+    void OtherChar::update_skill(int32_t skill_id, uint8_t skill_level) {
+        skill_levels[skill_id] = skill_level;
     }
 
     void OtherChar::update_speed(uint8_t as) {
         attackspeed = as;
     }
 
-    void OtherChar::update_look(const LookEntry& newlook) {
-        look = newlook;
+    void OtherChar::update_look(const LookEntry& new_look) {
+        look = new_look;
 
-        uint8_t laststate = lastmove.newstate;
-        set_state(laststate);
+        uint8_t last_state = last_move.state;
+        set_state(last_state);
     }
 
     int8_t OtherChar::get_integer_attackspeed() const {
@@ -96,10 +96,10 @@ namespace ms {
         return level;
     }
 
-    int32_t OtherChar::get_skill_level(int32_t skillid) const {
-        auto iter = skilllevels.find(skillid);
+    int32_t OtherChar::get_skill_level(int32_t skill_id) const {
+        auto iter = skill_levels.find(skill_id);
 
-        if (iter == skilllevels.end())
+        if (iter == skill_levels.end())
             return 0;
 
         return iter->second;

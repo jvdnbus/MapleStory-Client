@@ -22,6 +22,7 @@
 #include "../Spawn.h"
 
 #include "../../Character/OtherChar.h"
+#include "../MovementPath.h"
 
 namespace ms {
     // A collection of remote controlled characters on a map
@@ -43,7 +44,7 @@ namespace ms {
         MapObjects* get_chars();
 
         // Update a character's movement
-        void send_movement(int32_t cid, const std::vector<Movement>& movements);
+        void send_movement(int32_t cid, std::unique_ptr<MovementPath> movements);
         // Update a character's look
         void update_look(int32_t cid, const LookEntry& look);
 

@@ -18,75 +18,55 @@
 #include "MovementParser.h"
 
 namespace ms {
-    std::vector<Movement> MovementParser::parse_movements(InPacket& recv) {
-        std::vector<Movement> movements;
+    std::unique_ptr<MovementPath> MovementParser::parse_movements(InPacket& recv) {
+        std::unique_ptr<MovementPath> path = std::make_unique<MovementPath>();
         uint8_t length = recv.read_byte();
 
         for (uint8_t i = 0; i < length; ++i) {
-            Movement fragment;
-            fragment.command = recv.read_byte();
+            MovementSnapshot fragment;
+            fragment.cmd = MovementSnapshot::by_value(recv.read_byte());
+            fragment.type = MovementSnapshot::get_type(fragment.cmd);
 
-            switch (fragment.command) {
-            case 0:
-            case 5:
-            case 17:
-                fragment.type = Movement::ABSOLUTE;
-                fragment.xpos = recv.read_short();
-                fragment.ypos = recv.read_short();
-                fragment.lastx = recv.read_short();
-                fragment.lasty = recv.read_short();
-                fragment.fh = recv.read_short();
-                fragment.newstate = recv.read_byte();
-                fragment.duration = recv.read_short();
-                break;
-            case 1:
-            case 2:
-            case 6:
-            case 12:
-            case 13:
-            case 16:
-                fragment.type = Movement::RELATIVE;
-                fragment.xpos = recv.read_short();
-                fragment.ypos = recv.read_short();
-                fragment.newstate = recv.read_byte();
-                fragment.duration = recv.read_short();
-                break;
-            case 11:
-                fragment.type = Movement::CHAIR;
-                fragment.xpos = recv.read_short();
-                fragment.ypos = recv.read_short();
-                recv.skip(2);
-                fragment.newstate = recv.read_byte();
-                fragment.duration = recv.read_short();
-                break;
-            case 15:
-                fragment.type = Movement::JUMPDOWN;
-                fragment.xpos = recv.read_short();
-                fragment.ypos = recv.read_short();
-                fragment.lastx = recv.read_short();
-                fragment.lasty = recv.read_short();
-                recv.skip(2);
-                fragment.fh = recv.read_short();
-                fragment.newstate = recv.read_byte();
-                fragment.duration = recv.read_short();
-                break;
-            case 3:
-            case 4:
-            case 7:
-            case 8:
-            case 9:
-            case 14:
-                fragment.type = Movement::NONE;
-                break;
-            case 10:
-                fragment.type = Movement::NONE;
-            // Change equip
-                break;
+            switch (fragment.type) {
+                case MovementSnapshot::ABSOLUTE:
+                case MovementSnapshot::JUMP_DOWN:
+                    fragment.position_x = recv.read_short();
+                    fragment.position_y = recv.read_short();
+                    fragment.velocity_x = recv.read_short();
+                    fragment.velocity_y = recv.read_short();
+                    fragment.foothold = recv.read_short();
+                    break;
+                case MovementSnapshot::RELATIVE:
+                    fragment.position_x = recv.read_short();
+                    fragment.position_y = recv.read_short();
+                    break;
+                case MovementSnapshot::TELEPORT:
+                    fragment.position_x = recv.read_short();
+                    fragment.position_y = recv.read_short();
+                    fragment.foothold = recv.read_short();
+                    break;
+                case MovementSnapshot::CHANGE_EQUIP:
+                    // TODO equip slot?
+                    recv.read_byte();
+                    break;
+                case MovementSnapshot::FALL_DOWN:
+                    fragment.velocity_x = recv.read_short();
+                    fragment.velocity_y = recv.read_short();
+                    fragment.foothold_fall_start = recv.read_short();
+                    break;
+                case MovementSnapshot::ARAN:
+                default:
+                    break;
             }
 
-            movements.push_back(fragment);
+            if (fragment.type != MovementSnapshot::CHANGE_EQUIP) {
+                fragment.state = recv.read_byte();
+                fragment.duration = recv.read_short();
+            }
+
+            path->add_snapshot(fragment);
         }
 
-        return movements;
+        return path;
     }
 }

@@ -55,9 +55,9 @@ namespace ms {
         return &chars;
     }
 
-    void MapChars::send_movement(int32_t cid, const std::vector<Movement>& movements) {
+    void MapChars::send_movement(int32_t cid, std::unique_ptr<MovementPath> movements) {
         if (Optional<OtherChar> otherchar = get_char(cid))
-            otherchar->send_movement(movements);
+            otherchar->send_movement(std::move(movements));
     }
 
     void MapChars::update_look(int32_t cid, const LookEntry& look) {

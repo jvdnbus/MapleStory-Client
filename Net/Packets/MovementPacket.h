@@ -18,6 +18,7 @@
 #pragma once
 
 #include "../OutPacket.h"
+#include "../Gameplay/MovementSnapshot.h"
 
 namespace ms {
     // Base class for packets which update object movements with the server
@@ -26,16 +27,55 @@ namespace ms {
         MovementPacket(Opcode opc) : OutPacket(opc) {
         }
 
-    protected:
-        void writemovement(const Movement& movement) {
-            write_byte(movement.command);
-            write_short(movement.xpos);
-            write_short(movement.ypos);
-            write_short(movement.lastx);
-            write_short(movement.lasty);
-            write_short(movement.fh);
-            write_byte(movement.newstate);
-            write_short(movement.duration);
+    public:
+        void write_movement(const MovementSnapshot& movement) {
+            write_byte(movement.cmd);
+            switch (movement.type) {
+                case MovementSnapshot::ABSOLUTE:
+                case MovementSnapshot::JUMP_DOWN:
+                    write_short(movement.position_x);
+                    write_short(movement.position_y);
+                    write_short(movement.velocity_x);
+                    write_short(movement.velocity_y);
+                    write_short(movement.foothold);
+                    if (movement.type == MovementSnapshot::JUMP_DOWN) {
+                        write_short(movement.foothold_fall_start);
+                    }
+                    break;
+                case MovementSnapshot::RELATIVE:
+                    // offset position
+                    write_short(movement.position_x);
+                    write_short(movement.position_y);
+                    break;
+                case MovementSnapshot::TELEPORT:
+                    write_short(movement.position_x);
+                    write_short(movement.position_y);
+                    write_short(movement.foothold);
+                    break;
+                case MovementSnapshot::CHANGE_EQUIP:
+                    write_byte(0); // equip slot?
+                    break;
+                case MovementSnapshot::FALL_DOWN:
+                    write_short(movement.velocity_x);
+                    write_short(movement.velocity_y);
+                    write_short(movement.foothold_fall_start);
+                    break;
+                case MovementSnapshot::ARAN:
+                default:
+                    break;
+            }
+
+            if (movement.type != MovementSnapshot::CHANGE_EQUIP) {
+                write_byte(movement.state);
+                write_short(movement.duration);
+            }
+        }
+
+        void write_movement(const std::vector<MovementSnapshot>& path) {
+            write_byte(path.size());
+            for (const auto& movement : path) {
+                write_movement(movement);
+            }
         }
     };
 }
